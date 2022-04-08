@@ -103,7 +103,7 @@ server.post("/Login", (req, res) => {
       return;
     }
   }).catch(err => {
-    res.status(200).send({
+    res.status(500).send({
       message: "500 INTERNAL SERVER ERROR !!",
       token: null
     });
