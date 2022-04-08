@@ -23,11 +23,24 @@ mongoose.connect("mongodb+srv://cms_herald:hacker123@cluster0.csdtn.mongodb.net/
 const userSchema = new mongoose.Schema({
   email: String,
   createOn: String
+});
+
+// Routine document schema
+const RoutineSchema = new mongoose.Schema({
+  module_name: String,
+  lecturer_name: String,
+  group: String,
+  room_name: String,
+  block_name: String,
+  timing: String,
 })
 
 
 //create a userModel class
 const UserModel = new mongoose.model("datas", userSchema);
+
+//create a RoutineModel class
+const RoutineModel = new mongoose.model("Routines", RoutineSchema);
 
 
 //middleware 
@@ -117,16 +130,25 @@ server.post("/Login", (req, res) => {
 
 // ****** --> CRUD Routine Operation <-- *********
 
+
 //post routine data
 server.post("/PostRoutineData", (req, res) => {
   //destructuring incoming data
   const {module_name, lecturer_name, group, room_name, block_name, timing} = req.body;
 });
 
+
 //get routine data
-server.get("/getRoutineData", (req, res) => {
-  //store arrays of data
-  const dataCollection = req.body;
+server.get("/getRoutineData", (req, res) => {  
+  // getting data collection from routine db
+  RoutineModel.find().then((data) => {
+    res.status(200).send(data);
+  }).catch(err => {
+    res.status(500).send({
+      message: "500 INTERNAL SERVER ERROR !!"
+    });
+  });
+  
 });
 
 //get routine data
