@@ -100,7 +100,7 @@ const registerNewUser = (res, email) => {
 }
 
 //login routing
-server.post("/Login", (req, res) => {
+server.post("/api/v4/Login", (req, res) => {
   // destructuring the incoming data 
   const { email } = req.body
 
@@ -132,14 +132,29 @@ server.post("/Login", (req, res) => {
 
 
 //post routine data
-server.post("/PostRoutineData", (req, res) => {
+server.post("/api/v4/PostRoutineData", (req, res) => {
   //destructuring incoming data
-  const {module_name, lecturer_name, group, room_name, block_name, timing} = req.body;
+  const { module_name, lecturer_name, group, room_name, block_name, timing } = req.body;
+  
+  const data = {
+    module_name: module_name,
+    lecturer_name: lecturer_name,
+    group: group,
+    room_name: room_name,
+    block_name: block_name,
+    timing:timing
+  }
+  
+  RoutineModel.save().then(() => {
+    res.status(200).send("Routine posted successfully !!");
+  }).catch(err => {
+    res.status(500).send(err);
+  })
 });
 
 
 //get routine data
-server.get("/getRoutineData", (req, res) => {  
+server.get("/api/v4/getRoutineData", (req, res) => {  
   // getting data collection from routine db
   RoutineModel.find().then((data) => {
     res.status(200).send(data);
@@ -152,13 +167,13 @@ server.get("/getRoutineData", (req, res) => {
 });
 
 //get routine data
-server.post("/updateRoutineData", (req, res) => {
+server.post("/api/v4/updateRoutineData", (req, res) => {
   //get the routine doc id
   const {routineID} = req.body;
 });
 
 //delete routine data
-server.post("/deleteRoutineData", (req, res) => {
+server.post("/api/v4/deleteRoutineData", (req, res) => {
   //get the routine doc id
   const { routineID } = req.body;
 });
