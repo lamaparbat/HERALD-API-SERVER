@@ -136,16 +136,16 @@ server.post("/api/v4/PostRoutineData", (req, res) => {
   //destructuring incoming data
   const { module_name, lecturer_name, group, room_name, block_name, timing } = req.body;
   
-  const data = {
+  const data = new RoutineModel({
     module_name: module_name,
     lecturer_name: lecturer_name,
     group: group,
     room_name: room_name,
     block_name: block_name,
-    timing:timing
-  }
+    timing: timing
+  });
   
-  RoutineModel.save().then(() => {
+  data.save().then(() => {
     res.status(200).send("Routine posted successfully !!");
   }).catch(err => {
     res.status(500).send(err);
