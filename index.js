@@ -149,7 +149,7 @@ server.post("/api/v4/PostRoutineData", (req, res) => {
     res.status(200).send("Routine posted successfully !!");
   }).catch(err => {
     res.status(500).send(err);
-  })
+  });
 });
 
 
