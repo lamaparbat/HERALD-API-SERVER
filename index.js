@@ -10,7 +10,7 @@ const PORT = 8000 || process.env.PORT;
 
 
 // *** -> MongoDB config <- ******
-mongoose.connect("mongodb+srv://cms_herald:hacker123@cluster0.csdtn.mongodb.net/student?retryWrites=true&w=majority", {
+mongoose.connect("mongodb+srv://cms_herald:hacker123@cluster0.csdtn.mongodb.net/rms?retryWrites=true&w=majority", {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => {
@@ -20,7 +20,7 @@ mongoose.connect("mongodb+srv://cms_herald:hacker123@cluster0.csdtn.mongodb.net/
 })
 
 // user document schema
-const userSchema = new mongoose.Schema({
+const studentSchema = new mongoose.Schema({
   email: String,
   createOn: String
 });
@@ -37,10 +37,10 @@ const RoutineSchema = new mongoose.Schema({
 
 
 //create a userModel class
-const UserModel = new mongoose.model("datas", userSchema);
+const UserModel = new mongoose.model("students", studentSchema);
 
 //create a RoutineModel class
-const RoutineModel = new mongoose.model("Routines", RoutineSchema);
+const RoutineModel = new mongoose.model("routines", RoutineSchema);
 
 
 //middleware 
@@ -128,8 +128,9 @@ server.post("/api/v4/Login", (req, res) => {
 
 });
 
-// ****** --> CRUD Routine Operation <-- *********
 
+
+// ****** --> CRUD Routine Operation <-- *********
 
 //post routine data
 server.post("/api/v4/PostRoutineData", (req, res) => {
@@ -169,13 +170,35 @@ server.get("/api/v4/getRoutineData", (req, res) => {
 //get routine data
 server.post("/api/v4/updateRoutineData", (req, res) => {
   //get the routine doc id
-  const {routineID} = req.body;
+  const { routineID, module_name } = req.body;
+  RoutineModel.findByIdAndUpdate(routineID, {
+    module_name: module_name
+  }, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        message: "Internal Server Error !!"
+      });
+    } else {
+      res.status(200).send({
+        message: "Routine Succesfully updated !!"
+      });
+    }
+  })
 });
 
 //delete routine data
 server.post("/api/v4/deleteRoutineData", (req, res) => {
   //get the routine doc id
   const { routineID } = req.body;
+  RoutineModel.remove({ _id: routineID }).then((data) => {
+    res.status(200).send({
+      message:"Routine Succesfully deleted !!"
+    });
+  }).catch(err => {
+    res.status(500).send({
+      message: "500 INTERNAL SERVER ERROR !!"
+    });
+  });
 });
 
 
