@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 
 // **** -> server config <- *******
 const server = express();
-const PORT = 8000 || process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 
 // *** -> MongoDB config <- ******
