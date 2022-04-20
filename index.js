@@ -77,7 +77,7 @@ const GenerateJWT = (uid) => {
 
 
 // *** ->> register new user <<- *****
-const registerNewUser = (res, uid) => {
+const registerNewUser = async (uid) => {
   //upload data to mongodb
   const data = new UserModel({
     uid: uid,
@@ -85,31 +85,31 @@ const registerNewUser = (res, uid) => {
   })
 
   // ->> upload the data to mongodb 
-  data.save().then(() => {
+  const response = await data.save();
+  
+  try {
     // sending response to the sender (frontend)
-    return res.status(200).json({
+    res.status(200).json({
       message: "Registration succesfull !!",
       token: GenerateJWT(uid)
     });
-  }).catch(err => {
-    return res.status(500).send({
+  } catch (error) {
+    res.status(500).send({
       message: "Registration failed !!",
       token: null
     });
-  });
+  }
   
 }
 
 //login routing
-server.post("/api/v4/Login", (req, res) => {
+server.post("/api/v4/Login", async (req, res) => {
   // destructuring the incoming data 
   const {uid}  = req.body
-  console.log(uid)
 
   // ***** database data mapping *****
-  UserModel.find({
-    uid: uid
-  }).then((data) => {
+  try {
+    const data = await UserModel.find({ uid: uid });
     if (data.length != 0) {
       res.status(200).send({
         message: "Login succesfull !!",
@@ -117,16 +117,17 @@ server.post("/api/v4/Login", (req, res) => {
       });
       return;
     }
-  }).catch(err => {
+  } catch (error) {
+    //if issue found on server, return message
     res.status(500).send({
       message: "500 INTERNAL SERVER ERROR !!",
       token: null
     });
     return;
-  });
- 
+  }
+  
   // if user not found in DB then register new user
-  registerNewUser(res, uid)
+  registerNewUser(uid);
 
 });
 
