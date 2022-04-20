@@ -21,7 +21,7 @@ mongoose.connect("mongodb+srv://cms_herald:hacker123@cluster0.csdtn.mongodb.net/
 
 // user document schema
 const studentSchema = new mongoose.Schema({
-  email: String,
+  uid: String,
   createOn: String
 });
 
@@ -50,7 +50,8 @@ server.use(express.json());
 //default routing
 server.get("/", (req, res) => {
   console.log("server started.....");
-  res.send("server started....");
+
+  res.send("Server started");
 });
 
 
@@ -66,8 +67,8 @@ const VerifyJWT = (token, key) => {
 
 
 //generate jwt token
-const GenerateJWT = (email) => {
-  const token = jwt.sign({ id: email }, "routinemanagementsystem");
+const GenerateJWT = (uid) => {
+  const token = jwt.sign({ id: uid }, "routinemanagementsystem");
   return token;
 }
 
@@ -76,10 +77,10 @@ const GenerateJWT = (email) => {
 
 
 // *** ->> register new user <<- *****
-const registerNewUser = (res, email) => {
+const registerNewUser = (res, uid) => {
   //upload data to mongodb
   const data = new UserModel({
-    email: email,
+    uid: uid,
     createdOn: new Date().toLocaleDateString()
   })
 
@@ -88,7 +89,7 @@ const registerNewUser = (res, email) => {
     // sending response to the sender (frontend)
     return res.status(200).json({
       message: "Registration succesfull !!",
-      token: GenerateJWT(email)
+      token: GenerateJWT(uid)
     });
   }).catch(err => {
     return res.status(500).send({
@@ -102,16 +103,17 @@ const registerNewUser = (res, email) => {
 //login routing
 server.post("/api/v4/Login", (req, res) => {
   // destructuring the incoming data 
-  const { email } = req.body
+  const {uid}  = req.body
+  console.log(uid)
 
   // ***** database data mapping *****
   UserModel.find({
-    email: email
+    uid: uid
   }).then((data) => {
     if (data.length != 0) {
       res.status(200).send({
         message: "Login succesfull !!",
-        token: GenerateJWT(email)
+        token: GenerateJWT(uid)
       });
       return;
     }
@@ -124,7 +126,7 @@ server.post("/api/v4/Login", (req, res) => {
   });
  
   // if user not found in DB then register new user
-  registerNewUser(res, email)
+  registerNewUser(res, uid)
 
 });
 
@@ -166,7 +168,7 @@ server.get("/api/v4/getRoutineData", (req, res) => {
   
 });
 
-//get routine data
+//update routine data
 server.post("/api/v4/updateRoutineData", (req, res) => {
   //get the routine doc id
   const { routineID, module_name } = req.body;
@@ -207,6 +209,9 @@ server.post("/api/v4/deleteRoutineData", (req, res) => {
 server.listen(PORT, () => {
   console.log(`Listening to the port ${PORT}`);
 });
+
+
+
 
 
 
