@@ -83,11 +83,11 @@ const registerNewUser = async (uid) => {
     uid: uid,
     createdOn: new Date().toLocaleDateString()
   })
-
-  // ->> upload the data to mongodb 
-  const response = await data.save();
   
   try {
+    // ->> upload the data to mongodb 
+    const response = await data.save();
+    
     // sending response to the sender (frontend)
     res.status(200).json({
       message: "Registration succesfull !!",
