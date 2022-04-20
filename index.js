@@ -77,7 +77,7 @@ const GenerateJWT = (uid) => {
 
 
 // *** ->> register new user <<- *****
-const registerNewUser = async (uid) => {
+const registerNewUser = async (res, uid) => {
   //upload data to mongodb
   const data = new UserModel({
     uid: uid,
@@ -127,7 +127,7 @@ server.post("/api/v4/Login", async (req, res) => {
   }
   
   // if user not found in DB then register new user
-  registerNewUser(uid);
+  registerNewUser(res,uid);
 
 });
 
