@@ -203,6 +203,13 @@ server.post("/api/v4/deleteRoutineData", (req, res) => {
 });
 
 
+// admin CRUD
+//delete routine data
+server.post("/api/v4/admin/addUser", (req, res) => {
+  res.send("null");
+});
+
+
 
 
 // ***** port listneer *****
