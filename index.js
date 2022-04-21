@@ -68,12 +68,9 @@ const VerifyJWT = (token, key) => {
 
 //generate jwt token
 const GenerateJWT = (uid) => {
-  const token = jwt.sign({ id: uid }, "routinemanagementsystem");
+  const token = jwt.sign({ id: uid }, process.env.TOP_SECRET_KEY);
   return token;
 }
-
-// GenerateJWT("parbat@gmail.com")
-// VerifyJWT(token, "routinemanagementsystem");
 
 
 // *** ->> register new user <<- *****
