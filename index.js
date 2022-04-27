@@ -1,12 +1,15 @@
 //import packages
 const express = require("express");
+require("dotenv").config();
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
+const studentModel = require("./dbModel/studentModel");
+const routineModel = require("./dbModel/routineModel");
 
 
 // **** -> server config <- *******
 const server = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 
 
 // *** -> MongoDB config <- ******
@@ -17,30 +20,7 @@ mongoose.connect("mongodb+srv://cms_herald:hacker123@cluster0.csdtn.mongodb.net/
   console.log("Mongodb connection succesfull !!");
 }).catch(err => {
   console.log(err);
-})
-
-// user document schema
-const studentSchema = new mongoose.Schema({
-  uid: String,
-  createOn: String
 });
-
-// Routine document schema
-const RoutineSchema = new mongoose.Schema({
-  module_name: String,
-  lecturer_name: String,
-  group: String,
-  room_name: String,
-  block_name: String,
-  timing: String,
-})
-
-
-//create a userModel class
-const UserModel = new mongoose.model("students", studentSchema);
-
-//create a RoutineModel class
-const RoutineModel = new mongoose.model("routines", RoutineSchema);
 
 
 //middleware 
@@ -76,7 +56,7 @@ const GenerateJWT = (uid) => {
 // *** ->> register new user <<- *****
 const registerNewUser = async (res, uid) => {
   //upload data to mongodb
-  const data = new UserModel({
+  const data = new studentModel({
     uid: uid,
     createdOn: new Date().toLocaleDateString()
   })
@@ -91,7 +71,7 @@ const registerNewUser = async (res, uid) => {
       token: GenerateJWT(uid)
     });
   } catch (error) {
-    res.status(500).send({
+    res.status(500).json({
       message: "Registration failed !!",
       token: null
     });
@@ -102,11 +82,11 @@ const registerNewUser = async (res, uid) => {
 //login routing
 server.post("/api/v4/Login", async (req, res) => {
   // destructuring the incoming data 
-  const {uid}  = req.body
+  const { uid } = req.body;
 
   // ***** database data mapping *****
   try {
-    const data = await UserModel.find({ uid: uid });
+    const data = await studentModel.find({ uid: uid });
     if (data.length != 0) {
       res.status(200).send({
         message: "Login succesfull !!",
@@ -136,7 +116,7 @@ server.post("/api/v4/PostRoutineData", (req, res) => {
   //destructuring incoming data
   const { module_name, lecturer_name, group, room_name, block_name, timing } = req.body;
   
-  const data = new RoutineModel({
+  const data = new routineModel({
     module_name: module_name,
     lecturer_name: lecturer_name,
     group: group,
@@ -156,7 +136,7 @@ server.post("/api/v4/PostRoutineData", (req, res) => {
 //get routine data
 server.get("/api/v4/getRoutineData", (req, res) => {  
   // getting data collection from routine db
-  RoutineModel.find().then((data) => {
+  routineModel.find().then((data) => {
     res.status(200).send(data);
   }).catch(err => {
     res.status(500).send({
@@ -170,7 +150,7 @@ server.get("/api/v4/getRoutineData", (req, res) => {
 server.post("/api/v4/updateRoutineData", (req, res) => {
   //get the routine doc id
   const { routineID, module_name } = req.body;
-  RoutineModel.findByIdAndUpdate(routineID, {
+  routineModel.findByIdAndUpdate(routineID, {
     module_name: module_name
   }, (err, data) => {
     if (err) {
@@ -189,7 +169,7 @@ server.post("/api/v4/updateRoutineData", (req, res) => {
 server.post("/api/v4/deleteRoutineData", (req, res) => {
   //get the routine doc id
   const { routineID } = req.body;
-  RoutineModel.remove({ _id: routineID }).then((data) => {
+  routineModel.remove({ _id: routineID }).then((data) => {
     res.status(200).send({
       message:"Routine Succesfully deleted !!"
     });
@@ -201,10 +181,57 @@ server.post("/api/v4/deleteRoutineData", (req, res) => {
 });
 
 
-// admin CRUD
-//delete routine data
-server.post("/api/v4/admin/addUser", (req, res) => {
-  res.send("null");
+// *********** ->  admin   <- **************
+// Admin Login
+server.post("/api/v4/admin/Login", (req, res) => {
+  const { email, password } = req.body;
+  
+  //database mapping
+  
+});
+
+//register new user
+server.post("/api/v4/admin/Signup", (req, res) => {
+  const { email, password } = req.body;
+  
+  //database mapping 
+  
+});
+
+
+// *********** ->  Student   <- **************
+// Student Login
+server.post("/api/v4/student/Login", (req, res) => {
+  const { email, password } = req.body;
+
+  //database mapping
+
+});
+
+//register new Student 
+server.post("/api/v4/student/Signup", (req, res) => {
+  const { email, password } = req.body;
+
+  //database mapping 
+
+});
+
+
+// *********** ->  Teachers   <- **************
+// Student Login
+server.post("/api/v4/teacher/Login", (req, res) => {
+  const { email, password } = req.body;
+
+  //database mapping
+
+});
+
+//register new Student 
+server.post("/api/v4/teacher/Signup", (req, res) => {
+  const { email, password } = req.body;
+
+  //database mapping 
+
 });
 
 
