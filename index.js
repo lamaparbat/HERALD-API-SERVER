@@ -3,6 +3,8 @@ require("dotenv").config();
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
+const swaggerJsDoc = require("swagger-jsdoc");
+const swaggerUi = require('swagger-ui-express');
 const jwt = require("./middleware/jwt.js");
 const studentModel = require("./dbModel/studentModel");
 const routineModel = require("./dbModel/routineModel");
@@ -25,11 +27,26 @@ mongoose.connect("mongodb+srv://cms_herald:hacker123@cluster0.csdtn.mongodb.net/
   console.log(err);
 });
 
+// *** -> Swagger config <- ******
+const options = {
+  swaggerDefinition: {
+    info: {
+      title: "Routine Management System API Docs",
+      description: "API Documentation of Routine Management System consisting several CRUD featues and Authentication",
+      contact: {
+        name: "Parbat Lama"
+      },
+      servers: ["http://localhost:8000"]
+    }
+  },
+  apis: ["index.js"]
+};
+const swaggerDocs = swaggerJsDoc(options);
 
 //middleware 
 server.use(express.json());
 server.use(cookieParser());
-
+server.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 //default routing
 server.get("/", (req, res) => {
@@ -62,11 +79,37 @@ const registerNewUser = async (res, uid) => {
   
 }
 
+
+/**
+ * @swagger
+ * /api/v4/Login:
+ *   post:
+ *     summary: Return object of 2 attributes i.e { message , token }
+ *     tags: [Students]
+ *     produces:
+ *     - "application/json"
+ *     parameters:
+ *     - name: uid
+ *       in: body
+ *       content:
+ *         application/json:
+ *           schema:
+ *              type: string
+ *       required: true
+ *       description: The book id
+ * 
+ *     responses:
+ *       200:
+ *         description: login succcessful
+ *       404:
+ *         description: The book was not found
+ */
+
 //login routing
 server.post("/api/v4/Login", async (req, res) => {
   // destructuring the incoming data 
-  const { uid } = req.body;
-  
+  const { uid } =  req.body;
+  console.log(uid)
   // ***** database data mapping *****
   try {
     const data = await studentModel.find({ uid: uid });
