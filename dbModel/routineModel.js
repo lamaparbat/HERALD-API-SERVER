@@ -9,6 +9,7 @@ const routineSchema = new mongoose.Schema({
  room_name: String,
  block_name: String,
  timing: String,
+ createdOn:String
 });
 
 module.exports = new mongoose.model("routines", routineSchema);

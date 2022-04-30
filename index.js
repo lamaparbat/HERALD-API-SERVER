@@ -1,10 +1,13 @@
 //import packages
-const express = require("express");
 require("dotenv").config();
+const express = require("express");
+const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
+const jwt = require("./middleware/jwt.js");
 const studentModel = require("./dbModel/studentModel");
 const routineModel = require("./dbModel/routineModel");
+const adminModel = require("./dbModel/adminModel");
+
 
 
 // **** -> server config <- *******
@@ -25,32 +28,14 @@ mongoose.connect("mongodb+srv://cms_herald:hacker123@cluster0.csdtn.mongodb.net/
 
 //middleware 
 server.use(express.json());
+server.use(cookieParser());
 
 
 //default routing
 server.get("/", (req, res) => {
   console.log("server started.....");
-
   res.send("Server started");
 });
-
-
-//verify jwt token
-const VerifyJWT = (token, key) => {
-  try {
-    const res = jwt.verify(token, key);
-    console.log("verification success")
-  } catch (err) {
-    console.log("Verification failed.......!!!");
-  }
-}
-
-
-//generate jwt token
-const GenerateJWT = (uid) => {
-  const token = jwt.sign({ id: uid }, process.env.TOP_SECRET_KEY);
-  return token;
-}
 
 
 // *** ->> register new user <<- *****
@@ -59,7 +44,7 @@ const registerNewUser = async (res, uid) => {
   const data = new studentModel({
     uid: uid,
     createdOn: new Date().toLocaleDateString()
-  })
+  });
   
   try {
     // ->> upload the data to mongodb 
@@ -67,13 +52,11 @@ const registerNewUser = async (res, uid) => {
     
     // sending response to the sender (frontend)
     res.status(200).json({
-      message: "Registration succesfull !!",
-      token: GenerateJWT(uid)
+      message: "Registration succesfull !!"
     });
   } catch (error) {
     res.status(500).json({
-      message: "Registration failed !!",
-      token: null
+      message: "Registration failed !!"
     });
   }
   
@@ -83,24 +66,25 @@ const registerNewUser = async (res, uid) => {
 server.post("/api/v4/Login", async (req, res) => {
   // destructuring the incoming data 
   const { uid } = req.body;
-
+  
   // ***** database data mapping *****
   try {
     const data = await studentModel.find({ uid: uid });
     if (data.length != 0) {
-      res.status(200).send({
+      //set cookie on cache
+      res.cookie("jwt", jwt.GenerateJWT(uid));
+
+      return res.status(200).send({
         message: "Login succesfull !!",
-        token: GenerateJWT(uid)
+        token: jwt.GenerateJWT(uid)
       });
-      return;
     }
   } catch (error) {
     //if issue found on server, return message
-    res.status(500).send({
+    return res.status(500).send({
       message: "500 INTERNAL SERVER ERROR !!",
       token: null
     });
-    return;
   }
   
   // if user not found in DB then register new user
@@ -108,6 +92,15 @@ server.post("/api/v4/Login", async (req, res) => {
 
 });
 
+//logout
+server.post("/api/v4/Logout", async (req, res) => {
+  //clear the cookies
+  res.clearCookie();
+  
+  return res.status(200).send({
+    message: "Logout succesfull !!"
+  });
+})
 
 
 // ****** --> CRUD Routine Operation <-- *********
@@ -122,7 +115,8 @@ server.post("/api/v4/PostRoutineData", (req, res) => {
     group: group,
     room_name: room_name,
     block_name: block_name,
-    timing: timing
+    timing: timing,
+    createdOn:new Date().toLocaleDateString()
   });
   
   data.save().then(() => {
@@ -134,7 +128,9 @@ server.post("/api/v4/PostRoutineData", (req, res) => {
 
 
 //get routine data
-server.get("/api/v4/getRoutineData", (req, res) => {  
+server.get("/api/v4/getRoutineData", jwt.VerifyJWT, (req, res) => {  
+  const { token } = req.headers;
+
   // getting data collection from routine db
   routineModel.find().then((data) => {
     res.status(200).send(data);
@@ -194,7 +190,25 @@ server.post("/api/v4/admin/Login", (req, res) => {
 server.post("/api/v4/admin/Signup", (req, res) => {
   const { email, password } = req.body;
   
-  //database mapping 
+  //search if user already exists ?
+  adminModel.find({ email: email }).then(data => {
+    if (data.length === 0) {
+      //insert new admin data
+      const data = new adminModel({
+        email: email,
+        password: password,
+        date: new Date().toDateString()
+      });
+      
+      
+      res.status(201).send("Admin created succesfully !!");
+    } else {
+      res.status(412).send("User already exists !!");
+    }
+  }).catch(err => {
+    console.log("500 SERVER ERROR !!");
+  })
+  
   
 });
 
