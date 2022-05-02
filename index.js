@@ -80,31 +80,6 @@ const registerNewUser = async (res, uid) => {
 }
 
 
-/**
- * @swagger
- * /api/v4/Login:
- *   post:
- *     summary: Return object of 2 attributes i.e { message , token }
- *     tags: [Students]
- *     produces:
- *     - "application/json"
- *     parameters:
- *     - name: uid
- *       in: body
- *       content:
- *         application/json:
- *           schema:
- *              type: string
- *       required: true
- *       description: The book id
- * 
- *     responses:
- *       200:
- *         description: login succcessful
- *       404:
- *         description: The book was not found
- */
-
 //login routing
 server.post("/api/v4/Login", async (req, res) => {
   // destructuring the incoming data 
@@ -226,7 +201,17 @@ server.post("/api/v4/admin/Login", (req, res) => {
   const { email, password } = req.body;
   
   //database mapping
-  
+  adminModel.find({ email: email, password: password }).then(data => {
+    if (data.length > 0) {
+      res.status(200).send({
+        message: "Login succesfully.",
+        token:jwt.GenerateJWT(email)
+      });
+
+    } else {
+      res.status(412).send("Wrong email or password !!");
+    }
+  });
 });
 
 //register new user
@@ -240,11 +225,15 @@ server.post("/api/v4/admin/Signup", (req, res) => {
       const data = new adminModel({
         email: email,
         password: password,
-        date: new Date().toDateString()
+        createdOn: new Date().toDateString()
       });
       
-      
-      res.status(201).send("Admin created succesfully !!");
+      //final upload to db
+      data.save().then(() => {
+        res.status(201).send("Admin created succesfully !!");
+      }).catch(err => {
+        res.status(500).send("500. SERVER ERROR!!");
+      })
     } else {
       res.status(412).send("User already exists !!");
     }
