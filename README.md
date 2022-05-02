@@ -38,6 +38,7 @@ onFailure: {
    message:"Failed to login",
    token:null
 }
+```
 
 2. Signup
 ```perl
