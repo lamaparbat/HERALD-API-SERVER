@@ -1,6 +1,6 @@
 # Routine Management System Backend (Backend API Guidelines)
 
-# Student endpoints
+## Student endpoints
 1. Login
 ```perl
 API: http://localhost:8000/api/v4/student/Login
@@ -19,7 +19,7 @@ onFailure: {
    token:null
 }
 ```
-# Teacher endpoints
+## Teacher endpoints
 1. Login
 ```perl
 API: http://localhost:8000/api/v4/teacher/Login
