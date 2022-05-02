@@ -21,7 +21,7 @@ onFailure: {
    message:"Failed to login",
    token:null
 }
-
+```
 # Teacher endpoints
 1. Login
 ```perl
@@ -60,3 +60,4 @@ onFailure: {
    message:"Failed to login",
    token:null
 }
+```
