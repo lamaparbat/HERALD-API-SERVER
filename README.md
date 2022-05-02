@@ -4,11 +4,9 @@ Routine Management System
 ## Backend API Guidelines
 
 ## Student endpoints
-
-```perl
 1. Login
-
-http://localhost:8000/api/v4/student/Login
+```perl
+API: http://localhost:8000/api/v4/student/Login
 
 payload: {
    email:"",
