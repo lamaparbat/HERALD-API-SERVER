@@ -88,7 +88,7 @@ onFailure: {
 ```perl
  GET: /api/v4/admin/getRoutineData
 
-!! the payload must be attached to the header
+!! the token must be attached to the header
 {
   token: String
 }
@@ -137,6 +137,19 @@ onFailure: {
 ``` perl
  POST: /api/v4/admin/updateRoutineData
 
+!! the token must be attached to the header
+{
+  token: String
+}
+
+For example: In ReactJS,
+
+const res = await axios.post('https://httpbin.org/post', { data }, {
+  headers: {
+    token:'a23adjbd3knvbjdf.f3jsbfvjbbjb3.skja8adkfsbfvjbfvj'
+  }
+});
+
 payload: {
     routineID:"",
     .....
@@ -155,6 +168,20 @@ onFailure: {
 4. Delete routine data
 ```perl
  POST: /api/v4/admin/updateRoutineData
+ 
+ 
+!! the token must be attached to the header
+{
+  token: String
+}
+
+For example: In ReactJS,
+
+const res = await axios.post('https://httpbin.org/post', { data }, {
+  headers: {
+    token:'a23adjbd3knvbjdf.f3jsbfvjbbjb3.skja8adkfsbfvjbfvj'
+  }
+});
 
 payload: {
     routineID:""
