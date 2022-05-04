@@ -6,11 +6,12 @@ const mongoose = require("mongoose");
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require('swagger-ui-express');
 const jwt = require("./middleware/jwt.js");
+const rmsLibrary = require("./rmsLibrary/index.js");
 const studentModel = require("./dbModel/studentModel");
+const teacherModel = require("./dbModel/teacherModel");
 const routineModel = require("./dbModel/routineModel");
+const notifModel = require("./dbModel/notificationModel");
 const adminModel = require("./dbModel/adminModel");
-
-
 
 // **** -> server config <- *******
 const server = express();
@@ -55,43 +56,23 @@ server.get("/", (req, res) => {
 });
 
 
-// *** ->> register new user <<- *****
-const registerNewUser = async (res, uid) => {
-  //upload data to mongodb
-  const data = new studentModel({
-    uid: uid,
-    createdOn: new Date().toLocaleDateString()
-  });
+//login routing
+server.post("/api/v4/student/Login",  (req, res) => {
+  // destructuring the incoming data 
+  const { uid } =  req.body;
   
-  try {
-    // ->> upload the data to mongodb 
-    const response = await data.save();
-    
-    // sending response to the sender (frontend)
-    res.status(200).json({
-      message: "Registration succesfull !!"
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: "Registration failed !!"
+  //verify the uid
+  if ((uid.includes("np") && uid.includes("heraldcollege.edu.np") === false)) {
+    return res.status(400).send({
+      message: "Unverified users.",
+      token: null
     });
   }
   
-}
-
-
-//login routing
-server.post("/api/v4/Login", async (req, res) => {
-  // destructuring the incoming data 
-  const { uid } =  req.body;
-  console.log(uid)
   // ***** database data mapping *****
   try {
-    const data = await studentModel.find({ uid: uid });
+    const data = studentModel.find({ uid: uid });
     if (data.length != 0) {
-      //set cookie on cache
-      res.cookie("jwt", jwt.GenerateJWT(uid));
-
       return res.status(200).send({
         message: "Login succesfull !!",
         token: jwt.GenerateJWT(uid)
@@ -106,7 +87,7 @@ server.post("/api/v4/Login", async (req, res) => {
   }
   
   // if user not found in DB then register new user
-  registerNewUser(res,uid);
+  rmsLibrary.registerNewUser(res,uid);
 
 });
 
@@ -123,7 +104,7 @@ server.post("/api/v4/Logout", async (req, res) => {
 
 // ****** --> CRUD Routine Operation <-- *********
 //post routine data
-server.post("/api/v4/PostRoutineData", (req, res) => {
+server.post("/api/v4/admin/postRoutineData", (req, res) => {
   //destructuring incoming data
   const { module_name, lecturer_name, group, room_name, block_name, timing } = req.body;
   
@@ -137,8 +118,24 @@ server.post("/api/v4/PostRoutineData", (req, res) => {
     createdOn:new Date().toLocaleDateString()
   });
   
-  data.save().then(() => {
-    res.status(200).send("Routine posted successfully !!");
+  data.save().then(async() => {
+    //upload message to notification db
+    const notifData = new notifModel({
+      message: "Dear " + group + ", a new routine has recently published. Please see it once.",
+      group:group,
+      createdOn: new Date().toLocaleDateString()
+    });
+    
+    try {
+      const result = await notifData.save();
+      if (result.message) {
+        res.status(200).send({
+          message: "Routine posted successfully !!"
+        });
+      }
+    } catch (error) {
+      res.status(500).send(err);
+    }
   }).catch(err => {
     res.status(500).send(err);
   });
@@ -146,9 +143,7 @@ server.post("/api/v4/PostRoutineData", (req, res) => {
 
 
 //get routine data
-server.get("/api/v4/getRoutineData", jwt.VerifyJWT, (req, res) => {  
-  const { token } = req.headers;
-
+server.get("/api/v4/admin/getRoutineData", jwt.VerifyJWT, (req, res) => {  
   // getting data collection from routine db
   routineModel.find().then((data) => {
     res.status(200).send(data);
@@ -161,7 +156,7 @@ server.get("/api/v4/getRoutineData", jwt.VerifyJWT, (req, res) => {
 });
 
 //update routine data
-server.post("/api/v4/updateRoutineData", (req, res) => {
+server.post("/api/v4/admin/updateRoutineData", (req, res) => {
   //get the routine doc id
   const { routineID, module_name } = req.body;
   routineModel.findByIdAndUpdate(routineID, {
@@ -173,19 +168,19 @@ server.post("/api/v4/updateRoutineData", (req, res) => {
       });
     } else {
       res.status(200).send({
-        message: "Routine Succesfully updated !!"
+        message: "Routine succesfully updated !!"
       });
     }
   })
 });
 
 //delete routine data
-server.post("/api/v4/deleteRoutineData", (req, res) => {
+server.post("/api/v4/admin/deleteRoutineData", (req, res) => {
   //get the routine doc id
   const { routineID } = req.body;
   routineModel.remove({ _id: routineID }).then((data) => {
     res.status(200).send({
-      message:"Routine Succesfully deleted !!"
+      message:"Routine succesfully deleted !!"
     });
   }).catch(err => {
     res.status(500).send({
@@ -251,14 +246,44 @@ server.post("/api/v4/student/Login", (req, res) => {
   const { email, password } = req.body;
 
   //database mapping
+  studentModel.find({ email: email, password: password }).then(data => {
+    if (data.length > 0) {
+      res.status(200).send({
+        message: "Login succesfully.",
+        token: jwt.GenerateJWT(email)
+      });
 
+    } else {
+      res.status(412).send("Wrong email or password !!");
+    }
+  });
+  
 });
 
 //register new Student 
 server.post("/api/v4/student/Signup", (req, res) => {
-  const { email, password } = req.body;
+  //search if user already exists ?
+  studentModel.find({ email: email }).then(data => {
+    if (data.length === 0) {
+      //insert new admin data
+      const data = new adminModel({
+        email: email,
+        password: password,
+        createdOn: new Date().toDateString()
+      });
 
-  //database mapping 
+      //final upload to db
+      data.save().then(() => {
+        res.status(201).send("Student created succesfully !!");
+      }).catch(err => {
+        res.status(500).send("500. SERVER ERROR!!");
+      })
+    } else {
+      res.status(412).send("User already exists !!");
+    }
+  }).catch(err => {
+    console.log("500 SERVER ERROR !!");
+  })
 
 });
 
@@ -269,18 +294,45 @@ server.post("/api/v4/teacher/Login", (req, res) => {
   const { email, password } = req.body;
 
   //database mapping
+  teacherModel.find({ email: email, password: password }).then(data => {
+    if (data.length > 0) {
+      res.status(200).send({
+        message: "Login succesfully.",
+        token: jwt.GenerateJWT(email)
+      });
+
+    } else {
+      res.status(412).send("Wrong email or password !!");
+    }
+  });
 
 });
 
 //register new Student 
 server.post("/api/v4/teacher/Signup", (req, res) => {
-  const { email, password } = req.body;
+  //search if user already exists ?
+  teacherModel.find({ email: email }).then(data => {
+    if (data.length === 0) {
+      //insert new admin data
+      const data = new adminModel({
+        email: email,
+        password: password,
+        createdOn: new Date().toDateString()
+      });
 
-  //database mapping 
-
+      //final upload to db
+      data.save().then(() => {
+        res.status(201).send("Teachers created succesfully !!");
+      }).catch(err => {
+        res.status(500).send("500. SERVER ERROR!!");
+      })
+    } else {
+      res.status(412).send("User already exists !!");
+    }
+  }).catch(err => {
+    console.log("500 SERVER ERROR !!");
+  })
 });
-
-
 
 
 // ***** port listneer *****
