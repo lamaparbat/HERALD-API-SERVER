@@ -93,6 +93,15 @@ onFailure: {
   token: String
 }
 
+For example: In ReactJS,
+
+const res = await axios.post('https://httpbin.org/post', { data }, {
+  headers: {
+    token:'a23adjbd3knvbjdf.f3jsbfvjbbjb3.skja8adkfsbfvjbfvj'
+  }
+});
+
+
 
 ****** -> Response  <- *******
 onSuccess: {
