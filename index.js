@@ -16,7 +16,7 @@ const adminModel = require("./dbModel/adminModel");
 // **** -> server config <- *******
 const server = express();
 const PORT = process.env.PORT || 8000;
-
+var attemptCount = 1;
 
 // *** -> MongoDB config <- ******
 mongoose.connect("mongodb+srv://cms_herald:hacker123@cluster0.csdtn.mongodb.net/rms?retryWrites=true&w=majority", {
@@ -57,38 +57,63 @@ server.get("/", (req, res) => {
 
 
 //login routing
-server.post("/api/v4/student/Login",  (req, res) => {
+server.post("/api/v4/student/Login", async(req, res) => {
   // destructuring the incoming data 
-  const { uid } =  req.body;
+  const { uid } = req.body;
   
-  //verify the uid
-  if ((uid.includes("np") && uid.includes("heraldcollege.edu.np") === false)) {
-    return res.status(400).send({
-      message: "Unverified users.",
-      token: null
-    });
-  }
-  
-  // ***** database data mapping *****
-  try {
-    const data = studentModel.find({ uid: uid });
-    if (data.length != 0) {
-      return res.status(200).send({
-        message: "Login succesfull !!",
-        token: jwt.GenerateJWT(uid)
+  if (attemptCount <= 5) {
+    //verify the uid
+    if ((uid.includes("np") && uid.includes("heraldcollege.edu.np") === false)) {
+      return res.status(400).send({
+        message: "Unverified users.",
+        token: null
       });
     }
-  } catch (error) {
-    //if issue found on server, return message
-    return res.status(500).send({
-      message: "500 INTERNAL SERVER ERROR !!",
-      token: null
+
+    // ***** database data mapping *****
+    try {
+      const data = await studentModel.find({ uid: uid });
+      if (data.length != 0) {
+        //reset the attempt account
+        attemptCount = 0;
+        
+        return res.status(200).send({
+          message: "Login succesfull !!",
+          token: jwt.GenerateJWT(uid)
+        });
+      } else {
+        //increase the wrong email counter by 1
+        attemptCount++;
+        
+        //if email counter reach 5, then store the cache
+        if (attemptCount === 5) {
+          setTimeout(() => {
+            //reset the attemptCount after 5 minutes
+            attemptCount = 0;
+            console.log("Now you can login. => "+attemptCount)
+          }, 300000)
+        }
+        
+        return res.status(400).send({
+          message: "Failed to login. Please use correct email !!",
+          token: null
+        });
+      }
+    } catch (error) {
+      //if issue found on server, return message
+      return res.status(500).send({
+        message: "500 INTERNAL SERVER ERROR !!",
+        token: null
+      });
+    }
+
+    // if user not found in DB then register new user
+    rmsLibrary.registerNewUser(res, uid);
+  } else {
+    res.status(500).send({
+      message: "You exceed the 5 login attempt. Please wait 5 minutes to retry again!!"
     });
   }
-  
-  // if user not found in DB then register new user
-  rmsLibrary.registerNewUser(res,uid);
-
 });
 
 //logout
@@ -104,7 +129,7 @@ server.post("/api/v4/Logout", async (req, res) => {
 
 // ****** --> CRUD Routine Operation <-- *********
 //post routine data
-server.post("/api/v4/admin/postRoutineData", (req, res) => {
+server.post("/api/v4/admin/postRoutineData", jwt.VerifyJWT, (req, res) => {
   //destructuring incoming data
   const { module_name, lecturer_name, group, room_name, block_name, timing } = req.body;
   
@@ -143,20 +168,28 @@ server.post("/api/v4/admin/postRoutineData", (req, res) => {
 
 
 //get routine data
-server.get("/api/v4/admin/getRoutineData", jwt.VerifyJWT, (req, res) => {  
-  // getting data collection from routine db
-  routineModel.find().then((data) => {
-    res.status(200).send(data);
-  }).catch(err => {
-    res.status(500).send({
-      message: "500 INTERNAL SERVER ERROR !!"
-    });
-  });
+server.get("/api/v4/routines/getRoutineData", jwt.VerifyJWT, (req, res) => {  
+  //get the id
+  const { uid } = req.body;
   
+  if (attemptCount <= 5) {
+    // getting data collection from routine db
+    routineModel.find().then((data) => {
+      res.status(200).send(data);
+    }).catch(err => {
+      res.status(500).send({
+        message: "500 INTERNAL SERVER ERROR !!"
+      });
+    });
+  } else {
+    res.status(500).send({
+      message: "You exceed the 5 login attempt. !!"
+    });
+  }
 });
 
 //update routine data
-server.post("/api/v4/admin/updateRoutineData", (req, res) => {
+server.post("/api/v4/admin/updateRoutineData", jwt.VerifyJWT, (req, res) => {
   //get the routine doc id
   const { routineID, module_name } = req.body;
   routineModel.findByIdAndUpdate(routineID, {
@@ -175,7 +208,7 @@ server.post("/api/v4/admin/updateRoutineData", (req, res) => {
 });
 
 //delete routine data
-server.post("/api/v4/admin/deleteRoutineData", (req, res) => {
+server.post("/api/v4/admin/deleteRoutineData", jwt.VerifyJWT, (req, res) => {
   //get the routine doc id
   const { routineID } = req.body;
   routineModel.remove({ _id: routineID }).then((data) => {
@@ -286,6 +319,7 @@ server.post("/api/v4/student/Signup", (req, res) => {
   })
 
 });
+
 
 
 // *********** ->  Teachers   <- **************
