@@ -111,7 +111,7 @@ server.post("/api/v4/student/Login", async(req, res) => {
     rmsLibrary.registerNewUser(res, uid);
   } else {
     res.status(500).send({
-      message: "You exceed the 5 login attempt. Please wait 5 minutes to retry again!!"
+      message: "You exceed the 5 login attempt. !!"
     });
   }
 });
@@ -172,20 +172,6 @@ server.get("/api/v4/routines/getRoutineData", jwt.VerifyJWT, (req, res) => {
   //get the id
   const { uid } = req.body;
   
-  if (attemptCount <= 5) {
-    // getting data collection from routine db
-    routineModel.find().then((data) => {
-      res.status(200).send(data);
-    }).catch(err => {
-      res.status(500).send({
-        message: "500 INTERNAL SERVER ERROR !!"
-      });
-    });
-  } else {
-    res.status(500).send({
-      message: "You exceed the 5 login attempt. !!"
-    });
-  }
 });
 
 //update routine data
