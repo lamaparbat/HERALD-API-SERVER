@@ -187,4 +187,26 @@ onFailure: {
    message: "Internal Server Error !!"
 }
 
+5. Search routine by group and module_name
+```perl
+ GET: /api/v4/routines/getRoutineData
+ 
+ //headers
+ module_name:"",
+ group:""
+ 
+ //header.authorization.bearer
+token: "",
+
+
+For example: In Javascript using axios,
+
+const res = await axios.post('https://httpbin.org/post', { data }, {
+  headers: {
+    "Authorization":'Bearer' + 'a23adjbd3knvbjdf.f3jsbfvjbbjb3.skja8adkfsbfvjbfvj',
+    "module_name": "HCI",
+    "group":"L5CG8"
+  }
+});
+
 ```
