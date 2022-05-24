@@ -64,7 +64,11 @@ onFailure: {
 1. Create routine 
 ```perl
  POST: /api/v4/admin/postRoutineData
+ 
+//header.authorization.bearer
+token: ""
 
+// send data
 payload: {
     module_name:"",
     lecturer_name:"",
@@ -87,28 +91,17 @@ onFailure: {
 2. Read/Fetched routine data
 ```perl
  GET: /api/v4/admin/getRoutineData
+ 
+ //header.authorization.bearer
+token: ""
 
-<<<<<<< HEAD
-!! the payload must be attached to the header
-=======
-!! the token must be attached to the header
->>>>>>> 40935a9fbb846e003cb1ba1661c86640dd5fa962
-{
-  token: String
-}
-
-<<<<<<< HEAD
-=======
-For example: In ReactJS,
+For example: In Javascript using axios,
 
 const res = await axios.post('https://httpbin.org/post', { data }, {
   headers: {
-    token:'a23adjbd3knvbjdf.f3jsbfvjbbjb3.skja8adkfsbfvjbfvj'
+    "Authorization":'Bearer' + 'a23adjbd3knvbjdf.f3jsbfvjbbjb3.skja8adkfsbfvjbfvj'
   }
 });
-
-
->>>>>>> 40935a9fbb846e003cb1ba1661c86640dd5fa962
 
 ****** -> Response  <- *******
 onSuccess: {
@@ -144,22 +137,17 @@ onFailure: {
 ``` perl
  POST: /api/v4/admin/updateRoutineData
 
-<<<<<<< HEAD
-=======
-!! the token must be attached to the header
-{
-  token: String
-}
+!! the token must be attached to the header =>  header.authorization.bearer
+token: ""
 
 For example: In ReactJS,
 
 const res = await axios.post('https://httpbin.org/post', { data }, {
   headers: {
-    token:'a23adjbd3knvbjdf.f3jsbfvjbbjb3.skja8adkfsbfvjbfvj'
+    "Authorization":'Bearer' + 'a23adjbd3knvbjdf.f3jsbfvjbbjb3.skja8adkfsbfvjbfvj'
   }
 });
 
->>>>>>> 40935a9fbb846e003cb1ba1661c86640dd5fa962
 payload: {
     routineID:"",
     .....
@@ -178,23 +166,14 @@ onFailure: {
 4. Delete routine data
 ```perl
  POST: /api/v4/admin/updateRoutineData
-<<<<<<< HEAD
-=======
- 
- 
-!! the token must be attached to the header
-{
-  token: String
-}
-
-For example: In ReactJS,
 
 const res = await axios.post('https://httpbin.org/post', { data }, {
+
+  //token must be attatched to header.authorization.bearer
   headers: {
-    token:'a23adjbd3knvbjdf.f3jsbfvjbbjb3.skja8adkfsbfvjbfvj'
+    "Authorization":'Bearer' + 'a23adjbd3knvbjdf.f3jsbfvjbbjb3.skja8adkfsbfvjbfvj'
   }
 });
->>>>>>> 40935a9fbb846e003cb1ba1661c86640dd5fa962
 
 payload: {
     routineID:""
@@ -207,5 +186,27 @@ onSuccess: {
 onFailure: {
    message: "Internal Server Error !!"
 }
+
+5. Search routine by group and module_name
+```perl
+ GET: /api/v4/routines/getRoutineData
+ 
+ //headers
+ module_name:"",
+ group:""
+ 
+ //header.authorization.bearer
+token: "",
+
+
+For example: In Javascript using axios,
+
+const res = await axios.post('https://httpbin.org/post', { data }, {
+  headers: {
+    "Authorization":'Bearer' + 'a23adjbd3knvbjdf.f3jsbfvjbbjb3.skja8adkfsbfvjbfvj',
+    "module_name": "HCI",
+    "group":"L5CG8"
+  }
+});
 
 ```
