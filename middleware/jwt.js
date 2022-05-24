@@ -1,9 +1,11 @@
 const jwt = require("jsonwebtoken");
 
 //verify jwt token
-const VerifyJWT = (req, res , next) => {
- const {token} = req.headers;
- console.log(token)
+const VerifyJWT = (req, res, next) => {
+ var token = req.header("authorization");
+ 
+ //remove the bearer text from token
+ token = token.substr(7, token.length)
  try {
   jwt.verify(token, process.env.TOP_SECRET_KEY);
   console.log("verification success");

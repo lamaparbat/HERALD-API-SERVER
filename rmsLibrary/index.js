@@ -1,9 +1,10 @@
 const res = require("express/lib/response");
-
+const studentModel = require("../dbModel/studentModel");
+ 
 // register new user
 const registerNewUser = async (res, uid) => {
  //upload data to mongodb
- const data = new studentModel({
+ const data = await new studentModel({
   uid: uid,
   createdOn: new Date().toLocaleDateString()
  });
@@ -13,11 +14,11 @@ const registerNewUser = async (res, uid) => {
   const response = await data.save();
 
   // sending response to the sender (frontend)
-  res.status(200).json({
+  return res.status(200).send({
    message: "Registration succesfull !!"
   });
  } catch (error) {
-  res.status(500).json({
+  return res.status(500).send({
    message: "Registration failed !!"
   });
  }
