@@ -1,4 +1,4 @@
-# Routine Management System Backend (Backend API Guidelines)
+# Routine Management System Backend (API Guidelines)
 
 ## Student endpoints
 1. Login
