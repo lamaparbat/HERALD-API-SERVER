@@ -1,12 +1,5 @@
-#dependencies
+.DS_Store
+.nyc_output
+.vscode
+coverage
 node_modules
-
-
-# production
-/build
-
-#misc
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
