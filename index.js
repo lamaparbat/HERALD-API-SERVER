@@ -289,6 +289,8 @@ server.post("/api/v4/admin/Signup", (req, res) => {
 
 });
 
+// student forget password
+server.update
 
 // *********** ->  Student   <- **************
 // Student Login
