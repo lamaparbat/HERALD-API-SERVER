@@ -21,7 +21,8 @@ var studentAttemptCount = 1, teacherAttemptCount = 1;
 // *** -> MongoDB config <- ******
 mongoose.connect("mongodb+srv://cms_herald:hacker123@cluster0.csdtn.mongodb.net/rms?retryWrites=true&w=majority", {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  useFindAndModify: false,
 }).then(() => {
   console.log("Mongodb connection succesfull !!");
 }).catch(err => {
@@ -105,9 +106,6 @@ server.post("/api/v4/student/Login", async (req, res) => {
         token: null
       });
     }
-
-    // if user not found in DB then register new user
-    // rmsLibrary.registerNewUser(res, uid);
   } else {
     return res.status(500).send({
       message: "You exceed the 5 login attempt. !!"

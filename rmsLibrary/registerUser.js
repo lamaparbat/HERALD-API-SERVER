@@ -1,4 +1,3 @@
-const res = require("express/lib/response");
 const studentModel = require("../dbModel/studentModel");
 
 // register new user
