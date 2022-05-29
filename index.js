@@ -69,7 +69,7 @@ server.post("/api/v4/student/Login", async (req, res) => {
     try {
       const data = await studentModel.find({ uid: uid });
 
-      if (data.length != 0) {
+      if (data.length !== 0) {
         //reset the attempt account
         studentAttemptCount = 0;
 
