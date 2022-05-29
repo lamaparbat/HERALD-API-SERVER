@@ -73,7 +73,7 @@ server.post("/api/v4/student/Login", async (req, res) => {
         //reset the attempt account
         studentAttemptCount = 0;
 
-        return res.status(200).send({
+        res.status(200).send({
           message: "Login succesfull !!",
           token: auth.GenerateJWT(uid)
         });
@@ -90,14 +90,14 @@ server.post("/api/v4/student/Login", async (req, res) => {
           }, 300000)
         }
 
-        return res.status(400).send({
+        res.status(400).send({
           message: "Failed to login. Please use correct email !!",
           token: null
         });
       }
     } catch (error) {
       //if issue found on server, return message
-      return res.status(500).send({
+      res.status(500).send({
         message: "500 INTERNAL SERVER ERROR !!",
         token: null
       });
