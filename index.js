@@ -76,7 +76,7 @@ server.post("/api/v4/student/Login", async (req, res) => {
         //reset the attempt account
         studentAttemptCount = 0;
 
-        return res.status(200).json({
+        return res.status(200).send({
           message: "Login succesfull !!",
           token: auth.GenerateJWT(uid)
         });
@@ -93,14 +93,14 @@ server.post("/api/v4/student/Login", async (req, res) => {
           }, 300000)
         }
 
-        return res.status(400).json({
+        return res.status(400).send({
           message: "Failed to login. Please use correct email !!",
           token: null
         });
       }
     } catch (error) {
       //if issue found on server, return message
-      return res.status(500).json({
+      return res.status(500).send({
         message: "500 INTERNAL SERVER ERROR !!",
         token: null
       });
@@ -109,7 +109,7 @@ server.post("/api/v4/student/Login", async (req, res) => {
     // if user not found in DB then register new user
     // rmsLibrary.registerNewUser(res, uid);
   } else {
-    return res.status(500).json({
+    return res.status(500).send({
       message: "You exceed the 5 login attempt. !!"
     });
   }
