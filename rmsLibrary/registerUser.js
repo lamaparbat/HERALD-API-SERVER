@@ -1,6 +1,6 @@
 const res = require("express/lib/response");
 const studentModel = require("../dbModel/studentModel");
- 
+
 // register new user
 const registerNewUser = async (res, uid) => {
  //upload data to mongodb
