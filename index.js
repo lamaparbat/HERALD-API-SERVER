@@ -49,7 +49,7 @@ server.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 //default routing
 server.get("/", (req, res) => {
   console.log("server started.....");
-  res.send("Server started");
+  res.send("Server has started...");
 });
 
 
