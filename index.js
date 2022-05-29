@@ -19,11 +19,7 @@ const PORT = process.env.PORT || 8000;
 var studentAttemptCount = 1, teacherAttemptCount = 1;
 
 // *** -> MongoDB config <- ******
-mongoose.connect("mongodb+srv://cms_herald:hacker123@cluster0.csdtn.mongodb.net/rms?retryWrites=true&w=majority", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-}).then(() => {
+mongoose.connect("mongodb+srv://cms_herald:hacker123@cluster0.csdtn.mongodb.net/rms?retryWrites=true&w=majority").then(() => {
   console.log("Mongodb connection succesfull !!");
 }).catch(err => {
   console.log(err);
