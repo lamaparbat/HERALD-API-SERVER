@@ -90,7 +90,7 @@ onFailure: {
 
 2. Read/Fetched routine data
 ```perl
- GET: /api/v4/admin/getRoutineData
+ GET: /api/v4/routines/getRoutineData
  
  //header.authorization.bearer
 token: ""
@@ -189,7 +189,7 @@ onFailure: {
 
 5. Search routine by group and module_name
 ```perl
- GET: /api/v4/routines/getRoutineData
+ GET: /api/v4/routines/searchRoutine
  
  //headers
  module_name:"",
