@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 //verify jwt token
 const VerifyJWT = (req, res, next) => {
  var token = req.header("authorization");
- 
+
  //remove the bearer text from token
  token = token.substr(7, token.length)
  try {
@@ -22,5 +22,4 @@ const GenerateJWT = (uid) => {
  return token;
 }
 
-
-module.exports = {VerifyJWT, GenerateJWT}
+module.exports = { VerifyJWT, GenerateJWT }

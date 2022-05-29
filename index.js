@@ -5,7 +5,7 @@ const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require('swagger-ui-express');
-const jwt = require("./middleware/jwt.js");
+const auth = require("./middleware/auth.js");
 const rmsLibrary = require("./rmsLibrary/registerUser.js");
 const studentModel = require("./dbModel/studentModel");
 const teacherModel = require("./dbModel/teacherModel");
@@ -78,7 +78,7 @@ server.post("/api/v4/student/Login", async (req, res) => {
 
         return res.status(200).json({
           message: "Login succesfull !!",
-          token: jwt.GenerateJWT(uid)
+          token: auth.GenerateJWT(uid)
         });
       } else {
         //increase the wrong email counter by 1
@@ -128,47 +128,53 @@ server.post("/api/v4/Logout", async (req, res) => {
 
 // ****** --> CRUD Routine Operation <-- *********
 //post routine data
-server.post("/api/v4/admin/postRoutineData", jwt.VerifyJWT, (req, res) => {
+server.post("/api/v4/admin/postRoutineData", auth.VerifyJWT, (req, res) => {
   //destructuring incoming data
-  const { module_name, lecturer_name, group, room_name, block_name, timing } = req.body;
-
-  const data = new routineModel({
-    module_name: module_name,
-    lecturer_name: lecturer_name,
-    group: group,
-    room_name: room_name,
-    block_name: block_name,
-    timing: timing,
-    createdOn: new Date().toLocaleDateString()
-  });
-
-  data.save().then(async () => {
-    //upload message to notification db
-    const notifData = new notifModel({
-      message: "Dear " + group + ", a new routine has recently published. Please see it once.",
-      group: group,
+  const { module_name, lecturer_name, group, room_name, block_name, start_time, end_time } = req.body;
+  
+  //minor validation
+  if (module_name.length > 0 && lecturer_name.length > 0 && group.length > 0 && room_name.length > 0 && start_time.length > 0 && end_time.length > 0 && block_name.length) {
+    const data = new routineModel({
+      module_name: module_name.toUpperCase(),
+      lecturer_name: lecturer_name,
+      group: group.toUpperCase(),
+      room_name: room_name.toUpperCase(),
+      block_name: block_name,
+      start_time: start_time,
+      end_time: end_time,
       createdOn: new Date().toLocaleDateString()
     });
 
-    try {
-      const result = await notifData.save();
-      if (result.message) {
-        res.status(200).send({
-          message: "Routine posted successfully !!"
-        });
+    data.save().then(async () => {
+      //upload message to notification db
+      const notifData = new notifModel({
+        message: "Dear " + group + ", a new routine has recently published. Please see it once.",
+        group: group,
+        createdOn: new Date().toLocaleDateString()
+      });
+
+      try {
+        const result = await notifData.save();
+        if (result.message) {
+          res.status(200).send({
+            message: "Routine posted successfully !!"
+          });
+        }
+      } catch (error) {
+        res.status(500).send(err);
       }
-    } catch (error) {
+    }).catch(err => {
       res.status(500).send(err);
-    }
-  }).catch(err => {
-    res.status(500).send(err);
-  });
+    });
+  } else {
+    res.status(403).send("Field is empty !!. Please fill all the field");
+  }
 });
 
 
 
 //get all routine data
-server.get("/api/v4/routines/getRoutineData", jwt.VerifyJWT, async (req, res) => {
+server.get("/api/v4/routines/getRoutineData", auth.VerifyJWT, async (req, res) => {
   //fetch all routine from db
   const result = await routineModel.find();
 
@@ -186,7 +192,7 @@ server.get("/api/v4/routines/getRoutineData", jwt.VerifyJWT, async (req, res) =>
 
 
 //update routine data
-server.post("/api/v4/admin/updateRoutineData", jwt.VerifyJWT, (req, res) => {
+server.post("/api/v4/admin/updateRoutineData", auth.VerifyJWT, (req, res) => {
   //get the routine doc id
   const { routineID, module_name } = req.body;
   routineModel.findByIdAndUpdate(routineID, {
@@ -205,7 +211,7 @@ server.post("/api/v4/admin/updateRoutineData", jwt.VerifyJWT, (req, res) => {
 });
 
 //delete routine data
-server.delete("/api/v4/admin/deleteRoutineData", jwt.VerifyJWT, (req, res) => {
+server.delete("/api/v4/admin/deleteRoutineData", auth.VerifyJWT, (req, res) => {
   //get the routine doc id
   const { routineID } = req.body;
   routineModel.remove({ _id: routineID }).then((data) => {
@@ -220,7 +226,7 @@ server.delete("/api/v4/admin/deleteRoutineData", jwt.VerifyJWT, (req, res) => {
 });
 
 // search routine by id
-server.get("/api/v4/routines/getRoutineData", jwt.VerifyJWT, async (req, res) => {
+server.get("/api/v4/routines/searchRoutine", auth.VerifyJWT, async (req, res) => {
   const { module_name, group } = req.headers;
 
   //search routine in db 
@@ -250,7 +256,7 @@ server.post("/api/v4/admin/Login", (req, res) => {
     if (data.length > 0) {
       res.status(200).send({
         message: "Login succesfully.",
-        token: jwt.GenerateJWT(email)
+        token: auth.GenerateJWT(email)
       });
 
     } else {
@@ -302,7 +308,7 @@ server.post("/api/v4/student/Login", (req, res) => {
     if (data.length > 0) {
       res.status(200).send({
         message: "Login succesfully.",
-        token: jwt.GenerateJWT(email)
+        token: auth.GenerateJWT(email)
       });
 
     } else {
@@ -352,7 +358,7 @@ server.post("/api/v4/teacher/Login", async (req, res) => {
       if (data.length > 0) {
         res.status(200).send({
           message: "Login succesfully.",
-          token: jwt.GenerateJWT(email)
+          token: auth.GenerateJWT(email)
         });
 
       } else {

@@ -8,7 +8,8 @@ const routineSchema = new mongoose.Schema({
  group: String,
  room_name: String,
  block_name: String,
- timing: String,
+ start_time: String,
+ end_time: String,
  createdOn:String
 });
 
