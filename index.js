@@ -2,6 +2,7 @@
 require("dotenv").config();
 const express = require("express");
 const cookieParser = require("cookie-parser");
+const { ServerApiVersion } = require('mongodb');
 const mongoose = require("mongoose");
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require('swagger-ui-express');
@@ -19,7 +20,8 @@ const PORT = process.env.PORT || 8000;
 var studentAttemptCount = 1, teacherAttemptCount = 1;
 
 // *** -> MongoDB config <- ******
-mongoose.connect("mongodb+srv://cms_herald:hacker123@cluster0.csdtn.mongodb.net/rms?retryWrites=true&w=majority").then(() => {
+mongoose.connect("mongodb+srv://cms_herald:hacker123@cluster0.csdtn.mongodb.net/rms?retryWrites=true&w=majority",
+  { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 }).then(() => {
   console.log("Mongodb connection succesfull !!");
 }).catch(err => {
   console.log(err);
