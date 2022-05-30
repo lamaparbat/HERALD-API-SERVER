@@ -1,6 +1,7 @@
 //import packages
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const { ServerApiVersion } = require('mongodb');
 const mongoose = require("mongoose");
@@ -45,6 +46,7 @@ const swaggerDocs = swaggerJsDoc(options);
 
 //middleware 
 server.use(express.json());
+server.use(cors())
 server.use(cookieParser());
 server.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
@@ -296,57 +298,8 @@ server.post("/api/v4/admin/Signup", (req, res) => {
 
 });
 
-// *********** ->  Student   <- **************
-// Student Login
-server.post("/api/v4/student/Login", (req, res) => {
-  const { email, password } = req.body;
-
-  //database mapping
-  studentModel.find({ email: email, password: password }).then(data => {
-    if (data.length > 0) {
-      return res.status(200).send({
-        message: "Login succesfully.",
-        token: auth.GenerateJWT(email)
-      });
-
-    } else {
-      return res.status(412).send("Wrong email or password !!");
-    }
-  });
-
-});
-
-//register new Student 
-server.post("/api/v4/student/Signup", (req, res) => {
-  //search if user already exists ?
-  studentModel.find({ email: email }).then(data => {
-    if (data.length === 0) {
-      //insert new admin data
-      const data = new adminModel({
-        email: email,
-        password: password,
-        createdOn: new Date().toDateString()
-      });
-
-      //final upload to db
-      data.save().then(() => {
-        return res.status(201).send("Student created succesfully !!");
-      }).catch(err => {
-        return res.status(500).send("500. SERVER ERROR!!");
-      })
-    } else {
-      return res.status(412).send("User already exists !!");
-    }
-  }).catch(err => {
-    console.log("500 SERVER ERROR !!");
-  })
-
-});
-
-
-
 // *********** ->  Teachers   <- **************
-// Student Login
+// Teacher Login
 server.post("/api/v4/teacher/Login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -372,7 +325,7 @@ server.post("/api/v4/teacher/Login", async (req, res) => {
 
 });
 
-//register new Student 
+//register new Teacher 
 server.post("/api/v4/teacher/Signup", (req, res) => {
   //search if user already exists ?
   teacherModel.find({ email: email }).then(data => {
