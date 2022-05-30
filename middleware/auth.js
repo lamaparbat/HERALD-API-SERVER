@@ -18,7 +18,7 @@ const VerifyJWT = (req, res, next) => {
 
 //generate jwt token
 const GenerateJWT = (uid) => {
- const token = jwt.sign({ id: uid }, process.env.TOP_SECRET_KEY);
+ const token = jwt.sign({ id: uid }, "routinemanagementsystem");
  return token;
 }
 

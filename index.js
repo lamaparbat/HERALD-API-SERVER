@@ -51,7 +51,7 @@ server.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 //default routing
 server.get("/", (req, res) => {
   console.log("server started.....");
-  res.send("Server has started...");
+  return res.send("Server has started...");
 });
 
 
@@ -75,7 +75,7 @@ server.post("/api/v4/student/Login", async (req, res) => {
         //reset the attempt account
         studentAttemptCount = 0;
 
-        res.status(200).send({
+        return res.status(200).send({
           message: "Login succesfull !!",
           token: auth.GenerateJWT(uid)
         });
@@ -92,14 +92,14 @@ server.post("/api/v4/student/Login", async (req, res) => {
           }, 300000)
         }
 
-        res.status(400).send({
+        return res.status(400).send({
           message: "Failed to login. Please use correct email !!",
           token: null
         });
       }
     } catch (error) {
       //if issue found on server, return message
-      res.status(500).send({
+      return res.status(500).send({
         message: "500 INTERNAL SERVER ERROR !!",
         token: null
       });
@@ -128,8 +128,13 @@ server.post("/api/v4/admin/postRoutineData", auth.VerifyJWT, (req, res) => {
   //destructuring incoming data
   const { module_name, lecturer_name, group, room_name, block_name, start_time, end_time } = req.body;
   
+  //check if all attributes are recieved or not ?
+  if (Object.keys(req.body).length < 7) {
+    return res.status(404).send("Some fields are missing. Please provide all the fields !!");
+  }
+  
   //minor validation
-  if (module_name.length > 0 && lecturer_name.length > 0 && group.length > 0 && room_name.length > 0 && start_time.length > 0 && end_time.length > 0 && block_name.length) {
+  if (module_name.length > 0 && lecturer_name.length > 0 && group.length > 0 && room_name.length > 0 && start_time.length > 0 && end_time.length > 0 && block_name.length > 0) {
     const data = new routineModel({
       module_name: module_name.toUpperCase(),
       lecturer_name: lecturer_name,
@@ -152,18 +157,18 @@ server.post("/api/v4/admin/postRoutineData", auth.VerifyJWT, (req, res) => {
       try {
         const result = await notifData.save();
         if (result.message) {
-          res.status(200).send({
+          return res.status(200).send({
             message: "Routine posted successfully !!"
           });
         }
       } catch (error) {
-        res.status(500).send(err);
+        return res.status(500).send(err);
       }
     }).catch(err => {
-      res.status(500).send(err);
+      return res.status(500).send(err);
     });
   } else {
-    res.status(403).send("Field is empty !!. Please fill all the field");
+    return res.status(403).send("Please fill all the field !!");
   }
 });
 
@@ -175,11 +180,11 @@ server.get("/api/v4/routines/getRoutineData", auth.VerifyJWT, async (req, res) =
   const result = await routineModel.find();
 
   if (result.length != 0) {
-    res.status(200).send({
+    return res.status(200).send({
       data: result
     })
   } else {
-    res.status(404).send({
+    return res.status(404).send({
       message: "Result: 0 found !!"
     });
   }
@@ -195,11 +200,11 @@ server.post("/api/v4/admin/updateRoutineData", auth.VerifyJWT, (req, res) => {
     module_name: module_name
   }, (err, data) => {
     if (err) {
-      res.status(500).send({
+      return res.status(500).send({
         message: "Internal Server Error !!"
       });
     } else {
-      res.status(200).send({
+      return res.status(200).send({
         message: "Routine succesfully updated !!"
       });
     }
@@ -211,11 +216,11 @@ server.delete("/api/v4/admin/deleteRoutineData", auth.VerifyJWT, (req, res) => {
   //get the routine doc id
   const { routineID } = req.body;
   routineModel.remove({ _id: routineID }).then((data) => {
-    res.status(200).send({
+    return res.status(200).send({
       message: "Routine succesfully deleted !!"
     });
   }).catch(err => {
-    res.status(500).send({
+    return res.status(500).send({
       message: "500 INTERNAL SERVER ERROR !!"
     });
   });
@@ -229,11 +234,11 @@ server.get("/api/v4/routines/searchRoutine", auth.VerifyJWT, async (req, res) =>
   const result = await routineModel.find({ module_name: module_name, group: group });
 
   if (result.length != 0) {
-    res.status(200).send({
+    return res.status(200).send({
       data: result
     })
   } else {
-    res.status(404).send({
+    return res.status(404).send({
       message: "Routine not found !!"
     });
   }
@@ -250,13 +255,13 @@ server.post("/api/v4/admin/Login", (req, res) => {
   //database mapping
   adminModel.find({ email: email, password: password }).then(data => {
     if (data.length > 0) {
-      res.status(200).send({
+      return res.status(200).send({
         message: "Login succesfully.",
         token: auth.GenerateJWT(email)
       });
 
     } else {
-      res.status(412).send("Wrong email or password !!");
+      return res.status(412).send("Wrong email or password !!");
     }
   });
 });
@@ -277,12 +282,12 @@ server.post("/api/v4/admin/Signup", (req, res) => {
 
       //final upload to db
       data.save().then(() => {
-        res.status(201).send("Admin created succesfully !!");
+        return res.status(201).send("Admin created succesfully !!");
       }).catch(err => {
-        res.status(500).send("500. SERVER ERROR!!");
+        return res.status(500).send("500. SERVER ERROR!!");
       })
     } else {
-      res.status(412).send("User already exists !!");
+      return res.status(412).send("User already exists !!");
     }
   }).catch(err => {
     console.log("500 SERVER ERROR !!");
@@ -290,9 +295,6 @@ server.post("/api/v4/admin/Signup", (req, res) => {
 
 
 });
-
-// student forget password
-server.update
 
 // *********** ->  Student   <- **************
 // Student Login
@@ -302,13 +304,13 @@ server.post("/api/v4/student/Login", (req, res) => {
   //database mapping
   studentModel.find({ email: email, password: password }).then(data => {
     if (data.length > 0) {
-      res.status(200).send({
+      return res.status(200).send({
         message: "Login succesfully.",
         token: auth.GenerateJWT(email)
       });
 
     } else {
-      res.status(412).send("Wrong email or password !!");
+      return res.status(412).send("Wrong email or password !!");
     }
   });
 
@@ -328,12 +330,12 @@ server.post("/api/v4/student/Signup", (req, res) => {
 
       //final upload to db
       data.save().then(() => {
-        res.status(201).send("Student created succesfully !!");
+        return res.status(201).send("Student created succesfully !!");
       }).catch(err => {
-        res.status(500).send("500. SERVER ERROR!!");
+        return res.status(500).send("500. SERVER ERROR!!");
       })
     } else {
-      res.status(412).send("User already exists !!");
+      return res.status(412).send("User already exists !!");
     }
   }).catch(err => {
     console.log("500 SERVER ERROR !!");
@@ -352,18 +354,18 @@ server.post("/api/v4/teacher/Login", async (req, res) => {
     //database mapping
     teacherModel.find({ email: email, password: password }).then(data => {
       if (data.length > 0) {
-        res.status(200).send({
+        return res.status(200).send({
           message: "Login succesfully.",
           token: auth.GenerateJWT(email)
         });
 
       } else {
         teacherAttemptCount++;
-        res.status(412).send("Wrong email or password !!");
+        return res.status(412).send("Wrong email or password !!");
       }
     });
   } else {
-    res.status(500).send({
+    return res.status(500).send({
       message: "You exceed the 5 login attempt. Please wait for 5 min to retry again !!"
     });
   }
@@ -384,22 +386,22 @@ server.post("/api/v4/teacher/Signup", (req, res) => {
 
       //final upload to db
       data.save().then(() => {
-        res.status(201).send("Teachers created succesfully !!");
+        return res.status(201).send("Teachers created succesfully !!");
       }).catch(err => {
-        res.status(500).send("500. SERVER ERROR!!");
+        return res.status(500).send("500. SERVER ERROR!!");
       })
     } else {
-      res.status(412).send("User already exists !!");
+      return res.status(412).send("User already exists !!");
     }
   }).catch(err => {
-    console.log("500 SERVER ERROR !!");
+    return console.log("500 SERVER ERROR !!");
   })
 });
 
 
 // ***** port listneer *****
 server.listen(PORT, () => {
-  console.log(`Listening to the port ${PORT}`);
+  return console.log(`Listening to the port ${PORT}`);
 });
 
 
