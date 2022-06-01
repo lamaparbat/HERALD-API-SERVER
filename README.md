@@ -1,7 +1,7 @@
 # Routine Management System Backend (API Guidelines)
 
 # Swagger Documentation Link
-https://app.swaggerhub.com/apis-docs/ayush-shrestha1/Routine_Management_System/1.0.0
+https://rms-server-8080.herokuapp.com/api-docs/
 ## Student endpoints
 1. Login
 ```perl
