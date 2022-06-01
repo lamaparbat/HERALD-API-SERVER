@@ -9,7 +9,9 @@ info:
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-
+servers:
+  - url: http://localhost:8000
+  - url: https://rms-server-8080.herokuapp.com
 tags:
 - name: "Admin"
   description: "Operations about Admin user"
@@ -111,7 +113,7 @@ paths:
           description: "Routine posted successfully!"
         "500":
           description: "500 Internal Server Error !"
-  /api/v4/admin/getRoutineData:
+  /api/v4/routines/getRoutineData:
     get:
       tags:
       - "Admin"
@@ -446,11 +448,3 @@ definitions:
         type: "string"
       
 
-# Added by API Auto Mocking Plugin
-host: virtserver.swaggerhub.com
-# basePath: /ayush-shrestha1/Routine_Management_System/1.0.0
-schemes:
- - https
- - http
-# Added by API Auto Mocking Plugin
-basePath: /DevelopmentPlatform/Routine_Management_System/1.0.0
