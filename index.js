@@ -5,7 +5,6 @@ const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const { ServerApiVersion } = require('mongodb')
 const mongoose = require('mongoose')
-const swaggerJsDoc = require('swagger-jsdoc')
 const swaggerUi = require('swagger-ui-express')
 const auth = require('./middleware/auth.js')
 const rmsLibrary = require('./rmsLibrary/registerUser.js')
@@ -39,22 +38,9 @@ mongoose
   })
 
 // *** -> Swagger config <- ******
-const options = {
-  swaggerDefinition: {
-    info: {
-      title: 'Routine Management System API Docs',
-      description:
-        'API Documentation of Routine Management System consisting several CRUD featues and Authentication',
-      contact: {
-        name: 'Parbat Lama',
-      },
-      servers: ['http://localhost:8000'],
-    },
-  },
-  apis: ['index.js'],
-}
-const swaggerDocs = swaggerJsDoc(options)
-
+const YAML = require("yamljs");
+const swaggerDocs = YAML.load("./api.yaml");
+ 
 //middleware
 server.use(express.json())
 server.use(cookieParser())
