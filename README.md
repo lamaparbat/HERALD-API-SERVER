@@ -209,4 +209,4 @@ const res = await axios.post('https://httpbin.org/post', { data }, {
   }
 });
 ```
-## ...development
+## ...email verification is on progress
