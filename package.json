@@ -16,6 +16,7 @@
     "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.3.4",
+    "node-msoffice-pdf": "0.0.7",
     "nodemailer": "^6.7.5",
     "nodemon": "^2.0.15",
     "swagger-jsdoc": "^6.2.1",
