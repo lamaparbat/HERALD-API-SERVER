@@ -1,5 +1,7 @@
 # Routine Management System Backend (API Guidelines)
 
+# Swagger Documentation Link
+https://rms-server-8080.herokuapp.com/api-docs/
 ## Student endpoints
 1. Login
 ```perl
@@ -209,4 +211,4 @@ const res = await axios.post('https://httpbin.org/post', { data }, {
   }
 });
 ```
-## ...development
+## ...email verification is on progress
