@@ -24,6 +24,14 @@ onFailure: {
 
 ```
 ## Regenerated access token endpoints (Recently updated !!)
+
+### When to call this endpoint ?
+->> When the session time for access token is ended/out, the jwt server reset the access_token which caused you to  you get the response like this => 
+    {
+      message:"Session timeout."
+    }
+    Therefore, inorder to regenerate access token, you have to pass the refresh_token to this endpoint which in response you get the new access_token and refresh token. The session time for access_token is 24 hrs, that means your access_token is only justified with a day.
+
 ```perl
 POST : /api/v4/RegenerateToken
 
