@@ -13,12 +13,13 @@ payload: {
 
 ****** -> Response  <- *******
 onSuccess: {
-   message:"Login succesfully",
-   token:"s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
+  message: 'Login succesfull !!',
+  access_token: access_token,
+  refresh_token: refresh_token
 }
 onFailure: {
-   message:"Failed to login",
-   token:null
+  message: 'Failed to login. Please use correct email !!',
+  token: null,
 }
 
 ```
@@ -27,7 +28,7 @@ onFailure: {
 POST : /api/v4/RegenerateToken
 
 header:{
-  token: "refresh_token ${refresh_token}"
+  "Authorization": "refresh_token ${refresh_token}"
 }
 
 ****** -> Response  <- *******
