@@ -18,6 +18,7 @@
     "mongoose": "^6.3.4",
     "nodemailer": "^6.7.5",
     "nodemon": "^2.0.15",
+    "pusher": "^5.1.0-beta",
     "swagger-jsdoc": "^6.2.1",
     "swagger-ui-express": "^4.3.0",
     "yamljs": "^0.3.0"

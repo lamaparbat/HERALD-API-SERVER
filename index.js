@@ -6,18 +6,26 @@ const cookieParser = require('cookie-parser')
 const { ServerApiVersion } = require('mongodb')
 const mongoose = require('mongoose')
 const swaggerUi = require('swagger-ui-express')
+const Pusher = require("pusher");
 const auth = require('./middleware/auth.js')
 const studentModel = require('./dbModel/studentModel')
 const teacherModel = require('./dbModel/teacherModel')
 const routineModel = require('./dbModel/routineModel')
 const notifModel = require('./dbModel/notificationModel')
-const adminModel = require('./dbModel/adminModel')
+const adminModel = require('./dbModel/adminModel');
 
 // **** -> server config <- *******
 const server = express()
 const PORT = process.env.PORT || 8000
 var studentAttemptCount = 1,
-  teacherAttemptCount = 1
+  teacherAttemptCount = 1;
+const pusher = new Pusher({
+  appId: "1419323",
+  key: "72d2952dc15a5dc49d46",
+  secret: "ac6613086c0a1909c4a3",
+  cluster: "ap2",
+  useTLS: true
+});
 
 // *** -> MongoDB config <- ******
 mongoose
@@ -192,10 +200,7 @@ server.post('/api/v4/admin/postRoutineData', auth.VerifyJWT, (req, res) => {
       .then(async () => {
         //upload message to notification db
         const notifData = new notifModel({
-          message:
-            'Dear ' +
-            group +
-            ', a new routine has recently published. Please see it once.',
+          message:`Dear ${group}, a new routine of ${module_name} has recently published. Please see it once.`,
           group: group,
           createdOn: new Date().toLocaleDateString(),
         })
@@ -203,6 +208,9 @@ server.post('/api/v4/admin/postRoutineData', auth.VerifyJWT, (req, res) => {
         try {
           const result = await notifData.save()
           if (result.message) {
+            // pusher.trigger("my-channel", "notice", {
+            //   message: `Dear ${group}, a new routine of ${module_name} has recently published. Please see it once.`
+            // });
             return res.status(200).send({
               message: 'Routine posted successfully !!',
             })

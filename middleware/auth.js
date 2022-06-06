@@ -10,8 +10,10 @@ const VerifyJWT = (req, res, next) => {
   } 
   var access_token = req.header('authorization')
 
+
   //remove the bearer text from token
   access_token = access_token.substr(7, access_token.length);
+  
   
   try {
     const res = jwt.verify(access_token, process.env.ACCESS_TOKEN_KEY)
