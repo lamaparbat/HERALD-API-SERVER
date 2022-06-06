@@ -240,7 +240,27 @@ const res = await axios.post('https://httpbin.org/post', { data }, {
   }
 });
 ```
-5. Search routine by Level
+5. Get routine by Group
+```perl
+GET: /api/v4/routines/getRoutineByGroup
+ 
+ //headers
+ group:""
+ 
+ //header.authorization.bearer
+token: "",
+
+
+For example: In Javascript using axios,
+
+const res = await axios.post('https://httpbin.org/post', { data }, {
+  headers: {
+    "Authorization":'Bearer' + 'a23adjbd3knvbjdf.f3jsbfvjbbjb3.skja8adkfsbfvjbfvj',
+    "group":"8"
+  }
+});
+```
+5. Get routine by Level
 ```perl
 GET: /api/v4/routines/getRoutineByLevel
  
