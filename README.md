@@ -20,7 +20,27 @@ onFailure: {
    message:"Failed to login",
    token:null
 }
+
 ```
+## Regenerated access token endpoints
+```perl
+ POST : /api/v4/RegenerateToken
+
+header:{
+  token: "refresh_token ${refresh_token}"
+}
+
+****** -> Response  <- *******
+onSuccess: {
+  message: 'Token regenerated succesfully !!',
+  access_token: access_token,
+  refresh_token: refresh_token
+}
+onFailure: {
+  message:"Refresh token cannot verified."
+}
+```
+
 ## Teacher endpoints
 1. Login
 ```perl
