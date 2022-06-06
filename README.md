@@ -26,7 +26,7 @@ onFailure: {
 ## Regenerated access token endpoints (Recently updated !!)
 
 ### When to call this endpoint ?
-->> When the session time for access token is ended/out, the jwt server reset the access_token which caused you to  you get the response like this => 
+When the session time for access token is ended/out, the jwt server reset the access_token which caused you to  you get the response like this => 
     {
       message:"Session timeout."
     }
