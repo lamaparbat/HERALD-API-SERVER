@@ -240,7 +240,7 @@ const res = await axios.post('https://httpbin.org/post', { data }, {
   }
 });
 ```
-5. Get routine by Group
+5. Get routine by Group.  (Recently updated !!)
 ```perl
 GET: /api/v4/routines/getRoutineByGroup
  
@@ -260,7 +260,7 @@ const res = await axios.post('https://httpbin.org/post', { data }, {
   }
 });
 ```
-5. Get routine by Level
+5. Get routine by Level. (Recently updated !!)
 ```perl
 GET: /api/v4/routines/getRoutineByLevel
  
