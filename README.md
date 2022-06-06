@@ -240,4 +240,24 @@ const res = await axios.post('https://httpbin.org/post', { data }, {
   }
 });
 ```
+5. Search routine by Level
+```perl
+GET: /api/v4/routines/getRoutineByLevel
+ 
+ //headers
+ level:""
+ 
+ //header.authorization.bearer
+token: "",
+
+
+For example: In Javascript using axios,
+
+const res = await axios.post('https://httpbin.org/post', { data }, {
+  headers: {
+    "Authorization":'Bearer' + 'a23adjbd3knvbjdf.f3jsbfvjbbjb3.skja8adkfsbfvjbfvj',
+    "level":"5"
+  }
+});
+```
 ## ...email verification is on progress
