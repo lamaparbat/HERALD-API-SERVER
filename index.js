@@ -7,7 +7,6 @@ const { ServerApiVersion } = require('mongodb')
 const mongoose = require('mongoose')
 const swaggerUi = require('swagger-ui-express')
 const auth = require('./middleware/auth.js')
-const rmsLibrary = require('./rmsLibrary/registerUser.js')
 const studentModel = require('./dbModel/studentModel')
 const teacherModel = require('./dbModel/teacherModel')
 const routineModel = require('./dbModel/routineModel')
@@ -40,7 +39,7 @@ mongoose
 // *** -> Swagger config <- ******
 const YAML = require("yamljs");
 const swaggerDocs = YAML.load("./api.yaml");
- 
+
 //middleware
 server.use(express.json())
 server.use(cookieParser())
@@ -65,11 +64,11 @@ server.post('/api/v4/student/Login', async (req, res) => {
 
   if (studentAttemptCount <= 5) {
     //verify the uid
-    ;(uid.includes('np') && uid.includes('heraldcollege.edu.np')) === false
+    ; (uid.includes('np') && uid.includes('heraldcollege.edu.np')) === false
       ? res.status(400).json({
-          message: 'Unverified users.',
-          token: null,
-        })
+        message: 'Unverified users.',
+        token: null,
+      })
       : null
 
     // ***** database data mapping *****
@@ -78,12 +77,16 @@ server.post('/api/v4/student/Login', async (req, res) => {
 
       if (data.length !== 0) {
         //reset the attempt account
-        studentAttemptCount = 0
+        studentAttemptCount = 0;
+
+        //generate the token
+        const { access_token, refresh_token } = auth.GenerateJWT(uid);
 
         return res.status(200).send({
           message: 'Login succesfull !!',
-          token: auth.GenerateJWT(uid),
-        })
+          access_token: access_token,
+          refresh_token: refresh_token
+        });
       } else {
         //increase the wrong email counter by 1
         studentAttemptCount++
@@ -125,6 +128,22 @@ server.post('/api/v4/Logout', async (req, res) => {
     message: 'Logout succesfull !!',
   })
 })
+
+
+//request for regenerate access token
+server.put("/api/v4/RegenerateToken", auth.regenerateAccessToken, (req, res) => {
+  const { uid } = req.body
+  
+  //generate the token
+  const { access_token, refresh_token } = auth.GenerateJWT(uid);
+  
+  return res.status(200).send({
+    message: 'Token regenerated succesfully !!',
+    access_token: access_token,
+    refresh_token: refresh_token
+  });
+})
+
 
 // ****** --> CRUD Routine Operation <-- *********
 //post routine data

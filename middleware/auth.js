@@ -2,23 +2,60 @@ const jwt = require('jsonwebtoken')
 
 //verify jwt token
 const VerifyJWT = (req, res, next) => {
-  var token = req.header('authorization')
+  //token validation
+  if (req.header('authorization') === undefined || req.header('authorization').length <= 9) {
+    res.status(404).send({
+      message:"Token is empty !!"
+    });
+  } 
+  var access_token = req.header('authorization')
 
   //remove the bearer text from token
-  token = token.substr(7, token.length)
+  access_token = access_token.substr(7, access_token.length);
+  
   try {
-    jwt.verify(token, process.env.TOP_SECRET_KEY)
-    console.log('verification success')
+    const res = jwt.verify(access_token, process.env.ACCESS_TOKEN_KEY)
     next()
   } catch (err) {
-    console.log('Verification failed.......!!!')
+    res.status(404).send({
+      message:"Session timeout."
+    })
   }
 }
 
 //generate jwt token
 const GenerateJWT = (uid) => {
-  const token = jwt.sign({ id: uid }, process.env.TOP_SECRET_KEY)
-  return token
+  const access_token = jwt.sign({ id: uid }, process.env.ACCESS_TOKEN_KEY, {
+    expiresIn: "24h"
+  })
+  const refresh_token = jwt.sign({ id: uid }, process.env.REFRESH_TOKEN_KEY)
+  
+  return {
+    access_token: access_token,
+    refresh_token:refresh_token
+  }
 }
 
-module.exports = { VerifyJWT, GenerateJWT }
+//regenerate the access token using refresh token
+const regenerateAccessToken = (req, res, next) => {
+  // fetch the refresh token
+  var refresh_token = req.header("authorization")
+  refresh_token = refresh_token.substr(14, refresh_token.length);
+  
+  //verify refresh token
+  try {
+    const response = jwt.verify(refresh_token, process.env.REFRESH_TOKEN_KEY);
+    
+    //regenerate the access token    
+    req.body.uid = response.id
+    
+    //shift the process
+    next()
+  } catch (error) {
+    res.status(404).send({
+      message:"Refresh token cannot verified."
+    })
+  }
+}
+
+module.exports = { VerifyJWT, GenerateJWT, regenerateAccessToken }
