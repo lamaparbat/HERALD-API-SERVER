@@ -24,6 +24,14 @@ onFailure: {
 
 ```
 ## Regenerated access token endpoints (Recently updated !!)
+
+### When to call this endpoint ?
+When the session time for access token is ended/out, the jwt server reset the access_token which caused you to  you get the response like this => 
+    {
+      message:"Session timeout."
+    }
+Therefore, inorder to regenerate access token, you have hit this endpoint by attaching refresh_token on the header of "authorization/oAuth 2.0/refresh_token: value" which in response you get the new access_token and refresh token. The session time for access_token is 24 hrs, that means your access_token is only justified with a day.
+
 ```perl
 POST : /api/v4/RegenerateToken
 
@@ -229,6 +237,46 @@ const res = await axios.post('https://httpbin.org/post', { data }, {
     "Authorization":'Bearer' + 'a23adjbd3knvbjdf.f3jsbfvjbbjb3.skja8adkfsbfvjbfvj',
     "module_name": "HCI",
     "group":"L5CG8"
+  }
+});
+```
+5. Get routine by Group.  (Recently updated !!)
+```perl
+GET: /api/v4/routines/getRoutineByGroup
+ 
+ //headers
+ group:""
+ 
+ //header.authorization.bearer
+token: "",
+
+
+For example: In Javascript using axios,
+
+const res = await axios.post('https://httpbin.org/post', { data }, {
+  headers: {
+    "Authorization":'Bearer' + 'a23adjbd3knvbjdf.f3jsbfvjbbjb3.skja8adkfsbfvjbfvj',
+    "group":"8"
+  }
+});
+```
+5. Get routine by Level. (Recently updated !!)
+```perl
+GET: /api/v4/routines/getRoutineByLevel
+ 
+ //headers
+ level:""
+ 
+ //header.authorization.bearer
+token: "",
+
+
+For example: In Javascript using axios,
+
+const res = await axios.post('https://httpbin.org/post', { data }, {
+  headers: {
+    "Authorization":'Bearer' + 'a23adjbd3knvbjdf.f3jsbfvjbbjb3.skja8adkfsbfvjbfvj',
+    "level":"5"
   }
 });
 ```
