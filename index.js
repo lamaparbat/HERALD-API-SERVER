@@ -88,7 +88,7 @@ server.post('/api/v4/student/Login', async (req, res) => {
 
         //generate the token
         const { access_token, refresh_token } = auth.GenerateJWT(uid);
-
+        
         return res.status(200).send({
           message: 'Login succesfull !!',
           access_token: access_token,

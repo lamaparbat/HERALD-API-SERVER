@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken')
 
 //verify jwt token
-const VerifyJWT = (req, res, next) => {
+const VerifyJWT = async(req, res, next) => {
   //token validation
   if (req.header('authorization') === undefined || req.header('authorization').length <= 9) {
-    res.status(404).send({
+    return res.status(404).send({
       message:"Token is empty !!"
     });
   } 
@@ -15,10 +15,10 @@ const VerifyJWT = (req, res, next) => {
   
   
   try {
-    const res = jwt.verify(access_token, process.env.ACCESS_TOKEN_KEY)
+    const res = await jwt.verify(access_token, process.env.ACCESS_TOKEN_KEY)
     next()
   } catch (err) {
-    res.status(404).send({
+    return res.status(404).send({
       message:"Session timeout."
     })
   }
