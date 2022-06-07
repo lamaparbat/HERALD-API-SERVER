@@ -61,7 +61,6 @@ server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 
 //default routing
 server.get('/', (req, res) => {
-  console.log('server started.....')
   return res.send('Server has started...')
 })
 
@@ -208,9 +207,9 @@ server.post('/api/v4/admin/postRoutineData', auth.VerifyJWT, (req, res) => {
         try {
           const result = await notifData.save()
           if (result.message) {
-            // pusher.trigger("my-channel", "notice", {
-            //   message: `Dear ${group}, a new routine of ${module_name} has recently published. Please see it once.`
-            // });
+            pusher.trigger("my-channel", "notice", {
+              message: `Dear ${group}, a new routine of ${module_name} has recently published. Please see it once.`
+            });
             return res.status(200).send({
               message: 'Routine posted successfully !!',
             })
@@ -245,7 +244,61 @@ server.get(
       })
     }
   }
-)
+);
+
+//get the routine data based on level wise
+server.get(
+  '/api/v4/routines/getRoutineByLevel',
+  auth.VerifyJWT,
+  async (req, res) => {
+    // destructuring the level from headers
+    const level = `L${req.headers.level}`;
+    
+    //fetch all routine from db
+    const result = await routineModel.find();
+    
+    const filterData = result.filter(data => {
+      return data.group.includes(level);
+    })
+
+    if (filterData.length != 0) {
+      return res.status(200).send({
+        data: filterData,
+      })
+    } else {
+      return res.status(404).send({
+        message: 'Result: 0 found !!',
+      })
+    }
+  }
+);
+
+//get the routine data based on level wise
+server.get(
+  '/api/v4/routines/getRoutineByGroup',
+  auth.VerifyJWT,
+  async (req, res) => {
+    // destructuring the level from headers
+    const group = `G${req.headers.group}`;
+
+    //fetch all routine from db
+    const result = await routineModel.find();
+
+    const filterData = result.filter(data => {
+      return data.group.includes(group);
+    })
+
+    if (filterData.length != 0) {
+      return res.status(200).send({
+        data: filterData,
+      })
+    } else {
+      return res.status(404).send({
+        message: 'Result: 0 found !!',
+      })
+    }
+  }
+);
 
 //update routine data
 server.post('/api/v4/admin/updateRoutineData', auth.VerifyJWT, (req, res) => {
