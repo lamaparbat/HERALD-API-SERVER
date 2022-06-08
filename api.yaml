@@ -13,13 +13,14 @@ servers:
   - url: http://localhost:8000
   - url: https://rms-server-8080.herokuapp.com
 tags:
+- name: "Routine"
+  description: "Operations related to Routine"
 - name: "Admin"
   description: "Operations about Admin user"
-- name: "Student"
-  description: "Operations about Student user"
 - name: "Teacher"
   description: "Operations about Teacher user"
-
+- name: "Student"
+  description: "Operations about Student user"
 
 paths:
   /api/v4/student/Login:
@@ -43,44 +44,42 @@ paths:
         "400":
           description: "Unverified users"
           schema:
-            type: array
-            items:
-              type: object
-              properties: 
-                message:
-                  type: string
-                  example: "Failed to login"
-                token:
-                  type: string
-                  example: "null"
+            properties: 
+              message:
+                type: string
+                example: "Failed to login.  Please use correct email!"
+              token:
+                type: string
+                example: "null"
         "200":
           description: "Login successful"
           schema:
-            type: array
-            items:
-              type: object
-              properties: 
-                message:
-                  type: string
-                  example: "Login succesfully"
-                token:
-                  type: string
-                  example: "s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
+            properties: 
+              message:
+                type: string
+                example: "Login succesfully"
+              access_token:
+                type: string
+                example: "s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
+              refresh_token:
+                type: string
+                example: "s32241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
         "500":
           description: "500 Internal Server Error !"
           schema:
-            type: array
-            items:
-              type: object
-              properties: 
-                message:
-                  type: string
-                  example: "Failed to login"
-                token:
-                  type: string
-                  example: "null"
+            properties: 
+              message:
+                type: string
+                example: "500 Internal Server Error !"
+              token:
+                type: string
+                example: "null"
   /api/v4/Logout:
     post:
+      tags:
+        - "Admin"
+        - "Student"
+        - "Teacher"    
       summary: "Logout"
       description: ""
       consumes:
@@ -88,12 +87,18 @@ paths:
       produces:
       - "application/json"
       responses:
-          "200":
-            description: "Logout successful"
+        "200":
+          description: "Logout successful"
+          schema:
+            properties: 
+              message:
+                type: string
+                example: "Logout sucessfull !!"
   /api/v4/admin/postRoutineData:
     post:
       tags:
         - "Admin"
+        - "Routine"
       summary: "Posts Routine Data"
       description: ""
       consumes:
@@ -105,41 +110,137 @@ paths:
         name: "body"
         required: true
         schema:
-          type: "array"
-          items:
-            $ref: "#/definitions/Routine"
+          $ref: "#/definitions/Routine"
       responses:
         "200":
           description: "Routine posted successfully!"
+          schema:
+            properties: 
+              message:
+                type: string
+                example: "Routine posted successfully!"
+        "404":
+          description: "Some fields are missing. Please provide all the fields !!"
         "500":
           description: "500 Internal Server Error !"
+          schema:
+            properties: 
+              message:
+                type: string
+                example: "Failed to post the routine !!"
   /api/v4/routines/getRoutineData:
     get:
       tags:
       - "Admin"
+      - "Student"
+      - "Teacher"  
+      - "Routine"
       summary: "Gets routine data"
       description: ""
       consumes:
       - "application/json"
       produces:
       - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        required: true
-        schema:
-          type: "array"
-          items:
-            $ref: "#/definitions/Routine"
       responses:
         "200":
           description: "Got Routine Data Successfully"
+          schema:
+            $ref: "#/definitions/Routine"
+        "404":
+          description: "No results"
+          schema:
+            properties: 
+              message:
+                type: string
+                example: "Result: 0 found !!"  
         "500":
           description: "500 Internal Server Error !"
+          schema:
+            properties: 
+              message:
+                type: string
+                example: "500 Internal Server Error !"
+  /api/v4/routines/getRoutineByLevel:
+    get:
+      tags:
+      - "Admin"
+      - "Student"
+      - "Teacher" 
+      - "Routine"
+      summary: "Gets routine data by level"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "level"
+        in: "query" 
+        description: "The level for routine"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Got Routine Data Successfully"
+          schema:
+            $ref: "#/definitions/Routine"
+        "404":
+          description: "No results"
+          schema:
+            properties: 
+              message:
+                type: string
+                example: "Result: 0 found !!"  
+        "500":
+          description: "500 Internal Server Error !"
+          schema:
+            properties: 
+              message:
+                type: string
+                example: "500 Internal Server Error !"
+  /api/v4/routines/getRoutineByGroup:
+    get:
+      tags:
+      - "Admin"
+      - "Student"
+      - "Teacher"  
+      - "Routine"
+      summary: "Gets routine data by level"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "group"
+        in: "query" 
+        description: "The group for routine"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Got Routine Data Successfully"
+          schema:
+            $ref: "#/definitions/Routine"
+        "404":
+          description: "No results"
+          schema:
+            properties: 
+              message:
+                type: string
+                example: "Result: 0 found !!"  
+        "500":
+          description: "500 Internal Server Error !"
+          schema:
+              properties:
+                message:
+                  type: string
+                  example: "500 Internal Server Error !"
   /api/v4/admin/updateRoutineData:
     post:
       tags:
         - "Admin"
+        - "Routine"
       summary: "Updates Routine Data"
       description: ""
       consumes:
@@ -151,19 +252,28 @@ paths:
         name: "body"
         required: true
         schema:
-          type: "array"
-          items:
-            $ref: "#/definitions/Routine"
+          $ref: "#/definitions/Routine"
       responses:
         "200":
           description: "Routine updated successfully!"
+          schema:
+              properties:
+                message:
+                  type: string
+                  example: "Routine updated successfully!"
         "500":
           description: "500 Internal Server Error !"
+          schema:
+              properties:
+                message:
+                  type: string
+                  example: "500 Internal Server Error !"
   /api/v4/admin/deleteRoutineData:
     post:
       tags:
         - "Admin"
-      summary: "Posts Routine Data"
+        - "Routine"
+      summary: "Delete Routine Data"
       description: ""
       consumes:
       - "application/json"
@@ -179,8 +289,59 @@ paths:
       responses:
         "200":
           description: "Routine deleted successfully!"
+          schema:
+              properties:
+                message:
+                  type: string
+                  example: "Routine deleted successfully!"
         "500":
           description: "500 Internal Server Error !"
+          schema:
+              properties:
+                message:
+                  type: string
+                  example: "500 Internal Server Error !"
+  /api/v4/routines/searchRoutine:
+    get:
+      tags:
+        - "Admin"
+        - "Student"
+        - "Teacher"
+        - "Routine"
+      summary: "Search Routine Data"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "module_name"
+        in: "query" 
+        description: "The module name to search"
+        type: "string"
+      - name: "group"
+        in: "query" 
+        description: "The group name to search"
+        type: "string"
+      responses:
+        "200":
+          description: "Routine searched successfully!"
+          schema:
+            $ref: "#/definitions/Routine"
+        "404":
+          description: "No results"
+          schema:
+            properties: 
+              message:
+                type: string
+                example: "Result not found !!"  
+        "500":
+          description: "500 Internal Server Error !"
+          schema:
+              properties:
+                message:
+                  type: string
+                  example: "500 Internal Server Error !"
   /api/v4/admin/Login:
     post:
       tags:
@@ -206,29 +367,23 @@ paths:
         "200":
           description: "Login successfully!"
           schema:
-            type: array
-            items:
-              type: object
-              properties: 
-                message:
-                  type: string
-                  example: "Login succesfully"
-                token:
-                  type: string
-                  example: "s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
+            properties: 
+              message:
+                type: string
+                example: "Login succesfully"
+              token:
+                type: string
+                example: "s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
         "412":
           description: "Wrong email or password !!"
           schema:
-            type: array
-            items:
-              type: object
-              properties: 
-                message:
-                  type: string
-                  example: "Failed to login"
-                token:
-                  type: string
-                  example: "null"
+            properties: 
+              message:
+                type: string
+                example: "Failed to login"
+              token:
+                type: string
+                example: "null"
   /api/v4/admin/Signup:
     post:
       tags:
@@ -254,42 +409,24 @@ paths:
         "201":
           description: "Admin created successfully!"
           schema:
-            type: array
-            items:
-              type: object
-              properties: 
-                message:
-                  type: string
-                  example: "Account created succesfully"
-                token:
-                  type: string
-                  example: "s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
+            properties: 
+              message:
+                type: string
+                example: "Admin created succesfully"
         "500":
           description: "500 Internal Server Error !"
           schema:
-            type: array
-            items:
-              type: object
-              properties: 
-                message:
-                  type: string
-                  example: "Failed to signup"
-                token:
-                  type: string
-                  example: "null"
+            properties: 
+              message:
+                type: string
+                example: "Failed to signup"
         "412":
           description: "User already exists"
           schema:
-            type: array
-            items:
-              type: object
-              properties: 
-                message:
-                  type: string
-                  example: "Failed to signup"
-                token:
-                  type: string
-                  example: "null"          
+            properties: 
+              message:
+                type: string
+                example: "Failed to signup"
   /api/v4/teacher/Login:
     post:
       tags:
@@ -315,29 +452,31 @@ paths:
         "200":
           description: "Login successfully!"
           schema:
-            type: array
-            items:
-              type: object
-              properties: 
-                message:
-                  type: string
-                  example: "Login succesfully"
-                token:
-                  type: string
-                  example: "s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
+            properties: 
+              message:
+                type: string
+                example: "Login succesfully"
+              token:
+                type: string
+                example: "s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
         "412":
           description: "Wrong email or password !!"
           schema:
-            type: array
-            items:
-              type: object
-              properties: 
-                message:
-                  type: string
-                  example: "Failed to login"
-                token:
-                  type: string
-                  example: "null"
+            properties: 
+              message:
+                type: string
+                example: "Failed to login"
+              token:
+                type: string
+                example: "null"
+        "500":
+          description: "Login Attempt Exceed"
+          schema:
+            properties: 
+              message:
+                type: string
+                example: "You exceed the 5 login attempt. Please wait for 5 min to retry again !!"
+
   /api/v4/teacher/Signup:
     post:
       tags:
@@ -363,42 +502,68 @@ paths:
         "201":
           description: "Account created successfully!"
           schema:
-            type: array
-            items:
-              type: object
-              properties: 
-                message:
-                  type: string
-                  example: "Account created succesfully"
-                token:
-                  type: string
-                  example: "s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
+            properties: 
+              message:
+                type: string
+                example: "Account created succesfully"
         "500":
           description: "500 Internal Server Error !"
           schema:
-            type: array
-            items:
-              type: object
-              properties: 
-                message:
-                  type: string
-                  example: "Failed to signup"
-                token:
-                  type: string
-                  example: "null"
+            properties: 
+              message:
+                type: string
+                example: "Failed to signup"
         "412":
           description: "User already exists"
           schema:
-            type: array
-            items:
-              type: object
-              properties: 
-                message:
-                  type: string
-                  example: "Failed to signup"
-                token:
-                  type: string
-                  example: "null"
+            properties: 
+              message:
+                type: string
+                example: "Failed to signup"
+  /api/v4/RegenerateToken:
+    post:
+      tags:
+        - "Admin"
+        - "Student"
+        - "Teacher"    
+      summary: "Regenerate Token"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          properties: 
+            access_token:
+              type: string
+            refresh_token:
+              type: string
+      responses:
+        "200":
+          description: "Token regenerated succesfully!"
+          schema:
+            properties: 
+              message:
+                type: string
+                example: "Token regenerated succesfully!"
+              access_token:
+                type: string
+                example: "s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
+              refresh_token:
+                type: string
+                example: "s32241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
+        "500":
+          description: "Refresh token cannot verified."
+          schema:
+            properties: 
+              message:
+                type: string
+                example: "Refresh token cannot verified."
+            
 definitions:
   Student:
     type: "object"
@@ -423,12 +588,24 @@ definitions:
     type: "object"
     properties:
       routineID:
-        type: "integer"
-        format: "int64"
+        type: "string"
+      course_type:
+        type: "string"
+        enum: 
+        - "BIT"
+        - "BIBM"
+        - "IMBA"
       module_name:
         type: "string"
       lecturer_name:
         type: "string"
+      level:
+        type: "string"
+        enum: 
+        - "Level 4"
+        - "Level 5"
+        - "Level 6"
+        - "Level 7"
       group:
         type: "string"
       room_name:
@@ -446,5 +623,3 @@ definitions:
         format: "date-time"
       createdOn:
         type: "string"
-      
-
