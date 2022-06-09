@@ -101,12 +101,14 @@ token: ""
 
 // send data
 payload: {
+    course_type:"",
     module_name:"",
     lecturer_name:"",
     group: "",
     room_name: "",
     block_name: "",
-    timing:"",
+    start_time:"",
+    end_time:"",
     createdOn:""
 }
 
@@ -138,21 +140,25 @@ const res = await axios.post('https://httpbin.org/post', { data }, {
 onSuccess: {
    [
       {
+        course_type:"",
         module_name:"",
         lecturer_name:"",
         group: "",
         room_name: "",
         block_name: "",
-        timing:"",
+        start_time:"",
+        end_time:"",
         createdOn:""
       },
       {
+        course_type:"",
         module_name:"",
         lecturer_name:"",
         group: "",
         room_name: "",
         block_name: "",
-        timing:"",
+        start_time:"",
+        end_time:"",
         createdOn:""
       },
       .....
