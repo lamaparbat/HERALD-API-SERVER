@@ -22,8 +22,8 @@ tags:
 - name: "Student"
   description: "Operations about Student user"
 schemes:
-  - http
   - https
+  - http
 securityDefinitions:
   Bearer:
     type: apiKey
