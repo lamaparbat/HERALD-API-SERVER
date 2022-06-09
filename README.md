@@ -290,4 +290,21 @@ const res = await axios.post('https://httpbin.org/post', { data }, {
   }
 });
 ```
+
+# User feedback (Recently updated !!)
+```perl
+POST: /api/v4/feedback
+  
+ //header.authorization.bearer
+token: ""
+
+ payload = {
+            "report_type":"",
+            "description":"",
+            "file":""
+           }
+
+```
+
+
 ## ...email verification is on progress
