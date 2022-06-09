@@ -33,7 +33,7 @@ When the session time for access token is ended/out, the jwt server reset the ac
 Therefore, inorder to regenerate access token, you have hit this endpoint by attaching refresh_token on the header of "authorization/oAuth 2.0/refresh_token: value" which in response you get the new access_token and refresh token. The session time for access_token is 24 hrs, that means your access_token is only justified with a day.
 
 ```perl
-POST : /api/v4/RegenerateToken
+PUT : /api/v4/RegenerateToken
 
 header:{
   "Authorization": "refresh_token ${refresh_token}"
