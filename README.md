@@ -186,9 +186,17 @@ const res = await axios.post('https://httpbin.org/post', { data }, {
 });
 
 payload: {
-    routineID:"",
-    .....
+    course_type:"",
+    module_name:"",
+    lecturer_name:"",
+    group: "",
+    room_name: "",
+    block_name: "",
+    start_time:"",
+    end_time:"",
+    createdOn:""
 }
+
 
 ****** -> Response  <- *******
 onSuccess: {
