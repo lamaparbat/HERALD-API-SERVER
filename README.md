@@ -108,8 +108,7 @@ payload: {
     room_name: "",
     block_name: "",
     start_time:"",
-    end_time:"",
-    createdOn:""
+    end_time:""
 }
 
 ****** -> Response  <- *******
@@ -147,8 +146,7 @@ onSuccess: {
         room_name: "",
         block_name: "",
         start_time:"",
-        end_time:"",
-        createdOn:""
+        end_time:""
       },
       {
         course_type:"",
@@ -158,8 +156,7 @@ onSuccess: {
         room_name: "",
         block_name: "",
         start_time:"",
-        end_time:"",
-        createdOn:""
+        end_time:""
       },
       .....
    ]
@@ -193,8 +190,7 @@ payload: {
     room_name: "",
     block_name: "",
     start_time:"",
-    end_time:"",
-    createdOn:""
+    end_time:""
 }
 
 
