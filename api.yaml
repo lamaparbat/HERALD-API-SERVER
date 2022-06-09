@@ -24,8 +24,8 @@ tags:
 - name: "Logout"
 - name: "Regenerate Token"
 schemes:
-  - http
   - https
+  - http
 securityDefinitions:
   Bearer:
     type: apiKey
@@ -215,7 +215,7 @@ paths:
         - Bearer: []     
       tags:
       - "Routine"
-      summary: "Gets routine data by level"
+      summary: "Gets routine data by group"
       description: ""
       consumes:
       - "application/json"
