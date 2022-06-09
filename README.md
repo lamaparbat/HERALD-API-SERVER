@@ -33,7 +33,7 @@ When the session time for access token is ended/out, the jwt server reset the ac
 Therefore, inorder to regenerate access token, you have hit this endpoint by attaching refresh_token on the header of "authorization/oAuth 2.0/refresh_token: value" which in response you get the new access_token and refresh token. The session time for access_token is 24 hrs, that means your access_token is only justified with a day.
 
 ```perl
-POST : /api/v4/RegenerateToken
+PUT : /api/v4/RegenerateToken
 
 header:{
   "Authorization": "refresh_token ${refresh_token}"
@@ -101,13 +101,14 @@ token: ""
 
 // send data
 payload: {
+    course_type:"",
     module_name:"",
     lecturer_name:"",
     group: "",
     room_name: "",
     block_name: "",
-    timing:"",
-    createdOn:""
+    start_time:"",
+    end_time:""
 }
 
 ****** -> Response  <- *******
@@ -138,22 +139,24 @@ const res = await axios.post('https://httpbin.org/post', { data }, {
 onSuccess: {
    [
       {
+        course_type:"",
         module_name:"",
         lecturer_name:"",
         group: "",
         room_name: "",
         block_name: "",
-        timing:"",
-        createdOn:""
+        start_time:"",
+        end_time:""
       },
       {
+        course_type:"",
         module_name:"",
         lecturer_name:"",
         group: "",
         room_name: "",
         block_name: "",
-        timing:"",
-        createdOn:""
+        start_time:"",
+        end_time:""
       },
       .....
    ]
@@ -180,9 +183,16 @@ const res = await axios.post('https://httpbin.org/post', { data }, {
 });
 
 payload: {
-    routineID:"",
-    .....
+    course_type:"",
+    module_name:"",
+    lecturer_name:"",
+    group: "",
+    room_name: "",
+    block_name: "",
+    start_time:"",
+    end_time:""
 }
+
 
 ****** -> Response  <- *******
 onSuccess: {
@@ -280,4 +290,21 @@ const res = await axios.post('https://httpbin.org/post', { data }, {
   }
 });
 ```
+
+# User feedback (Recently updated !!)
+```perl
+POST: /api/v4/feedback
+  
+ //header.authorization.bearer
+token: ""
+
+ payload = {
+            "report_type":"",
+            "description":"",
+            "file":""
+           }
+
+```
+
+
 ## ...email verification is on progress
