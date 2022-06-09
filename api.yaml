@@ -21,9 +21,11 @@ tags:
   description: "Operations about Teacher user"
 - name: "Student"
   description: "Operations about Student user"
+- name: "Logout"
+- name: "Regenerate Token"
 schemes:
-  - https
   - http
+  - https
 securityDefinitions:
   Bearer:
     type: apiKey
@@ -43,12 +45,11 @@ paths:
       produces:
       - "application/json"
       parameters:
-      - name: "uid"
-        in: "query" 
-        description: "The uid for login"
+      - in: "body"
+        name: "body"
         required: true
-        type: "string"
-
+        schema:
+          $ref: "#/definitions/Student"
       responses:
         "400":
           description: "Unverified users"
@@ -86,11 +87,9 @@ paths:
   /api/v4/Logout:
     post:
       security:
-        - Bearer: []     
+        - Bearer: []   
       tags:
-        - "Admin"
-        - "Student"
-        - "Teacher"    
+      - "Logout"
       summary: "Logout"
       description: ""
       consumes:
@@ -110,7 +109,6 @@ paths:
       security:
         - Bearer: []     
       tags:
-        - "Admin"
         - "Routine"
       summary: "Posts Routine Data"
       description: ""
@@ -146,9 +144,6 @@ paths:
       security:
         - Bearer: []     
       tags:
-      - "Admin"
-      - "Student"
-      - "Teacher"  
       - "Routine"
       summary: "Gets routine data"
       description: ""
@@ -180,9 +175,6 @@ paths:
       security:
         - Bearer: []     
       tags:
-      - "Admin"
-      - "Student"
-      - "Teacher" 
       - "Routine"
       summary: "Gets routine data by level"
       description: ""
@@ -191,11 +183,13 @@ paths:
       produces:
       - "application/json"
       parameters:
-      - name: "level"
-        in: "query" 
-        description: "The level for routine"
+      - in: "body"
+        name: "body"
         required: true
-        type: "string"
+        schema:
+          properties: 
+            group:
+              type: string
       responses:
         "200":
           description: "Got Routine Data Successfully"
@@ -220,9 +214,6 @@ paths:
       security:
         - Bearer: []     
       tags:
-      - "Admin"
-      - "Student"
-      - "Teacher"  
       - "Routine"
       summary: "Gets routine data by level"
       description: ""
@@ -231,11 +222,13 @@ paths:
       produces:
       - "application/json"
       parameters:
-      - name: "group"
-        in: "query" 
-        description: "The group for routine"
+      - in: "body"
+        name: "body"
         required: true
-        type: "string"
+        schema:
+          properties: 
+            group:
+              type: string
       responses:
         "200":
           description: "Got Routine Data Successfully"
@@ -255,12 +248,52 @@ paths:
                 message:
                   type: string
                   example: "500 Internal Server Error !"
+  /api/v4/routines/searchRoutine:
+    get:
+      security:
+        - Bearer: []     
+      tags:
+        - "Routine"
+      summary: "Search Routine Data"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          properties: 
+            module_name:
+              type: string
+            group:
+              type: string  
+      responses:
+        "200":
+          description: "Routine searched successfully!"
+          schema:
+            $ref: "#/definitions/Routine"
+        "404":
+          description: "No results"
+          schema:
+            properties: 
+              message:
+                type: string
+                example: "Result not found !!"  
+        "500":
+          description: "500 Internal Server Error !"
+          schema:
+              properties:
+                message:
+                  type: string
+                  example: "500 Internal Server Error !"                  
   /api/v4/admin/updateRoutineData:
     post:
       security:
         - Bearer: []     
       tags:
-        - "Admin"
         - "Routine"
       summary: "Updates Routine Data"
       description: ""
@@ -294,7 +327,6 @@ paths:
       security:
         - Bearer: []     
       tags:
-        - "Admin"
         - "Routine"
       summary: "Delete Routine Data"
       description: ""
@@ -303,12 +335,13 @@ paths:
       produces:
       - "application/json"
       parameters:
-      - name: "routineID"
-        in: "query" 
-        description: "The routine id to delete"
+      - in: "body"
+        name: "body"
         required: true
-        type: "integer"
-        format: "int64"
+        schema:
+          properties: 
+            routineID:
+              type: string
       responses:
         "200":
           description: "Routine deleted successfully!"
@@ -317,49 +350,6 @@ paths:
                 message:
                   type: string
                   example: "Routine deleted successfully!"
-        "500":
-          description: "500 Internal Server Error !"
-          schema:
-              properties:
-                message:
-                  type: string
-                  example: "500 Internal Server Error !"
-  /api/v4/routines/searchRoutine:
-    get:
-      security:
-        - Bearer: []     
-      tags:
-        - "Admin"
-        - "Student"
-        - "Teacher"
-        - "Routine"
-      summary: "Search Routine Data"
-      description: ""
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "module_name"
-        in: "query" 
-        description: "The module name to search"
-        type: "string"
-      - name: "group"
-        in: "query" 
-        description: "The group name to search"
-        type: "string"
-      responses:
-        "200":
-          description: "Routine searched successfully!"
-          schema:
-            $ref: "#/definitions/Routine"
-        "404":
-          description: "No results"
-          schema:
-            properties: 
-              message:
-                type: string
-                example: "Result not found !!"  
         "500":
           description: "500 Internal Server Error !"
           schema:
@@ -380,16 +370,11 @@ paths:
       produces:
       - "application/json"
       parameters:
-      - name: "email"
-        in: "query"
-        description: "The email for login"
+      - in: "body"
+        name: "body"
         required: true
-        type: "string"
-      - name: "password"
-        in: "query"
-        description: "The password for login in clear text"
-        required: true
-        type: "string"
+        schema:
+          $ref: "#/definitions/Admin"
       responses:
         "200":
           description: "Login successfully!"
@@ -424,16 +409,11 @@ paths:
       produces:
       - "application/json"
       parameters:
-      - name: "email"
-        in: "query"
-        description: "The email for login"
+      - in: "body"
+        name: "body"
         required: true
-        type: "string"
-      - name: "password"
-        in: "query"
-        description: "The password for login in clear text"
-        required: true
-        type: "string"
+        schema:
+          $ref: "#/definitions/Admin"
       responses:
         "201":
           description: "Admin created successfully!"
@@ -469,16 +449,11 @@ paths:
       produces:
       - "application/json"
       parameters:
-      - name: "email"
-        in: "query"
-        description: "The email for login"
+      - in: "body"
+        name: "body"
         required: true
-        type: "string"
-      - name: "password"
-        in: "query"
-        description: "The password for login in clear text"
-        required: true
-        type: "string"
+        schema:
+          $ref: "#/definitions/Teacher"
       responses:
         "200":
           description: "Login successfully!"
@@ -521,16 +496,11 @@ paths:
       produces:
       - "application/json"
       parameters:
-      - name: "email"
-        in: "query"
-        description: "The email for login"
+      - in: "body"
+        name: "body"
         required: true
-        type: "string"
-      - name: "password"
-        in: "query"
-        description: "The password for login in clear text"
-        required: true
-        type: "string"
+        schema:
+          $ref: "#/definitions/Teacher"
       responses:
         "201":
           description: "Account created successfully!"
@@ -554,13 +524,11 @@ paths:
                 type: string
                 example: "Failed to signup"
   /api/v4/RegenerateToken:
-    post:
+    put:
       security:
         - Bearer: []     
       tags:
-        - "Admin"
-        - "Student"
-        - "Teacher"    
+        - "Regenerate Token"
       summary: "Regenerate Token"
       description: ""
       consumes:
@@ -573,9 +541,7 @@ paths:
         required: true
         schema:
           properties: 
-            access_token:
-              type: string
-            refresh_token:
+            uid:
               type: string
       responses:
         "200":
@@ -603,8 +569,6 @@ definitions:
   Routine:
     type: "object"
     properties:
-      routineID:
-        type: "string"
       course_type:
         type: "string"
         enum: 
@@ -615,13 +579,6 @@ definitions:
         type: "string"
       lecturer_name:
         type: "string"
-      level:
-        type: "string"
-        enum: 
-        - "Level 4"
-        - "Level 5"
-        - "Level 6"
-        - "Level 7"
       group:
         type: "string"
       room_name:
@@ -637,8 +594,6 @@ definitions:
       end_time:
         type: "string"
         format: "date-time"
-      createdOn:
-        type: "string"
   Teacher:
     type: "object"
     properties:
