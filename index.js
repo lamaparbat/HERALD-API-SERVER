@@ -13,6 +13,7 @@ const teacherModel = require('./dbModel/teacherModel')
 const routineModel = require('./dbModel/routineModel')
 const notifModel = require('./dbModel/notificationModel')
 const adminModel = require('./dbModel/adminModel');
+const feedbackModel = require('./dbModel/feedbackModel');
 
 // **** -> server config <- *******
 const server = express()
@@ -157,6 +158,7 @@ server.put("/api/v4/RegenerateToken", auth.regenerateAccessToken, (req, res) => 
 server.post('/api/v4/admin/postRoutineData', auth.VerifyJWT, (req, res) => {
   //destructuring incoming data
   const {
+    course_type,
     module_name,
     lecturer_name,
     group,
@@ -404,17 +406,17 @@ server.post('/api/v4/admin/Signup', (req, res) => {
         data
           .save()
           .then(() => {
-            return res.status(201).send('Admin created succesfully !!')
+            return res.status(201).send('Admin created succesfully !!');
           })
           .catch((err) => {
-            return res.status(500).send('500. SERVER ERROR!!')
+            return res.status(500).send('500. SERVER ERROR!!');
           })
       } else {
-        return res.status(412).send('User already exists !!')
+        return res.status(412).send('User already exists !!');
       }
     })
     .catch((err) => {
-      console.log('500 SERVER ERROR !!')
+      console.log('500 SERVER ERROR !!');
     })
 })
 
@@ -442,7 +444,7 @@ server.post('/api/v4/teacher/Login', async (req, res) => {
         'You exceed the 5 login attempt. Please wait for 5 min to retry again !!',
     })
   }
-})
+});
 
 //register new Teacher
 server.post('/api/v4/teacher/Signup', (req, res) => {
@@ -474,9 +476,48 @@ server.post('/api/v4/teacher/Signup', (req, res) => {
     .catch((err) => {
       return console.log('500 SERVER ERROR !!')
     })
-})
+});
+
+
+// ********** USER FEEDBACK *************
+server.post('/api/v4/feedback/', auth.VerifyJWT, (req, res) => {
+  // destructuring the binded data
+  const { report_type, description, file } = req.body;
+  
+  // validation
+  if (Object.keys(req.body).length < 7) {
+    if (report_type.length > 3 && description.length > 3 && file !== null) {
+      //db insertion
+      const data = new feedbackModel({
+        report_type: report_type,
+        description: description,
+        file: file
+      });
+      
+      //save the data
+      data.save().then(() => {
+        res.status(200).send({
+          message: "Feedback posted successfully !!"
+        });
+      }).catch(err => {
+        res.status(500).send({
+          message: "500 BACKEND SERVER ERROR !!"
+        });
+      });
+    } else {
+      res.status(404).send({
+        message: "Validaton issues."
+      });
+    }
+  } else {
+    res.status(404).send({
+      message: "Some fields are missing."
+    });
+  }
+});
+
 
 // ***** port listneer *****
 server.listen(PORT, () => {
   return console.log(`Listening to the port ${PORT}`)
-})
+});

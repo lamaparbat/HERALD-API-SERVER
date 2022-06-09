@@ -2,10 +2,11 @@
 const mongoose = require("mongoose");
 
 //define schema
-const feedbackSchema = new mongoose().Schema({
- email: String,
- message:String,
- date:String
-})
+const feedbackSchema = new mongoose.Schema({
+ report_type: String,
+ description: String,
+ file: Object,
+ date: String
+});
 
-module.exports = {}
+module.exports = new mongoose.model("feedback", feedbackSchema);

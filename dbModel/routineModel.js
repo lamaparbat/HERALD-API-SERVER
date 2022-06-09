@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 
 //define schema
 const routineSchema = new mongoose.Schema({
+ course_type:String,
  module_name: String,
  lecturer_name: String,
  group: String,
