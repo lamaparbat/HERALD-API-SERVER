@@ -21,10 +21,19 @@ tags:
   description: "Operations about Teacher user"
 - name: "Student"
   description: "Operations about Student user"
-
+# schemes:
+#   - http
+#   - https
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
 paths:
   /api/v4/student/Login:
     post:
+      security:
+        - Bearer: []    
       tags:
       - "Student"
       summary: "Student Login"
@@ -76,6 +85,8 @@ paths:
                 example: "null"
   /api/v4/Logout:
     post:
+      security:
+        - Bearer: []     
       tags:
         - "Admin"
         - "Student"
@@ -96,6 +107,8 @@ paths:
                 example: "Logout sucessfull !!"
   /api/v4/admin/postRoutineData:
     post:
+      security:
+        - Bearer: []     
       tags:
         - "Admin"
         - "Routine"
@@ -130,6 +143,8 @@ paths:
                 example: "Failed to post the routine !!"
   /api/v4/routines/getRoutineData:
     get:
+      security:
+        - Bearer: []     
       tags:
       - "Admin"
       - "Student"
@@ -162,6 +177,8 @@ paths:
                 example: "500 Internal Server Error !"
   /api/v4/routines/getRoutineByLevel:
     get:
+      security:
+        - Bearer: []     
       tags:
       - "Admin"
       - "Student"
@@ -200,6 +217,8 @@ paths:
                 example: "500 Internal Server Error !"
   /api/v4/routines/getRoutineByGroup:
     get:
+      security:
+        - Bearer: []     
       tags:
       - "Admin"
       - "Student"
@@ -238,6 +257,8 @@ paths:
                   example: "500 Internal Server Error !"
   /api/v4/admin/updateRoutineData:
     post:
+      security:
+        - Bearer: []     
       tags:
         - "Admin"
         - "Routine"
@@ -270,6 +291,8 @@ paths:
                   example: "500 Internal Server Error !"
   /api/v4/admin/deleteRoutineData:
     post:
+      security:
+        - Bearer: []     
       tags:
         - "Admin"
         - "Routine"
@@ -303,6 +326,8 @@ paths:
                   example: "500 Internal Server Error !"
   /api/v4/routines/searchRoutine:
     get:
+      security:
+        - Bearer: []     
       tags:
         - "Admin"
         - "Student"
@@ -344,6 +369,8 @@ paths:
                   example: "500 Internal Server Error !"
   /api/v4/admin/Login:
     post:
+      security:
+        - Bearer: []     
       tags:
         - "Admin"
       summary: "Admin Login"
@@ -386,6 +413,8 @@ paths:
                 example: "null"
   /api/v4/admin/Signup:
     post:
+      security:
+        - Bearer: []     
       tags:
         - "Admin"
       summary: "Register new Admin"
@@ -429,6 +458,8 @@ paths:
                 example: "Failed to signup"
   /api/v4/teacher/Login:
     post:
+      security:
+        - Bearer: []     
       tags:
         - "Teacher"
       summary: "Teacher Login"
@@ -479,6 +510,8 @@ paths:
 
   /api/v4/teacher/Signup:
     post:
+      security:
+        - Bearer: []     
       tags:
         - "Teacher"
       summary: "Register new teacher"
@@ -522,6 +555,8 @@ paths:
                 example: "Failed to signup"
   /api/v4/RegenerateToken:
     post:
+      security:
+        - Bearer: []     
       tags:
         - "Admin"
         - "Student"
@@ -565,25 +600,6 @@ paths:
                 example: "Refresh token cannot verified."
             
 definitions:
-  Student:
-    type: "object"
-    properties:
-      uid: 
-        type: "string"
-  Teacher:
-    type: "object"
-    properties:
-      email: 
-        type: "string"
-      password: 
-        type: "string"
-  Admin:
-    type: "object"
-    properties:
-      email: 
-        type: "string"
-      password: 
-        type: "string"
   Routine:
     type: "object"
     properties:
@@ -622,4 +638,23 @@ definitions:
         type: "string"
         format: "date-time"
       createdOn:
+        type: "string"
+  Teacher:
+    type: "object"
+    properties:
+      email: 
+        type: "string"
+      password: 
+        type: "string"
+  Admin:
+    type: "object"
+    properties:
+      email: 
+        type: "string"
+      password: 
+        type: "string"
+  Student:
+    type: "object"
+    properties:
+      uid: 
         type: "string"
