@@ -169,7 +169,7 @@ onFailure: {
 
 3. Update routine data
 ``` perl
-POST: /api/v4/admin/updateRoutineData
+PUT: /api/v4/admin/updateRoutineData
 
 !! the token must be attached to the header =>  header.authorization.bearer
 token: ""
