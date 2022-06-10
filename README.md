@@ -8,7 +8,7 @@ https://rms-server-8080.herokuapp.com/api-docs/
 POST : /api/v4/student/Login
 
 payload: {
-   uid:""
+   uid:"np03cs21@heraldcollege.edu.np"
 }
 
 ****** -> Response  <- *******
