@@ -1,25 +1,29 @@
 //import packages
-require('dotenv').config()
-const express = require('express')
-const cors = require('cors')
-const cookieParser = require('cookie-parser')
-const { ServerApiVersion } = require('mongodb')
-const mongoose = require('mongoose')
-const swaggerUi = require('swagger-ui-express')
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const { ServerApiVersion } = require('mongodb');
+const mongoose = require('mongoose');
+const swaggerUi = require('swagger-ui-express');
 const Pusher = require("pusher");
-const auth = require('./middleware/auth.js')
-const studentModel = require('./dbModel/studentModel')
-const teacherModel = require('./dbModel/teacherModel')
-const routineModel = require('./dbModel/routineModel')
-const notifModel = require('./dbModel/notificationModel')
+const auth = require('./middleware/auth.js');
+const studentModel = require('./dbModel/studentModel');
+const teacherModel = require('./dbModel/teacherModel');
+const routineModel = require('./dbModel/routineModel');
+const notifModel = require('./dbModel/notificationModel');
 const adminModel = require('./dbModel/adminModel');
 const feedbackModel = require('./dbModel/feedbackModel');
 
 // **** -> server config <- *******
 const server = express()
 const PORT = process.env.PORT || 8000
+
+//suspend state 
 var studentAttemptCount = 1,
   teacherAttemptCount = 1;
+var block_email = null;
+
 const pusher = new Pusher({
   appId: "1419323",
   key: "72d2952dc15a5dc49d46",
@@ -68,9 +72,9 @@ server.get('/', (req, res) => {
 //login routing
 server.post('/api/v4/student/Login', async (req, res) => {
   // destructuring the incoming data
-  const { uid } = req.body
+  const { uid } = req.body;
 
-  if (studentAttemptCount <= 5) {
+  if (studentAttemptCount <= 5 && block_email !== uid) {
     //verify the uid
     ; (uid.includes('np') && uid.includes('heraldcollege.edu.np')) === false
       ? res.status(400).json({
@@ -80,12 +84,13 @@ server.post('/api/v4/student/Login', async (req, res) => {
       : null
 
     // ***** database data mapping *****
-    try {
+    try {      
       const data = await studentModel.find({ uid: uid })
 
       if (data.length !== 0) {
-        //reset the attempt account
+        //reset the attempt account details
         studentAttemptCount = 0;
+        block_email = null;
 
         //generate the token
         const { access_token, refresh_token } = auth.GenerateJWT(uid);
@@ -98,14 +103,15 @@ server.post('/api/v4/student/Login', async (req, res) => {
       } else {
         //increase the wrong email counter by 1
         studentAttemptCount++
-
         //if email counter reach 5, then store the cache
         if (studentAttemptCount === 5) {
           setTimeout(() => {
             //reset the attemptCount after 5 minutes
-            attemptCount = 0
-            console.log('Now you can login. => ' + studentAttemptCount)
-          }, 300000)
+            attemptCount = 0;
+            block_email = null;
+            
+            console.log('Now you can login. => ' + studentAttemptCount);
+          }, 300000);
         }
 
         return res.status(400).send({
@@ -121,8 +127,10 @@ server.post('/api/v4/student/Login', async (req, res) => {
       })
     }
   } else {
+    block_email = uid;
+    studentAttemptCount = 0;
     return res.status(500).send({
-      message: 'You exceed the 5 login attempt. !!',
+      message: 'You exceed the 5 login attempt. Please try again after 5 min !!',
     })
   }
 })
