@@ -332,7 +332,8 @@ DELETE: /api/v4/feedback/deleteFeedback
 token: ""
 
  //header.authorization
-feedbackid: "as23vd34dvfv"
+feedbackid: "as23vd34dvfv",
+filename:"abc.png"
 
 ```
 
