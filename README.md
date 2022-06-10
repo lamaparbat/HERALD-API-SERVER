@@ -291,7 +291,7 @@ const res = await axios.post('https://httpbin.org/post', { data }, {
 });
 ```
 
-# User feedback (Recently updated !!)
+# User feedback CRUD (Recently updated !!)
 ```perl
 POST: /api/v4/feedback/addFeedback
   
