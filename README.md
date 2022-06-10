@@ -292,6 +292,7 @@ const res = await axios.post('https://httpbin.org/post', { data }, {
 ```
 
 # User feedback CRUD (Recently updated !!)
+1. Post feeback 
 ```perl
 POST: /api/v4/feedback/postFeedback
   
@@ -303,6 +304,35 @@ token: ""
             description:String,
             file:Object
            }
+
+```
+2. Fetch feedbacks
+```perl
+GET: /api/v4/feedback/getFeedback
+  
+ //header.authorization.bearer
+token: ""
+
+ response = "data": [
+                       {
+                           "_id": "62a2de564582e52de9b8f891",
+                           "report_type": "suggestion",
+                           "description": "i am testing mode",
+                           "file": "1654840918671-next.png",
+                           "__v": 0
+                       },
+                   ]
+
+```
+3. Delete feedbacks
+```perl
+DELETE: /api/v4/feedback/deleteFeedback
+  
+ //header.authorization.bearer
+token: ""
+
+ //header.authorization
+id: "as23vd34dvfv"
 
 ```
 
