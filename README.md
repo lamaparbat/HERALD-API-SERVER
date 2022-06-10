@@ -332,7 +332,7 @@ DELETE: /api/v4/feedback/deleteFeedback
 token: ""
 
  //header.authorization
-id: "as23vd34dvfv"
+feedbackid: "as23vd34dvfv"
 
 ```
 
