@@ -337,5 +337,3 @@ filename:"abc.png"
 
 ```
 
-
-## ...email verification is on progress
