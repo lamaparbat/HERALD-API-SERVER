@@ -3,6 +3,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const multer = require("multer");
+const fs = require("fs");
 const { ServerApiVersion } = require('mongodb');
 const mongoose = require('mongoose');
 const swaggerUi = require('swagger-ui-express');
@@ -23,6 +25,9 @@ const PORT = process.env.PORT || 8000
 var studentAttemptCount = 1,
   teacherAttemptCount = 1;
 var block_email = null;
+
+//upload image name
+var uploadImageName = null;
 
 const pusher = new Pusher({
   appId: "1419323",
@@ -54,8 +59,23 @@ const YAML = require("yamljs");
 const swaggerDocs = YAML.load("./api.yaml");
 
 //middleware
-server.use(express.json())
-server.use(cookieParser())
+server.use(express.json());
+server.use(cookieParser());
+
+
+// ********  image upload middleware **********
+//create storage instance
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads");
+  },
+  filename: (req, file, cb) => {
+    uploadImageName = Date.now() + "-" + file.originalname;
+    cb(null, uploadImageName);
+  }
+});
+const upload = multer({ storage: storage });
+
 
 server.use(
   cors({
@@ -76,15 +96,16 @@ server.post('/api/v4/student/Login', async (req, res) => {
 
   if (studentAttemptCount <= 5 && block_email !== uid) {
     //verify the uid
-    ; (uid.includes('np') && uid.includes('heraldcollege.edu.np')) === false
-      ? res.status(400).json({
+    if ((uid.includes('np') && uid.includes('heraldcollege.edu.np')) === false) {
+      return res.status(400).json({
         message: 'Unverified users.',
         token: null,
-      })
-      : null
+      });
+    }
+
 
     // ***** database data mapping *****
-    try {      
+    try {
       const data = await studentModel.find({ uid: uid })
 
       if (data.length !== 0) {
@@ -94,7 +115,7 @@ server.post('/api/v4/student/Login', async (req, res) => {
 
         //generate the token
         const { access_token, refresh_token } = auth.GenerateJWT(uid);
-        
+
         return res.status(200).send({
           message: 'Login succesfull !!',
           access_token: access_token,
@@ -109,7 +130,7 @@ server.post('/api/v4/student/Login', async (req, res) => {
             //reset the attemptCount after 5 minutes
             attemptCount = 0;
             block_email = null;
-            
+
             console.log('Now you can login. => ' + studentAttemptCount);
           }, 300000);
         }
@@ -149,10 +170,10 @@ server.post('/api/v4/Logout', async (req, res) => {
 //request for regenerate access token
 server.put("/api/v4/RegenerateToken", auth.regenerateAccessToken, (req, res) => {
   const { uid } = req.body
-  
+
   //generate the token
   const { access_token, refresh_token } = auth.GenerateJWT(uid);
-  
+
   return res.status(200).send({
     message: 'Token regenerated succesfully !!',
     access_token: access_token,
@@ -163,7 +184,7 @@ server.put("/api/v4/RegenerateToken", auth.regenerateAccessToken, (req, res) => 
 
 // ****** --> CRUD Routine Operation <-- *********
 //post routine data
-server.post('/api/v4/admin/postRoutineData', auth.VerifyJWT, (req, res) => {
+server.post('/api/v4/admin/postRoutineData', auth.VerifyJWT, async (req, res) => {
   //destructuring incoming data
   const {
     course_type,
@@ -185,6 +206,7 @@ server.post('/api/v4/admin/postRoutineData', auth.VerifyJWT, (req, res) => {
 
   //minor validation
   if (
+    course_type.length > 0 &&
     module_name.length > 0 &&
     lecturer_name.length > 0 &&
     group.length > 0 &&
@@ -194,6 +216,7 @@ server.post('/api/v4/admin/postRoutineData', auth.VerifyJWT, (req, res) => {
     block_name.length > 0
   ) {
     const data = new routineModel({
+      course_type: course_type.toUpperCase(),
       module_name: module_name.toUpperCase(),
       lecturer_name: lecturer_name,
       group: group.toUpperCase(),
@@ -209,7 +232,7 @@ server.post('/api/v4/admin/postRoutineData', auth.VerifyJWT, (req, res) => {
       .then(async () => {
         //upload message to notification db
         const notifData = new notifModel({
-          message:`Dear ${group}, a new routine of ${module_name} has recently published. Please see it once.`,
+          message: `Dear ${group} of ${course_type}, a new routine of ${module_name} has recently published. Please see it once.`,
           group: group,
           createdOn: new Date().toLocaleDateString(),
         })
@@ -218,7 +241,7 @@ server.post('/api/v4/admin/postRoutineData', auth.VerifyJWT, (req, res) => {
           const result = await notifData.save()
           if (result.message) {
             pusher.trigger("my-channel", "notice", {
-              message: `Dear ${group}, a new routine of ${module_name} has recently published. Please see it once.`
+              message: `Dear ${group} of ${course_type}, a new routine of ${module_name} has recently published. Please see it once.`
             });
             return res.status(200).send({
               message: 'Routine posted successfully !!',
@@ -237,23 +260,20 @@ server.post('/api/v4/admin/postRoutineData', auth.VerifyJWT, (req, res) => {
 })
 
 //get all routine data
-server.get(
-  '/api/v4/routines/getRoutineData',
-  auth.VerifyJWT,
-  async (req, res) => {
-    //fetch all routine from db
-    const result = await routineModel.find()
+server.get('/api/v4/routines/getRoutineData', auth.VerifyJWT, async (req, res) => {
+  //fetch all routine from db
+  const result = await routineModel.find()
 
-    if (result.length != 0) {
-      return res.status(200).send({
-        data: result,
-      })
-    } else {
-      return res.status(404).send({
-        message: 'Result: 0 found !!',
-      })
-    }
+  if (result.length != 0) {
+    return res.status(200).send({
+      data: result,
+    })
+  } else {
+    return res.status(404).send({
+      message: 'Result: 0 found !!',
+    })
   }
+}
 );
 
 //get the routine data based on level wise
@@ -263,10 +283,10 @@ server.get(
   async (req, res) => {
     // destructuring the level from headers
     const level = `L${req.headers.level}`;
-    
+
     //fetch all routine from db
     const result = await routineModel.find();
-    
+
     const filterData = result.filter(data => {
       return data.group.includes(level);
     })
@@ -311,13 +331,31 @@ server.get(
 );
 
 //update routine data
-server.post('/api/v4/admin/updateRoutineData', auth.VerifyJWT, (req, res) => {
+server.put('/api/v4/admin/updateRoutineData', auth.VerifyJWT, (req, res) => {
   //get the routine doc id
-  const { routineID, module_name } = req.body
+  const {
+    course_type,
+    module_name,
+    lecturer_name,
+    group,
+    room_name,
+    block_name,
+    start_time,
+    end_time,
+  } = req.body;
+  
   routineModel.findByIdAndUpdate(
     routineID,
     {
-      module_name: module_name,
+      course_type: course_type.toUpperCase(),
+      module_name: module_name.toUpperCase(),
+      lecturer_name: lecturer_name,
+      group: group.toUpperCase(),
+      room_name: room_name.toUpperCase(),
+      block_name: block_name,
+      start_time: start_time,
+      end_time: end_time,
+      createdOn: new Date().toLocaleDateString(),
     },
     (err, data) => {
       if (err) {
@@ -346,34 +384,31 @@ server.delete('/api/v4/admin/deleteRoutineData', auth.VerifyJWT, (req, res) => {
     })
     .catch((err) => {
       return res.status(500).send({
-        message: '500 INTERNAL SERVER ERROR !!',
+        message: 'Failed to delete routine !!',
       })
     })
 })
 
 // search routine by id
-server.get(
-  '/api/v4/routines/searchRoutine',
-  auth.VerifyJWT,
-  async (req, res) => {
-    const { module_name, group } = req.headers
+server.get('/api/v4/routines/searchRoutine', auth.VerifyJWT, async (req, res) => {
+  const { module_name, group } = req.headers
 
-    //search routine in db
-    const result = await routineModel.find({
-      module_name: module_name,
-      group: group,
+  //search routine in db
+  const result = await routineModel.find({
+    module_name: module_name,
+    group: group,
+  })
+
+  if (result.length != 0) {
+    return res.status(200).send({
+      data: result,
     })
-
-    if (result.length != 0) {
-      return res.status(200).send({
-        data: result,
-      })
-    } else {
-      return res.status(404).send({
-        message: 'Routine not found !!',
-      })
-    }
+  } else {
+    return res.status(404).send({
+      message: 'Routine not found !!',
+    })
   }
+}
 )
 
 // *********** ->  admin   <- **************
@@ -488,20 +523,20 @@ server.post('/api/v4/teacher/Signup', (req, res) => {
 
 
 // ********** USER FEEDBACK *************
-server.post('/api/v4/feedback/', auth.VerifyJWT, (req, res) => {
+server.post('/api/v4/feedback/postFeedback', auth.VerifyJWT, upload.single('file'), async (req, res) => {
   // destructuring the binded data
-  const { report_type, description, file } = req.body;
-  
+  const { report_type, description } = req.body;
+
   // validation
   if (Object.keys(req.body).length < 7) {
-    if (report_type.length > 3 && description.length > 3 && file !== null) {
+    if (report_type.length > 3 && description.length > 3 && uploadImageName !== null) {
       //db insertion
       const data = new feedbackModel({
         report_type: report_type,
         description: description,
-        file: file
+        file: uploadImageName
       });
-      
+
       //save the data
       data.save().then(() => {
         res.status(200).send({
@@ -524,6 +559,39 @@ server.post('/api/v4/feedback/', auth.VerifyJWT, (req, res) => {
   }
 });
 
+server.get('/api/v4/feedback/getFeedback', auth.VerifyJWT, async (req, res) => {
+  //db mapping
+  const data = await feedbackModel.find();
+
+  if (data.length != 0) {
+    return res.status(200).send({
+      data: data,
+    })
+  } else {
+    return res.status(404).send({
+      message: 'Result: 0 found !!',
+    })
+  }
+});
+
+server.delete('/api/v4/feedback/deleteFeedback', auth.VerifyJWT, async (req, res) => {
+  const { feedbackid, filename } = req.headers;
+  
+  //delete feedback post using id
+  try {
+    feedbackModel.deleteOne({ _id: feedbackid }, (err, doc) => {
+      if (err) {
+        return res.status(500).send("Invalid feedback ID !!");
+      } else {
+        //deleting local file 
+        fs.unlinkSync(`uploads/${filename}`)
+        return res.status(200).send("Routine deleted successfully !!");
+      }
+    });
+  } catch (error) {
+    return res.status(200).send('500 INTERNAL SERVER ERROR !!');
+  }
+});
 
 // ***** port listneer *****
 server.listen(PORT, () => {
