@@ -416,6 +416,12 @@ server.get('/api/v4/routines/searchRoutine', auth.VerifyJWT, async (req, res) =>
 server.post('/api/v4/admin/Login', (req, res) => {
   const { email, password } = req.body
 
+  //email validation
+  if (!(email.includes("gmail") && email.includes("@") && email.indexOf("@") < email.indexOf("gmail"))) {
+    return res.status(404).send("Email validation error. please type correct email format !")
+  }
+  
+  
   //database mapping
   adminModel.find({ email: email, password: password }).then((data) => {
     if (data.length > 0) {
@@ -468,6 +474,11 @@ server.post('/api/v4/admin/Signup', (req, res) => {
 server.post('/api/v4/teacher/Login', async (req, res) => {
   const { email, password } = req.body
 
+  //email validation
+  if (!(email.includes("gmail") && email.includes("@") && email.indexOf("@") < email.indexOf("gmail"))) {
+    return res.status(404).send("Email validation error. please type correct email format !")
+  }
+  
   if (teacherAttemptCount <= 5) {
     //database mapping
     teacherModel.find({ email: email, password: password }).then((data) => {
