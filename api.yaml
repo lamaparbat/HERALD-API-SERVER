@@ -16,16 +16,18 @@ tags:
 - name: "Routine"
   description: "Operations related to Routine"
 - name: "Admin"
-  description: "Operations about Admin user"
+  description: "Operations related to Admin user"
 - name: "Teacher"
-  description: "Operations about Teacher user"
+  description: "Operations related to Teacher user"
 - name: "Student"
-  description: "Operations about Student user"
+  description: "Operations related to Student user"
 - name: "Logout"
 - name: "Regenerate Token"
-schemes:
-  - https
-  - http
+- name: "Feedback"
+  description: "Operations related to feedbacks"
+# schemes:
+#   - https
+#   - http
 securityDefinitions:
   Bearer:
     type: apiKey
@@ -56,33 +58,33 @@ paths:
           schema:
             properties: 
               message:
-                type: string
+                type: "string"
                 example: "Failed to login.  Please use correct email!"
               token:
-                type: string
+                type: "string"
                 example: "null"
         "200":
           description: "Login successful"
           schema:
             properties: 
               message:
-                type: string
+                type: "string"
                 example: "Login succesfully"
               access_token:
-                type: string
+                type: "string"
                 example: "s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
               refresh_token:
-                type: string
+                type: "string"
                 example: "s32241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
         "500":
           description: "500 Internal Server Error !"
           schema:
             properties: 
               message:
-                type: string
+                type: "string"
                 example: "500 Internal Server Error !"
               token:
-                type: string
+                type: "string"
                 example: "null"
   /api/v4/Logout:
     post:
@@ -102,7 +104,7 @@ paths:
           schema:
             properties: 
               message:
-                type: string
+                type: "string"
                 example: "Logout sucessfull !!"
   /api/v4/admin/postRoutineData:
     post:
@@ -128,7 +130,7 @@ paths:
           schema:
             properties: 
               message:
-                type: string
+                type: "string"
                 example: "Routine posted successfully!"
         "404":
           description: "Some fields are missing. Please provide all the fields !!"
@@ -137,7 +139,7 @@ paths:
           schema:
             properties: 
               message:
-                type: string
+                type: "string"
                 example: "Failed to post the routine !!"
   /api/v4/routines/getRoutineData:
     get:
@@ -161,14 +163,14 @@ paths:
           schema:
             properties: 
               message:
-                type: string
+                type: "string"
                 example: "Result: 0 found !!"  
         "500":
           description: "500 Internal Server Error !"
           schema:
             properties: 
               message:
-                type: string
+                type: "string"
                 example: "500 Internal Server Error !"
   /api/v4/routines/getRoutineByLevel:
     get:
@@ -189,7 +191,7 @@ paths:
         schema:
           properties: 
             group:
-              type: string
+              type: "string"
       responses:
         "200":
           description: "Got Routine Data Successfully"
@@ -200,14 +202,14 @@ paths:
           schema:
             properties: 
               message:
-                type: string
+                type: "string"
                 example: "Result: 0 found !!"  
         "500":
           description: "500 Internal Server Error !"
           schema:
             properties: 
               message:
-                type: string
+                type: "string"
                 example: "500 Internal Server Error !"
   /api/v4/routines/getRoutineByGroup:
     get:
@@ -215,7 +217,7 @@ paths:
         - Bearer: []     
       tags:
       - "Routine"
-      summary: "Gets routine data by group"
+      summary: "Gets routine data by level"
       description: ""
       consumes:
       - "application/json"
@@ -228,7 +230,7 @@ paths:
         schema:
           properties: 
             group:
-              type: string
+              type: "string"
       responses:
         "200":
           description: "Got Routine Data Successfully"
@@ -239,14 +241,14 @@ paths:
           schema:
             properties: 
               message:
-                type: string
+                type: "string"
                 example: "Result: 0 found !!"  
         "500":
           description: "500 Internal Server Error !"
           schema:
               properties:
                 message:
-                  type: string
+                  type: "string"
                   example: "500 Internal Server Error !"
   /api/v4/routines/searchRoutine:
     get:
@@ -267,9 +269,9 @@ paths:
         schema:
           properties: 
             module_name:
-              type: string
+              type: "string"
             group:
-              type: string  
+              type: "string"
       responses:
         "200":
           description: "Routine searched successfully!"
@@ -280,17 +282,17 @@ paths:
           schema:
             properties: 
               message:
-                type: string
+                type: "string"
                 example: "Result not found !!"  
         "500":
           description: "500 Internal Server Error !"
           schema:
               properties:
                 message:
-                  type: string
+                  type: "string"
                   example: "500 Internal Server Error !"                  
   /api/v4/admin/updateRoutineData:
-    post:
+    put:
       security:
         - Bearer: []     
       tags:
@@ -313,17 +315,17 @@ paths:
           schema:
               properties:
                 message:
-                  type: string
+                  type: "string"
                   example: "Routine updated successfully!"
         "500":
           description: "500 Internal Server Error !"
           schema:
               properties:
                 message:
-                  type: string
+                  type: "string"
                   example: "500 Internal Server Error !"
   /api/v4/admin/deleteRoutineData:
-    post:
+    delete:
       security:
         - Bearer: []     
       tags:
@@ -341,21 +343,21 @@ paths:
         schema:
           properties: 
             routineID:
-              type: string
+              type: "string"
       responses:
         "200":
           description: "Routine deleted successfully!"
           schema:
               properties:
                 message:
-                  type: string
+                  type: "string"
                   example: "Routine deleted successfully!"
         "500":
           description: "500 Internal Server Error !"
           schema:
               properties:
                 message:
-                  type: string
+                  type: "string"
                   example: "500 Internal Server Error !"
   /api/v4/admin/Login:
     post:
@@ -381,20 +383,20 @@ paths:
           schema:
             properties: 
               message:
-                type: string
+                type: "string"
                 example: "Login succesfully"
               token:
-                type: string
+                type: "string"
                 example: "s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
         "412":
           description: "Wrong email or password !!"
           schema:
             properties: 
               message:
-                type: string
+                type: "string"
                 example: "Failed to login"
               token:
-                type: string
+                type: "string"
                 example: "null"
   /api/v4/admin/Signup:
     post:
@@ -420,21 +422,21 @@ paths:
           schema:
             properties: 
               message:
-                type: string
+                type: "string"
                 example: "Admin created succesfully"
         "500":
           description: "500 Internal Server Error !"
           schema:
             properties: 
               message:
-                type: string
+                type: "string"
                 example: "Failed to signup"
         "412":
           description: "User already exists"
           schema:
             properties: 
               message:
-                type: string
+                type: "string"
                 example: "Failed to signup"
   /api/v4/teacher/Login:
     post:
@@ -460,31 +462,31 @@ paths:
           schema:
             properties: 
               message:
-                type: string
+                type: "string"
                 example: "Login succesfully"
               token:
-                type: string
+                type: "string"
                 example: "s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
         "412":
           description: "Wrong email or password !!"
           schema:
             properties: 
               message:
-                type: string
+                type: "string"
                 example: "Failed to login"
               token:
-                type: string
+                type: "string"
                 example: "null"
         "500":
           description: "Login Attempt Exceed"
           schema:
             properties: 
               message:
-                type: string
+                type: "string"
                 example: "You exceed the 5 login attempt. Please wait for 5 min to retry again !!"
 
   /api/v4/teacher/Signup:
-    post:
+    get:
       security:
         - Bearer: []     
       tags:
@@ -507,21 +509,21 @@ paths:
           schema:
             properties: 
               message:
-                type: string
+                type: "string"
                 example: "Account created succesfully"
         "500":
           description: "500 Internal Server Error !"
           schema:
             properties: 
               message:
-                type: string
+                type: "string"
                 example: "Failed to signup"
         "412":
           description: "User already exists"
           schema:
             properties: 
               message:
-                type: string
+                type: "string"
                 example: "Failed to signup"
   /api/v4/RegenerateToken:
     put:
@@ -542,29 +544,134 @@ paths:
         schema:
           properties: 
             uid:
-              type: string
+              type: "string"
       responses:
         "200":
           description: "Token regenerated succesfully!"
           schema:
             properties: 
               message:
-                type: string
+                type: "string"
                 example: "Token regenerated succesfully!"
               access_token:
-                type: string
+                type: "string"
                 example: "s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
               refresh_token:
-                type: string
+                type: "string"
                 example: "s32241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
         "500":
           description: "Refresh token cannot verified."
           schema:
             properties: 
               message:
-                type: string
+                type: "string"
                 example: "Refresh token cannot verified."
-            
+  /api/v4/feedback/postFeedback:
+    post:
+      security:
+          - Bearer: []     
+      tags:
+        - "Feedback"
+      summary: "Regenerate Token"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/Feedback"
+      responses:
+        "200":
+          description: "Feedback posted successfully !!"
+          schema:
+            properties: 
+              message:
+                type: "string"
+                example: "Feedback posted successfully !!"
+        "500":
+          description: "500 Internal Server Error !"
+          schema:
+            properties: 
+              message:
+                type: "string"
+                example: "500 BACKEND SERVER ERROR !!"  
+        "404":
+          description: "Validation issues"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Some fields are missing"
+  /api/v4/feedback/getFeedback:
+    get:
+      security:
+          - Bearer: []     
+      tags:
+        - "Feedback"
+      summary: "Get Feedback"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "Got Feedback successfully !!"
+        "500":
+          description: "500 Internal Server Error !"
+          schema:
+            properties: 
+              message:
+                type: "string"
+                example: "500 BACKEND SERVER ERROR !!"  
+        "404":
+          description: "Validation issues"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Result: 0 found !!"
+  /api/v4/feedback/deleteFeedback:
+    delete:
+      security:
+          - Bearer: []     
+      tags:
+        - "Feedback"
+      summary: "Get Feedback"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          properties: 
+            feedbackid:
+              type: "string"
+            filename:
+              type: "string"
+      responses:
+        "200":
+          description: "Feedback deleted successfully !!"
+          schema:
+            properties: 
+              message:
+                type: "string"
+                example: "Feedback deleted successfully !!"  
+        "500":
+          description: "500 Internal Server Error !"
+          schema:
+            properties: 
+              message:
+                type: "string"
+                example: "Invalid feedback ID !!"  
 definitions:
   Routine:
     type: "object"
@@ -613,3 +720,12 @@ definitions:
     properties:
       uid: 
         type: "string"
+  Feedback:
+    type: "object"
+    properties:
+      report_type:
+        type: "string"
+      description:
+        type: "string"
+      file:
+        type: "object"
