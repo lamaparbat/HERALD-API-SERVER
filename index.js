@@ -52,7 +52,7 @@ mongoose
   })
   .catch((err) => {
     console.log(err)
-  })
+  });
 
 // *** -> Swagger config <- ******
 const YAML = require("yamljs");
