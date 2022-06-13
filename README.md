@@ -211,7 +211,7 @@ onFailure: {
 
 4. Delete routine data
 ```perl
-POST: /api/v4/admin/updateRoutineData
+DELETE: /api/v4/admin/updateRoutineData
 
 const res = await axios.post('https://httpbin.org/post', { data }, {
 
