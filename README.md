@@ -1,6 +1,6 @@
 # Routine Management System Backend (API Guidelines)
 
-# Server link
+# Server link (Please donot share this link to anyone outside the college)
 Production link: https://rms-beta-test.herokuapp.com/
 
 Development link: https://rms-server-8080.herokuapp.com/
