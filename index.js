@@ -56,6 +56,7 @@ mongoose
 
 // *** -> Swagger config <- ******
 const YAML = require("yamljs");
+const res = require('express/lib/response');
 const swaggerDocs = YAML.load("./api.yaml");
 
 //middleware
