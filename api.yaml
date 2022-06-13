@@ -641,7 +641,7 @@ paths:
           - Bearer: []     
       tags:
         - "Feedback"
-      summary: "Get Feedback"
+      summary: "Delete Feedback"
       description: ""
       consumes:
       - "application/json"
