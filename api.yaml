@@ -217,7 +217,7 @@ paths:
         - Bearer: []     
       tags:
       - "Routine"
-      summary: "Gets routine data by level"
+      summary: "Gets routine data by group"
       description: ""
       consumes:
       - "application/json"
