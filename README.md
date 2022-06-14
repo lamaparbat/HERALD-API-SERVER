@@ -78,7 +78,47 @@ onFailure: {
 
 2. Signup
 ```perl
-GET: /api/v4/teacher/Signup
+POST: /api/v4/teacher/Signup
+
+payload: {
+   email:"",
+   password:""
+}
+
+****** -> Response  <- *******
+onSuccess: {
+   message:"Account created succesfully",
+   token:"s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
+}
+onFailure: {
+   message:"Failed to login",
+   token:null
+}
+```
+## Admin endpoints
+1. Login
+```perl
+POST : /api/v4/admin/Login
+
+payload: {
+   email:"",
+   password:""
+}
+
+****** -> Response  <- *******
+onSuccess: {
+   message:"Login succesfully",
+   token:"s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
+}
+onFailure: {
+   message:"Failed to login",
+   token:null
+}
+```
+
+2. Signup
+```perl
+POST: /api/v4/admin/Signup
 
 payload: {
    email:"",
