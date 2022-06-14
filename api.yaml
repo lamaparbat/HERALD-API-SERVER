@@ -486,7 +486,7 @@ paths:
                 example: "You exceed the 5 login attempt. Please wait for 5 min to retry again !!"
 
   /api/v4/teacher/Signup:
-    get:
+    post:
       security:
         - Bearer: []     
       tags:
