@@ -25,9 +25,9 @@ tags:
 - name: "Regenerate Token"
 - name: "Feedback"
   description: "Operations related to feedbacks"
-# schemes:
-#   - https
-#   - http
+schemes:
+  - https
+  - http
 securityDefinitions:
   Bearer:
     type: apiKey
