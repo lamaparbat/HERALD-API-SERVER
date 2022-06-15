@@ -57,6 +57,7 @@ mongoose
 // *** -> Swagger config <- ******
 const YAML = require("yamljs");
 const res = require('express/lib/response');
+const xlsx2json = require('xlsx2json');
 const swaggerDocs = YAML.load("./api.yaml");
 
 //middleware
@@ -66,7 +67,7 @@ server.use(cookieParser());
 
 // ********  image upload middleware **********
 //create storage instance
-const storage = multer.diskStorage({
+const storage1 = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads");
   },
@@ -75,7 +76,19 @@ const storage = multer.diskStorage({
     cb(null, uploadImageName);
   }
 });
-const upload = multer({ storage: storage });
+const feedbackUpload = multer({ storage: storage1 });
+
+// upload college data
+const storage2 = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "collegeData");
+  },
+  filename: (req, file, cb) => {
+    uploadImageName = Date.now() + "-" + file.originalname;
+    cb(null, uploadImageName);
+  }
+});
+const collegeUpload = multer({ storage: storage2 });
 
 
 server.use(
@@ -194,12 +207,13 @@ server.post('/api/v4/admin/postRoutineData', auth.VerifyJWT, async (req, res) =>
     group,
     room_name,
     block_name,
+    day,
     start_time,
     end_time,
   } = req.body
 
   //check if all attributes are recieved or not ?
-  if (Object.keys(req.body).length < 7) {
+  if (Object.keys(req.body).length < 8) {
     return res
       .status(404)
       .send('Some fields are missing. Please provide all the fields !!')
@@ -212,6 +226,7 @@ server.post('/api/v4/admin/postRoutineData', auth.VerifyJWT, async (req, res) =>
     lecturer_name.length > 0 &&
     group.length > 0 &&
     room_name.length > 0 &&
+    day.length > 0 &&
     start_time.length > 0 &&
     end_time.length > 0 &&
     block_name.length > 0
@@ -223,14 +238,18 @@ server.post('/api/v4/admin/postRoutineData', auth.VerifyJWT, async (req, res) =>
       group: group.toUpperCase(),
       room_name: room_name.toUpperCase(),
       block_name: block_name,
+      day: day.toUpperCase(),
       start_time: start_time,
       end_time: end_time,
       createdOn: new Date().toLocaleDateString(),
-    })
+    });
+    
+    const result = await routineModel.find({ createdOn: new Date().toLocaleDateString(), day:day, module_name:module_name });
+    if (result.length > 0) {
+      res.status(404).send(`Routine of ${module_name} for the date ${new Date().toLocaleDateString()} has already been created.`)
+    }
 
-    data
-      .save()
-      .then(async () => {
+    data.save().then(async () => {
         //upload message to notification db
         const notifData = new notifModel({
           message: `Dear ${group} of ${course_type}, a new routine of ${module_name} has recently published. Please see it once.`,
@@ -341,6 +360,7 @@ server.put('/api/v4/admin/updateRoutineData', auth.VerifyJWT, (req, res) => {
     group,
     room_name,
     block_name,
+    day,
     start_time,
     end_time,
   } = req.body;
@@ -354,6 +374,7 @@ server.put('/api/v4/admin/updateRoutineData', auth.VerifyJWT, (req, res) => {
       group: group.toUpperCase(),
       room_name: room_name.toUpperCase(),
       block_name: block_name,
+      day:day.toUpperCase(),
       start_time: start_time,
       end_time: end_time,
       createdOn: new Date().toLocaleDateString(),
@@ -534,8 +555,21 @@ server.post('/api/v4/teacher/Signup', (req, res) => {
 });
 
 
+
+// ********** UPLOAD COLLEGE DATA ************
+server.post("api/v4/uploadStudentList", auth.VerifyJWT, (req, res) => {
+  
+});
+server.post("api/v4/uploadTeacherList", auth.VerifyJWT, (req, res) => {
+
+});
+server.post("api/v4/uploadAdminList", auth.VerifyJWT, (req, res) => {
+
+});
+
+
 // ********** USER FEEDBACK *************
-server.post('/api/v4/feedback/postFeedback', auth.VerifyJWT, upload.single('file'), async (req, res) => {
+server.post('/api/v4/feedback/postFeedback', auth.VerifyJWT, collegeUpload.single('file'), async (req, res) => {
   // destructuring the binded data
   const { report_type, description } = req.body;
 
@@ -571,7 +605,7 @@ server.post('/api/v4/feedback/postFeedback', auth.VerifyJWT, upload.single('file
   }
 });
 
-server.get('/api/v4/feedback/getFeedback', auth.VerifyJWT, async (req, res) => {
+server.get('/api/v4/feedback/getFeedback', auth.VerifyJWT, collegeUpload.single('file'), async (req, res) => {
   //db mapping
   const data = await feedbackModel.find();
 
@@ -586,7 +620,7 @@ server.get('/api/v4/feedback/getFeedback', auth.VerifyJWT, async (req, res) => {
   }
 });
 
-server.delete('/api/v4/feedback/deleteFeedback', auth.VerifyJWT, async (req, res) => {
+server.delete('/api/v4/feedback/deleteFeedback', auth.VerifyJWT, collegeUpload.single('file'), async (req, res) => {
   const { feedbackid, filename } = req.headers;
   
   //delete feedback post using id
