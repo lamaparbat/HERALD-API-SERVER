@@ -1,5 +1,10 @@
 # Routine Management System Backend (API Guidelines)
 
+# Server link (Please donot share this link to anyone outside the college)
+Production link: https://rms-beta-test.herokuapp.com/
+
+Development link: https://rms-server-8080.herokuapp.com/
+
 # Swagger Documentation Link
 https://rms-server-8080.herokuapp.com/api-docs/
 ## Student endpoints
@@ -73,7 +78,7 @@ onFailure: {
 
 2. Signup
 ```perl
-GET: /api/v4/teacher/Signup
+POST: /api/v4/teacher/Signup
 
 payload: {
    email:"",
@@ -86,7 +91,47 @@ onSuccess: {
    token:"s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
 }
 onFailure: {
+   message:"Failed to create account !1",
+   token:null
+}
+```
+## Admin endpoints
+1. Login
+```perl
+POST : /api/v4/admin/Login
+
+payload: {
+   email:"",
+   password:""
+}
+
+****** -> Response  <- *******
+onSuccess: {
+   message:"Login succesfully",
+   token:"s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
+}
+onFailure: {
    message:"Failed to login",
+   token:null
+}
+```
+
+2. Signup
+```perl
+POST: /api/v4/admin/Signup
+
+payload: {
+   email:"",
+   password:""
+}
+
+****** -> Response  <- *******
+onSuccess: {
+   message:"Account created succesfully",
+   token:"s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
+}
+onFailure: {
+   message:"Failed to create account !!",
    token:null
 }
 ```
@@ -107,6 +152,7 @@ payload: {
     group: "",
     room_name: "",
     block_name: "",
+    day:"",
     start_time:"",
     end_time:""
 }
@@ -145,6 +191,7 @@ onSuccess: {
         group: "",
         room_name: "",
         block_name: "",
+        day:"",
         start_time:"",
         end_time:""
       },
@@ -155,6 +202,7 @@ onSuccess: {
         group: "",
         room_name: "",
         block_name: "",
+        day:"",
         start_time:"",
         end_time:""
       },
@@ -189,6 +237,7 @@ payload: {
     group: "",
     room_name: "",
     block_name: "",
+    day:"",
     start_time:"",
     end_time:""
 }
@@ -206,7 +255,7 @@ onFailure: {
 
 4. Delete routine data
 ```perl
-POST: /api/v4/admin/updateRoutineData
+DELETE: /api/v4/admin/deleteRoutineData
 
 const res = await axios.post('https://httpbin.org/post', { data }, {
 
@@ -337,3 +386,6 @@ filename:"abc.png"
 
 ```
 
+Author: Parbat Lama
+
+Documented by Parbat Lama
