@@ -152,6 +152,7 @@ payload: {
     group: "",
     room_name: "",
     block_name: "",
+    day:"",
     start_time:"",
     end_time:""
 }
@@ -190,6 +191,7 @@ onSuccess: {
         group: "",
         room_name: "",
         block_name: "",
+        day:"",
         start_time:"",
         end_time:""
       },
@@ -200,6 +202,7 @@ onSuccess: {
         group: "",
         room_name: "",
         block_name: "",
+        day:"",
         start_time:"",
         end_time:""
       },
