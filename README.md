@@ -91,7 +91,7 @@ onSuccess: {
    token:"s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
 }
 onFailure: {
-   message:"Failed to login",
+   message:"Failed to create account !1",
    token:null
 }
 ```
@@ -131,7 +131,7 @@ onSuccess: {
    token:"s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
 }
 onFailure: {
-   message:"Failed to login",
+   message:"Failed to create account !!",
    token:null
 }
 ```
