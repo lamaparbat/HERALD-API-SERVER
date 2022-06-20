@@ -1,6 +1,4 @@
 # Routine Management System Backend (API Guidelines)
-
-# Server link (Please donot share this link to anyone outside the college)
 # Swagger Documentation Link
 ## Student endpoints
 1. Login
@@ -382,6 +380,28 @@ filename:"abc.png"
 ```
 
 # Upload Data in Excellsheet form (Student List)
+1. Upload student excell sheet (Please donot upload file other than xlsx format)
+```perl
+POST: /api/v4/uploadStudentList
+  
+ //header.authorization.bearer
+token: ""
+
+//payload
+file:[objects]
+
+//success response
+Status Code: 200. ok
+message = Data extracted and import to DB successfully.
+
+//client side failure response
+Status Code: 400
+message = Please donot upload file other than xlsx
+
+//server side failure response
+Status Code: 500
+message = SERVER ERROR
+```
 
 
 Author: Parbat Lama
