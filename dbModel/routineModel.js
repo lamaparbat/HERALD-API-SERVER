@@ -6,6 +6,7 @@ const routineSchema = new mongoose.Schema({
  course_type:String,
  module_name: String,
  lecturer_name: String,
+ class_type: String,
  group: String,
  room_name: String,
  block_name: String,

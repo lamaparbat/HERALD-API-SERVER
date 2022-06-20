@@ -191,7 +191,7 @@ server.put("/api/v4/RegenerateToken", auth.regenerateAccessToken, async (req, re
   const { uid } = req.body;
 
   //generate the token
-  const { access_token, refresh_token } = auth.GenerateJWT(uid);
+  const { access_token, refresh_token } = Pauth.GenerateJWT(uid);
 
   return res.status(200).send({
     message: 'Token regenerated succesfully !!',
@@ -209,6 +209,7 @@ server.post('/api/v4/admin/postRoutineData', auth.VerifyJWT, async (req, res) =>
     course_type,
     module_name,
     lecturer_name,
+    class_type,
     group,
     room_name,
     block_name,
@@ -218,7 +219,7 @@ server.post('/api/v4/admin/postRoutineData', auth.VerifyJWT, async (req, res) =>
   } = req.body
 
   //check if all attributes are recieved or not ?
-  if (Object.keys(req.body).length < 8) {
+  if (Object.keys(req.body).length < 9) {
     return res
       .status(404)
       .send('Some fields are missing. Please provide all the fields !!')
@@ -229,6 +230,7 @@ server.post('/api/v4/admin/postRoutineData', auth.VerifyJWT, async (req, res) =>
     course_type.length > 0 &&
     module_name.length > 0 &&
     lecturer_name.length > 0 &&
+    class_type.length > 0 &&
     group.length > 0 &&
     room_name.length > 0 &&
     day.length > 0 &&
@@ -240,6 +242,7 @@ server.post('/api/v4/admin/postRoutineData', auth.VerifyJWT, async (req, res) =>
       course_type: course_type.toUpperCase(),
       module_name: module_name.toUpperCase(),
       lecturer_name: lecturer_name,
+      class_type: class_type.toUpperCase(),
       group: group.toUpperCase(),
       room_name: room_name.toUpperCase(),
       block_name: block_name,
@@ -362,6 +365,7 @@ server.put('/api/v4/admin/updateRoutineData', auth.VerifyJWT, (req, res) => {
     course_type,
     module_name,
     lecturer_name,
+    class_type,
     group,
     room_name,
     block_name,
@@ -376,6 +380,7 @@ server.put('/api/v4/admin/updateRoutineData', auth.VerifyJWT, (req, res) => {
       course_type: course_type.toUpperCase(),
       module_name: module_name.toUpperCase(),
       lecturer_name: lecturer_name,
+      class_type: class_type.toUpperCase(),
       group: group.toUpperCase(),
       room_name: room_name.toUpperCase(),
       block_name: block_name,
