@@ -1,12 +1,5 @@
 # Routine Management System Backend (API Guidelines)
-
-# Server link (Please donot share this link to anyone outside the college)
-Production link: https://rms-beta-test.herokuapp.com/
-
-Development link: https://rms-server-8080.herokuapp.com/
-
 # Swagger Documentation Link
-https://rms-server-8080.herokuapp.com/api-docs/
 ## Student endpoints
 1. Login
 ```perl
@@ -385,6 +378,31 @@ feedbackid: "as23vd34dvfv",
 filename:"abc.png"
 
 ```
+
+# Upload Data in Excellsheet form (Student List)
+1. Upload student excell sheet (Please donot upload file other than xlsx format)
+```perl
+POST: /api/v4/uploadStudentList
+  
+ //header.authorization.bearer
+token: ""
+
+//payload
+file:[objects]
+
+//success response
+Status Code: 200. ok
+message = Data extracted and import to DB successfully.
+
+//error client side failure response
+Status Code: 400
+message = Please donot upload file other than xlsx
+
+//error server side failure response
+Status Code: 500
+message = SERVER ERROR
+```
+
 
 Author: Parbat Lama
 
