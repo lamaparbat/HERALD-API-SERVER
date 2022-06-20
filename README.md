@@ -390,15 +390,15 @@ token: ""
 //payload
 file:[objects]
 
-//success: response
+//success response
 Status Code: 200. ok
 message = Data extracted and import to DB successfully.
 
-//error: client side failure response
+//error client side failure response
 Status Code: 400
 message = Please donot upload file other than xlsx
 
-//error: server side failure response
+//error server side failure response
 Status Code: 500
 message = SERVER ERROR
 ```
