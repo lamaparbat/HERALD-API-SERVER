@@ -27,7 +27,7 @@ var studentAttemptCount = 1,
 var block_email = null;
 
 //upload image name
-var uploadImageName = null;
+var uploadFileName = null;
 
 const pusher = new Pusher({
   appId: "1419323",
@@ -56,7 +56,6 @@ mongoose
 
 // *** -> Swagger config <- ******
 const YAML = require("yamljs");
-const res = require('express/lib/response');
 const xlsx2json = require('xlsx2json');
 const swaggerDocs = YAML.load("./api.yaml");
 
@@ -72,8 +71,8 @@ const storage1 = multer.diskStorage({
     cb(null, "uploads");
   },
   filename: (req, file, cb) => {
-    uploadImageName = Date.now() + "-" + file.originalname;
-    cb(null, uploadImageName);
+    uploadFileName = Date.now() + "-" + file.originalname;
+    cb(null, uploadFileName);
   }
 });
 const feedbackUpload = multer({ storage: storage1 });
@@ -84,8 +83,8 @@ const storage2 = multer.diskStorage({
     cb(null, "collegeData");
   },
   filename: (req, file, cb) => {
-    uploadImageName = Date.now() + "-" + file.originalname;
-    cb(null, uploadImageName);
+    uploadFileName = Date.now() + "-" + file.originalname;
+    cb(null, uploadFileName);
   }
 });
 const collegeUpload = multer({ storage: storage2 });
@@ -107,7 +106,13 @@ server.get('/', (req, res) => {
 server.post('/api/v4/student/Login', async (req, res) => {
   // destructuring the incoming data
   const { uid } = req.body;
-
+  
+  //uid validation
+  if (typeof uid !== "string") {
+    return res.status(400).send("Please enter email in string format.")
+  }
+  
+  // excess attempt check
   if (studentAttemptCount <= 5 && block_email !== uid) {
     //verify the uid
     if ((uid.includes('np') && uid.includes('heraldcollege.edu.np')) === false) {
@@ -182,8 +187,8 @@ server.post('/api/v4/Logout', async (req, res) => {
 
 
 //request for regenerate access token
-server.put("/api/v4/RegenerateToken", auth.regenerateAccessToken, (req, res) => {
-  const { uid } = req.body
+server.put("/api/v4/RegenerateToken", auth.regenerateAccessToken, async (req, res) => {
+  const { uid } = req.body;
 
   //generate the token
   const { access_token, refresh_token } = auth.GenerateJWT(uid);
@@ -243,34 +248,34 @@ server.post('/api/v4/admin/postRoutineData', auth.VerifyJWT, async (req, res) =>
       end_time: end_time,
       createdOn: new Date().toLocaleDateString(),
     });
-    
-    const result = await routineModel.find({ createdOn: new Date().toLocaleDateString(), day:day, module_name:module_name });
+
+    const result = await routineModel.find({ createdOn: new Date().toLocaleDateString(), day: day, module_name: module_name });
     if (result.length > 0) {
       res.status(404).send(`Routine of ${module_name} for the date ${new Date().toLocaleDateString()} has already been created.`)
     }
 
     data.save().then(async () => {
-        //upload message to notification db
-        const notifData = new notifModel({
-          message: `Dear ${group} of ${course_type}, a new routine of ${module_name} has recently published. Please see it once.`,
-          group: group,
-          createdOn: new Date().toLocaleDateString(),
-        })
-
-        try {
-          const result = await notifData.save()
-          if (result.message) {
-            pusher.trigger("my-channel", "notice", {
-              message: `Dear ${group} of ${course_type}, a new routine of ${module_name} has recently published. Please see it once.`
-            });
-            return res.status(200).send({
-              message: 'Routine posted successfully !!',
-            })
-          }
-        } catch (error) {
-          return res.status(500).send(err)
-        }
+      //upload message to notification db
+      const notifData = new notifModel({
+        message: `Dear ${group} of ${course_type}, a new routine of ${module_name} has recently published. Please see it once.`,
+        group: group,
+        createdOn: new Date().toLocaleDateString(),
       })
+
+      try {
+        const result = await notifData.save()
+        if (result.message) {
+          pusher.trigger("my-channel", "notice", {
+            message: `Dear ${group} of ${course_type}, a new routine of ${module_name} has recently published. Please see it once.`
+          });
+          return res.status(200).send({
+            message: 'Routine posted successfully !!',
+          })
+        }
+      } catch (error) {
+        return res.status(500).send(err)
+      }
+    })
       .catch((err) => {
         return res.status(500).send(err)
       })
@@ -289,7 +294,7 @@ server.get('/api/v4/routines/getRoutineData', auth.VerifyJWT, async (req, res) =
       data: result,
     })
   } else {
-    return res.status(404).send({
+    return res.status(200).send({
       message: 'Result: 0 found !!',
     })
   }
@@ -364,7 +369,7 @@ server.put('/api/v4/admin/updateRoutineData', auth.VerifyJWT, (req, res) => {
     start_time,
     end_time,
   } = req.body;
-  
+
   routineModel.findByIdAndUpdate(
     routineID,
     {
@@ -374,7 +379,7 @@ server.put('/api/v4/admin/updateRoutineData', auth.VerifyJWT, (req, res) => {
       group: group.toUpperCase(),
       room_name: room_name.toUpperCase(),
       block_name: block_name,
-      day:day.toUpperCase(),
+      day: day.toUpperCase(),
       start_time: start_time,
       end_time: end_time,
       createdOn: new Date().toLocaleDateString(),
@@ -437,13 +442,19 @@ server.get('/api/v4/routines/searchRoutine', auth.VerifyJWT, async (req, res) =>
 // Admin Login
 server.post('/api/v4/admin/Login', (req, res) => {
   const { email, password } = req.body
-
+  
+  //uid validation
+  if (typeof email !== "string" || typeof password !== "string") {
+    console.log(email.includes("gmail"))
+    return res.status(400).send("Client side validation issues. Please carefully send the right format of email and password !!")
+  }
+  
   //email validation
   if (!(email.includes("gmail") && email.includes("@") && email.indexOf("@") < email.indexOf("gmail"))) {
     return res.status(404).send("Email validation error. please type correct email format !")
   }
-  
-  
+
+
   //database mapping
   adminModel.find({ email: email, password: password }).then((data) => {
     if (data.length > 0) {
@@ -496,11 +507,16 @@ server.post('/api/v4/admin/Signup', (req, res) => {
 server.post('/api/v4/teacher/Login', async (req, res) => {
   const { email, password } = req.body
 
+  //uid validation
+  if (typeof email !== "string" || typeof password !== "string") {
+    return res.status(400).send("Client side validation issues. Please carefully send the right format of email and password !!")
+  }
+  
   //email validation
   if (!(email.includes("gmail") && email.includes("@") && email.indexOf("@") < email.indexOf("gmail"))) {
     return res.status(404).send("Email validation error. please type correct email format !")
   }
-  
+
   if (teacherAttemptCount <= 5) {
     //database mapping
     teacherModel.find({ email: email, password: password }).then((data) => {
@@ -557,8 +573,25 @@ server.post('/api/v4/teacher/Signup', (req, res) => {
 
 
 // ********** UPLOAD COLLEGE DATA ************
-server.post("api/v4/uploadStudentList", auth.VerifyJWT, (req, res) => {
-  
+server.post("/api/v4/uploadStudentList", auth.VerifyJWT, collegeUpload.single("file"), async (req, res) => {
+  try {
+    xlsx2json(`collegeData/${uploadFileName}`).then(jsonArray => {
+      jsonArray.map(array => {
+        array.map(data => {
+          console.log(data);
+        });
+      });
+
+      //delete the file
+      fs.unlinkSync(`collegeData/${uploadFileName}`);
+
+      res.status(200).send("Data extracted and import to DB successfully.")
+    });
+  } catch (error) {
+    //delete the file
+    fs.unlinkSync(`collegeData/${uploadFileName}`);
+    res.status(500).send("Failed to parse the given file. Please upload the xlsx formate file only !!")
+  }
 });
 server.post("api/v4/uploadTeacherList", auth.VerifyJWT, (req, res) => {
 
@@ -575,12 +608,12 @@ server.post('/api/v4/feedback/postFeedback', auth.VerifyJWT, collegeUpload.singl
 
   // validation
   if (Object.keys(req.body).length < 7) {
-    if (report_type.length > 3 && description.length > 3 && uploadImageName !== null) {
+    if (report_type.length > 3 && description.length > 3 && uploadFileName !== null) {
       //db insertion
       const data = new feedbackModel({
         report_type: report_type,
         description: description,
-        file: uploadImageName
+        file: uploadFileName
       });
 
       //save the data
@@ -622,7 +655,7 @@ server.get('/api/v4/feedback/getFeedback', auth.VerifyJWT, collegeUpload.single(
 
 server.delete('/api/v4/feedback/deleteFeedback', auth.VerifyJWT, collegeUpload.single('file'), async (req, res) => {
   const { feedbackid, filename } = req.headers;
-  
+
   //delete feedback post using id
   try {
     feedbackModel.deleteOne({ _id: feedbackid }, (err, doc) => {
@@ -638,6 +671,7 @@ server.delete('/api/v4/feedback/deleteFeedback', auth.VerifyJWT, collegeUpload.s
     return res.status(200).send('500 INTERNAL SERVER ERROR !!');
   }
 });
+
 
 // ***** port listneer *****
 server.listen(PORT, () => {
