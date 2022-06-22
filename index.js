@@ -105,8 +105,9 @@ server.get('/', (req, res) => {
 //login routing
 server.post('/api/v4/student/Login', async (req, res) => {
   // destructuring the incoming data
-  const { uid } = req.body;
-  
+  var { uid } = req.body;
+  uid = uid.toUpperCase();
+
   //uid validation
   if (typeof uid !== "string") {
     return res.status(400).send("Please enter email in string format.")
@@ -115,7 +116,7 @@ server.post('/api/v4/student/Login', async (req, res) => {
   // excess attempt check
   if (studentAttemptCount <= 5 && block_email !== uid) {
     //verify the uid
-    if ((uid.includes('np') && uid.includes('heraldcollege.edu.np')) === false) {
+    if ((uid.includes('NP') && uid.includes('HERALDCOLLEGE.EDU.NP')) === false) {
       return res.status(400).json({
         message: 'Unverified users.',
         token: null,
@@ -581,9 +582,25 @@ server.post('/api/v4/teacher/Signup', (req, res) => {
 server.post("/api/v4/uploadStudentList", auth.VerifyJWT, collegeUpload.single("file"), async (req, res) => {
   try {
     xlsx2json(`collegeData/${uploadFileName}`).then(jsonArray => {
-      jsonArray.map(array => {
-        array.map(data => {
-          console.log(data);
+      jsonArray.map(async (array) => {
+        await array.map(async (data) => {
+          if (data["A"] !== "S.N.") {
+            const email = data["B"] + "@HERALDCOLLEGE.EDU.NP";
+            //check if data already exists in db
+            const searchResult = await studentModel.find({ uid: email });
+            if (searchResult[0] === undefined) {
+              //inserting into db
+              const response = new studentModel({
+                uid: data["B"] + "@HERALDCOLLEGE.EDU.NP"
+              });
+
+              try {
+                const result = await response.save();
+              } catch (error) {
+                res.status(500).send("SERVER ERORR !!");
+              }
+            }
+          }
         });
       });
 
