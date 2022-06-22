@@ -388,7 +388,7 @@ POST: /api/v4/uploadStudentList
 token: ""
 
 //payload
-file:[objects]
+file:[objects].         [NOTE: File extension must be xlsx and table field ordering must be like S.N. , Student ID, ....]
 
 //success response
 Status Code: 200. ok
