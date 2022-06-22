@@ -508,7 +508,7 @@ server.post('/api/v4/admin/Signup', (req, res) => {
     })
 })
 
-// *********** ->  Teachers   <- **************
+// *********** ->  Teachers   <- ***************
 // Teacher Login
 server.post('/api/v4/teacher/Login', async (req, res) => {
   const { email, password } = req.body
