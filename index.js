@@ -105,9 +105,12 @@ server.get('/', (req, res) => {
 //login routing
 server.post('/api/v4/student/Login', async (req, res) => {
   // destructuring the incoming data
-  var { uid } = req.body;
-  uid = uid.toUpperCase();
-
+  try {
+    var { uid } = req.body;
+    uid = uid.toUpperCase();
+  } catch (error) {
+    return res.status(404).send("Please pass the student uid");
+  }  
   //uid validation
   if (typeof uid !== "string") {
     return res.status(400).send("Please enter email in string format.")
@@ -192,7 +195,7 @@ server.put("/api/v4/RegenerateToken", auth.regenerateAccessToken, async (req, re
   const { uid } = req.body;
 
   //generate the token
-  const { access_token, refresh_token } = Pauth.GenerateJWT(uid);
+  const { access_token, refresh_token } = auth.GenerateJWT(uid);
 
   return res.status(200).send({
     message: 'Token regenerated succesfully !!',
@@ -615,13 +618,28 @@ server.post("/api/v4/uploadStudentList", auth.VerifyJWT, collegeUpload.single("f
     res.status(500).send("Failed to parse the given file. Please upload the xlsx formate file only !!")
   }
 });
-server.post("api/v4/uploadTeacherList", auth.VerifyJWT, (req, res) => {
+server.post("/api/v4/routines/uploadRoutineList", auth.VerifyJWT, collegeUpload.single("file"), async (req, res) => {
+  try {
+    xlsx2json(`collegeData/${uploadFileName}`).then(jsonArray => {
+      jsonArray.map(async (array) => {
+        await array.map(async (data) => {
+          if (data["A"].length > 0) {
+            console.log(data)
+          }
+        });
+      });
 
+      //delete the file
+      fs.unlinkSync(`collegeData/${uploadFileName}`);
+
+      res.status(200).send("Routine extracted and import to DB successfully.")
+    });
+  } catch (error) {
+    //delete the file
+    fs.unlinkSync(`collegeData/${uploadFileName}`);
+    res.status(500).send("Failed to parse the given file. Please upload the xlsx formate file only !!")
+  }
 });
-server.post("api/v4/uploadAdminList", auth.VerifyJWT, (req, res) => {
-
-});
-
 
 // ********** USER FEEDBACK *************
 server.post('/api/v4/feedback/postFeedback', auth.VerifyJWT, collegeUpload.single('file'), async (req, res) => {

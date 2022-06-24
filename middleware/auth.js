@@ -42,6 +42,7 @@ const regenerateAccessToken = (req, res, next) => {
   // fetch the refresh token
   var refresh_token = req.header("authorization")
   refresh_token = refresh_token.substr(14, refresh_token.length);
+  console.log(refresh_token)
   
   //verify refresh token
   try {
