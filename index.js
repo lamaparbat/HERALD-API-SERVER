@@ -9,6 +9,7 @@ const { ServerApiVersion } = require('mongodb');
 const mongoose = require('mongoose');
 const swaggerUi = require('swagger-ui-express');
 const Pusher = require("pusher");
+const xlsx2json = require('xlsx2json');
 const auth = require('./middleware/auth.js');
 const studentModel = require('./dbModel/studentModel');
 const teacherModel = require('./dbModel/teacherModel');
@@ -29,6 +30,7 @@ var block_email = null;
 //upload image name
 var uploadFileName = null;
 
+// socket connection api
 const pusher = new Pusher({
   appId: "1419323",
   key: "72d2952dc15a5dc49d46",
@@ -56,7 +58,6 @@ mongoose
 
 // *** -> Swagger config <- ******
 const YAML = require("yamljs");
-const xlsx2json = require('xlsx2json');
 const swaggerDocs = YAML.load("./api.yaml");
 
 //middleware
