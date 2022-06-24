@@ -42,7 +42,7 @@ const pusher = new Pusher({
 // *** -> MongoDB config <- ******
 mongoose
   .connect(
-    'mongodb+srv://cms_herald:hacker123@cluster0.csdtn.mongodb.net/rms?retryWrites=true&w=majority',
+    process.env.DB_URL,
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -93,7 +93,7 @@ const collegeUpload = multer({ storage: storage2 });
 
 server.use(
   cors({
-    origin: ['http://localhost:3000', 'https://rmsherald.netlify.app'],
+    origin: [process.env.LOCALHOST, process.env.WEB_URL],
   })
 )
 server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
