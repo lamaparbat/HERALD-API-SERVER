@@ -693,7 +693,7 @@ server.delete('/api/v4/feedback/deleteFeedback', auth.VerifyJWT, collegeUpload.s
 
 //  ************: Fetch notifications ****************
 server.post('/api/v4/getNotifications', async (req, res) => {
-  // destructure group
+  // destructure grou
   const { group } = req.body;
   
   try {
