@@ -580,16 +580,15 @@ server.post("/api/v4/uploadStudentList", auth.VerifyJWT, collegeUpload.single("f
     xlsx2json(`collegeData/${uploadFileName}`).then(jsonArray => {
       jsonArray.map(async (array) => {
         await array.map(async (data) => {
+          console.log(data)
           if (data["A"] !== "S.N.") {
             const email = data["B"] + "@HERALDCOLLEGE.EDU.NP";
-            const group = data["D"];
             //check if data already exists in db
             const searchResult = await studentModel.find({ uid: email });
             if (searchResult[0] === undefined) {
               //inserting into db
               const response = new studentModel({
-                uid: data["B"] + "@HERALDCOLLEGE.EDU.NP",
-                group:group
+                uid: data["B"] + "@HERALDCOLLEGE.EDU.NP"
               });
 
               try {
@@ -695,12 +694,12 @@ server.delete('/api/v4/feedback/deleteFeedback', auth.VerifyJWT, collegeUpload.s
 
 
 //  ************: Fetch notifications ****************
-server.post('/api/v4/getNotifications', auth.VerifyJWT, async (req, res) => {
+server.post('/api/v4/getNotifications', async (req, res) => {
   // destructure group
   const { group } = req.body;
   
   try {
-    const result = await notifModel.find({ group: group })
+    const result = await routineModel.find({ group: group })
     res.send(result);
   } catch (error) {
     res.status(404).send(error)
