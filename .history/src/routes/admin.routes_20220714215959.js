@@ -9,6 +9,7 @@ router.post('/api/v4/admin/Login', (req, res) => {
 
   //uid validation
   if (typeof email !== "string" || typeof password !== "string") {
+    console.log(email.includes("gmail"))
     return res.status(400).send("Client side validation issues. Please carefully send the right format of email and password !!")
   }
 
@@ -37,9 +38,9 @@ router.post('/api/v4/admin/Login', (req, res) => {
 })
 
 //register new user
-router.post('/api/v4/admin/Signup', async (req, res) => {
+router.post('/api/v4/admin/Signup', (req, res) => {
   const { email, password } = req.body;
-
+  
   // encrypt the password
   password = await bcrypt.hash(password, salt = 10);
 

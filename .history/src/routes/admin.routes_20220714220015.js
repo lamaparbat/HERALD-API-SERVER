@@ -37,9 +37,9 @@ router.post('/api/v4/admin/Login', (req, res) => {
 })
 
 //register new user
-router.post('/api/v4/admin/Signup', async (req, res) => {
+router.post('/api/v4/admin/Signup', async(req, res) => {
   const { email, password } = req.body;
-
+  
   // encrypt the password
   password = await bcrypt.hash(password, salt = 10);
 
