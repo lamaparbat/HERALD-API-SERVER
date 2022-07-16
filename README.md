@@ -417,4 +417,5 @@ message = SERVER ERROR
 
 Author: Parbat Lama
 
-# Happy Learning ✌️
+Happy Learning ✌️
+Happy Coding 👨‍💻
