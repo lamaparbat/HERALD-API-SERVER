@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const bcrypt = require("bcryptjs");
-const adminModel = require('../models/adminModel');
+const adminModel = require('../../src/model/adminModel');
 
 
 // Admin Login

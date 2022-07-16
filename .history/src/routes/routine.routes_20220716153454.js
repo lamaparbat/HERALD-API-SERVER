@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const auth = require("../middlewares/auth");
-const routineModel = require('../models/routineModel');
+const auth = require("../../src/middlewares/auth");
+const routineModel = require('../../src/models/routineModel');
 
 // ****** --> CRUD Routine Operation <-- *********
 //post routine data

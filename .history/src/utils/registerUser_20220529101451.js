@@ -1,4 +1,4 @@
-const studentModel = require("../models/studentModel");
+const studentModel = require("../dbModel/studentModel");
 
 // register new user
 const registerNewUser = async (res, uid) => {

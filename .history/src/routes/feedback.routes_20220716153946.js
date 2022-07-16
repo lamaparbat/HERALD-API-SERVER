@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const auth = require("../middlewares/auth");
+const auth = require("../../src/middlewares/auth");
 const multer = require("multer");
 
 //upload image name
