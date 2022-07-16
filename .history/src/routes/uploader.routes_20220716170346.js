@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const auth = require("../middlewares/auth");
 const multer = require("multer");
-const { UPLOAD_STUDENT_LIST, UPLOAD_TEACHER_LIST, UPLOAD_ADMIN_LIST } = require("../controllers/index.controller").uploaderControllers;
+const { UPLOAD_STUDENT_LIST } = require("../controllers/index.controller").uploaderControllers;
 
 //upload image name
 var uploadFileName = null;
@@ -23,10 +23,14 @@ const collegeUpload = multer({ storage: storage2 });
 router.post("/api/v4/uploadStudentList", auth.VerifyJWT, collegeUpload.single("file"), UPLOAD_STUDENT_LIST );
 
 
-router.post("api/v4/uploadTeacherList", auth.VerifyJWT, UPLOAD_TEACHER_LIST);
+router.post("api/v4/uploadTeacherList", auth.VerifyJWT, (req, res) => {
+  res.send("in progress")
+});
 
 
-router.post("api/v4/uploadAdminList", auth.VerifyJWT, UPLOAD_ADMIN_LIST);
+router.post("api/v4/uploadAdminList", auth.VerifyJWT, (req, res) => {
+ res.send("in progress")
+});
 
 
 module.exports = router;

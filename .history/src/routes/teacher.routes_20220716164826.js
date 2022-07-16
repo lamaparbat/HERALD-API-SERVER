@@ -1,8 +1,6 @@
 const router = require('express').Router();
-
-const {
-  LOGIN,
-  SIGNUP } = require("../controllers/index.controller").teacherControllers;
+const bcrypt = require("bcryptjs");
+const { LOGIN, SIGNUP } = require("../controllers/index.controller").teacherControllers;
 
 // Teacher Login
 router.post('/api/v4/teacher/Login',LOGIN);
