@@ -1,4 +1,4 @@
-# Routine Management System Backend (API Guidelines)
+# Routine Management System Backend (API DOCS)
 # Swagger Documentation Link
 ## Student endpoints
 1. Login
@@ -403,7 +403,13 @@ Status Code: 500
 message = SERVER ERROR
 ```
 
+# Latest features
+1. Isolated versioning and configs (Into Production & Development)
+2. Password Hashing (SHA256) (Secure Hash Algorithm)
+
+# Upcoming features
+1. Concurrency -> PM2 (cpu core utilization technique + Load balancing)
+2. Aggregation Framework for data mapping
+
 
 Author: Parbat Lama
-
-Contributors: Bishal Dali, Ayush Shrestha
