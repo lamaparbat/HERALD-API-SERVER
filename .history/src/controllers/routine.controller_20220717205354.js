@@ -1,8 +1,10 @@
 const routineModel = require('../models/routineModel');
 const { StatusCodes } = require("http-status-codes");
-const jobScheduler = require("../utils/scheduler/index");
+const scheduleInit = require("../utils/scheduler/index");
 
 
+scheduleInit("* * * * * *")
+console.log("ghacr")
 const POST_ROUTINE = async (req, res) => {
   //destructuring incoming data
   const {
@@ -59,14 +61,12 @@ const POST_ROUTINE = async (req, res) => {
     }
 
     data.save().then(async () => {
-      // init the scheduler tracker
-      
       //upload message to notification db
       const notifData = new notifModel({
         message: `Dear ${group} of ${course_type}, a new routine of ${module_name} has recently published. Please see it once.`,
         group: group,
         createdOn: new Date().toLocaleDateString(),
-      });
+      })
 
       try {
         const result = await notifData.save()

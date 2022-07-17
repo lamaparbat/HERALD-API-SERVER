@@ -1,5 +1,4 @@
-const jwt = require('jsonwebtoken');
-const { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } = require("../configs/index.config"); 
+const jwt = require('jsonwebtoken')
 
 //verify jwt token
 const VerifyJWT = async(req, res, next) => {
@@ -16,7 +15,7 @@ const VerifyJWT = async(req, res, next) => {
   
   
   try {
-    const res = await jwt.verify(access_token, ACCESS_TOKEN_KEY)
+    const res = await jwt.verify(access_token, process.env.ACCESS_TOKEN_KEY)
     next()
   } catch (err) {
     return res.status(404).send({
@@ -27,17 +26,16 @@ const VerifyJWT = async(req, res, next) => {
 
 //generate jwt token
 const GenerateJWT = (uid) => {
-  const access_token = jwt.sign({ id: uid }, ACCESS_TOKEN_KEY, {
+  const access_token = jwt.sign({ id: uid }, process.env.ACCESS_TOKEN_KEY, {
     expiresIn: "24h"
   })
-  const refresh_token = jwt.sign({ id: uid }, REFRESH_TOKEN_KEY)
+  const refresh_token = jwt.sign({ id: uid }, process.env.REFRESH_TOKEN_KEY)
   
   return {
     access_token: access_token,
     refresh_token:refresh_token
   }
 }
-
 
 //regenerate the access token using refresh token
 const regenerateAccessToken = (req, res, next) => {
@@ -47,7 +45,7 @@ const regenerateAccessToken = (req, res, next) => {
   
   //verify refresh token
   try {
-    const response = jwt.verify(refresh_token, REFRESH_TOKEN_KEY);
+    const response = jwt.verify(refresh_token, process.env.REFRESH_TOKEN_KEY);
     
     //regenerate the access token    
     req.body.uid = response.id

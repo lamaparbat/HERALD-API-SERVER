@@ -65,7 +65,6 @@ const LOGIN = async (req, res) => {
     })
    }
   } catch (error) {
-     console.log(error)
    //if issue found on server, return message
    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
     message: error,

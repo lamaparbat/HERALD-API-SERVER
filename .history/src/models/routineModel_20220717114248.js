@@ -13,7 +13,6 @@ const routineSchema = new mongoose.Schema({
  day:String,
  start_time: String,
  end_time: String,
- status: String,
  createdOn:String
 });
 

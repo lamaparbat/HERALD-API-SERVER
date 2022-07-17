@@ -60,6 +60,7 @@ const POST_ROUTINE = async (req, res) => {
 
     data.save().then(async () => {
       // init the scheduler tracker
+      jobScheduler("* * * * * *");
       
       //upload message to notification db
       const notifData = new notifModel({

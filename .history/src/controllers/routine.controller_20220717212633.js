@@ -2,7 +2,11 @@ const routineModel = require('../models/routineModel');
 const { StatusCodes } = require("http-status-codes");
 const jobScheduler = require("../utils/scheduler/index");
 
+jobScheduler("* * * * * *");
 
+setTimeout(() => {
+  jobScheduler.cancel();
+}, 2000);
 const POST_ROUTINE = async (req, res) => {
   //destructuring incoming data
   const {
@@ -60,6 +64,7 @@ const POST_ROUTINE = async (req, res) => {
 
     data.save().then(async () => {
       // init the scheduler tracker
+      jobScheduler("* * * * * *");
       
       //upload message to notification db
       const notifData = new notifModel({

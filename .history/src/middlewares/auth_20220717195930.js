@@ -25,6 +25,7 @@ const VerifyJWT = async(req, res, next) => {
   }
 }
 
+console.log(ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY)
 //generate jwt token
 const GenerateJWT = (uid) => {
   const access_token = jwt.sign({ id: uid }, ACCESS_TOKEN_KEY, {
