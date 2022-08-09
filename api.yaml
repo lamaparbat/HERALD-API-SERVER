@@ -1,10 +1,56 @@
 swagger: "2.0"
 info:
-  description: "API Documentation of Routine Management System consisting several CRUD featues and Authentication"
+  description: |
+    # API Documentation
+
+    API Documentation of Herald College Application developed by **Herald Development Platform**.
+
+    ---
+
+    ### Features
+
+      1. Routine Management System Backend
+      2. Library Management System Backend
+      3. RTE Management System Backend
+      4. Student Service (Lost & Found)
+    
+    ---
+
+    ### Latest updates
+
+      1. Isolated versioning and configs (Into Production & Development)
+      2. Password Hashing (SHA256) (Secure Hash Algorithm) && HTTP Status Packages (Status code)
+      3. Dynamic Projects structures (Code Repositiory)
+    
+    ---
+    
+    ### Upcoming updates
+
+      1. Concurrency -> PM2 (cpu core utilization technique + Load balancing)
+      2. Aggregation Framework for data mapping
+      3. Event scheduler (CRON)
+      4. Inmemory storage (Caching)
+      5. AWS CI/CD Pipeline + Lambda Function
+      6. Cloud Hosting (EC2 Clustering) + Devops
+      7. APM Log tracing (Performance tracking including memory usage, processing time, error logs, etc)
+      8. Files zipping while uploading credentials such as excellsheet (Performance optimization) using Prometheus
+      9. Live classroom path finder (Map api)
+      
+    ---
+    
+    ### Things to change
+
+      1. Change payload to cameCase
+      2. Send essentials users data as response after succesfull login like username, profile url, group, level, etc
+      3. Complete Migration of Documentation to swagger
+      4. Web Scrapping for getting our community post from social media like facebook, instagram, linkedin (API Alternatives)
+      
+    ---
+
   version: "1.0.0"
-  title: "Routine Management System API Docs"
+  title: "Herald College App"
   contact:
-    name: "Parbat Lama"
+    name: "Backend Team"
     email: "np03cs4s210069@heraldcollege.edu.np"
   license:
     name: "Apache 2.0"
@@ -22,6 +68,8 @@ tags:
 - name: "Student"
   description: "Operations related to Student user"
 - name: "Logout"
+- name: "Upload"
+  description: "Operations related to upload college data"
 - name: "Regenerate Token"
 - name: "Feedback"
   description: "Operations related to feedbacks"
@@ -70,6 +118,10 @@ paths:
               message:
                 type: "string"
                 example: "Login succesfully"
+              email:
+                type: "string"
+              group:
+                type: "string"
               access_token:
                 type: "string"
                 example: "s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
@@ -358,7 +410,7 @@ paths:
               properties:
                 message:
                   type: "string"
-                  example: "500 Internal Server Error !"
+                  example: "Failed to delete routine !!"
   /api/v4/admin/Login:
     post:
       security:
@@ -525,6 +577,48 @@ paths:
               message:
                 type: "string"
                 example: "Failed to signup"
+  /api/v4/uploadStudentList:
+    post:
+      security:
+          - Bearer: []     
+      tags:
+        - "Upload"
+      summary: "Upload Student Excel Sheet"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          properties: 
+            file:
+              type: "object"
+      responses:
+        "200":
+          description: "Data extracted and import to DB successfully."
+          schema:
+            properties: 
+              message:
+                type: "string"
+                example: "Data extracted and import to DB successfully."
+        "400":
+          description: "Client side failure"
+          schema:
+            properties: 
+              message:
+                type: "string"
+                example: "Please donot upload file other than xlsx"        
+        "500":
+          description: "Server side failure"
+          schema:
+            properties: 
+              message:
+                type: "string"
+                example: "Failed to parse the given file. Please upload the xlsx formate file only !!!"  
   /api/v4/RegenerateToken:
     put:
       security:
@@ -686,6 +780,12 @@ definitions:
         type: "string"
       lecturer_name:
         type: "string"
+      class_type:
+        type: "string"
+        enum:
+        - "Lecture"
+        - "Tutorial"
+        - "Workshop"
       group:
         type: "string"
       room_name:
@@ -695,6 +795,15 @@ definitions:
         enum:
         - "HCK"
         - "Wolverhampton"
+      day:
+        type: "string"
+        enum:
+        - "Sunday"
+        - "Monday"
+        - "Tuesday"
+        - "Wednesday"
+        - "Thursday"
+        - "Friday"
       start_time:
         type: "string"
         format: "date-time"
