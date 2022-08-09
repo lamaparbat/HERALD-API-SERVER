@@ -142,6 +142,8 @@ server.post('/api/v4/student/Login', async (req, res) => {
 
         return res.status(200).send({
           message: 'Login succesfull !!',
+          email: data.email,
+          group: data.group,
           access_token: access_token,
           refresh_token: refresh_token
         });
