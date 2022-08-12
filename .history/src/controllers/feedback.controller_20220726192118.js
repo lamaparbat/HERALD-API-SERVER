@@ -52,7 +52,7 @@ const GET_FEEDBACK = async (req, res) => {
 }
 
 const DELETE_FEEDBACK = async (req, res) => {
- const { feedbackid, filename } = req.headers;
+ const { feedbackz, filename } = req.headers;
 
  //delete feedback post using id
  try {
