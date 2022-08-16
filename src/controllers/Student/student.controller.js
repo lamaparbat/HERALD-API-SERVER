@@ -8,7 +8,7 @@ const LOGIN = async (req, res) => {
  var { uid } = req.body;
  uid = uid.toUpperCase();
  
- var studentAttemptCount = 0, block_email;
+ var studentAttemptCount = 0, blockEmail;
 
  //uid validation
  if (typeof uid !== "string") {
@@ -16,7 +16,7 @@ const LOGIN = async (req, res) => {
  }
 
  // excess attempt check
- if (studentAttemptCount <= 5 && block_email !== uid) {
+ if (studentAttemptCount <= 5 && blockEmail !== uid) {
   //verify the uid
   if ((uid.includes('NP') && uid.includes('HERALDCOLLEGE.EDU.NP')) === false) {
    return res.status(StatusCodes.UNAUTHORIZED).json({
@@ -33,17 +33,17 @@ const LOGIN = async (req, res) => {
    if (data.length !== 0) {
     //reset the attempt account details
     studentAttemptCount = 0;
-    block_email = null;
+    blockEmail = null;
 
     //generate the token
-    const { access_token, refresh_token } = auth.GenerateJWT(uid);
+    const { accessToken, refreshToken } = auth.GenerateJWT(uid);
 
     return res.status(StatusCodes.OK).send({
      message: 'Login succesfull !!',
      email: data.email,
      group: data.group,
-     access_token: access_token,
-     refresh_token: refresh_token
+     accessToken: accessToken,
+     refreshToken: refreshToken
     });
    } else {
     //increase the wrong email counter by 1
@@ -53,7 +53,7 @@ const LOGIN = async (req, res) => {
      setTimeout(() => {
       //reset the attemptCount after 5 minutes
       attemptCount = 0;
-      block_email = null;
+      blockEmail = null;
 
       console.log('Now you can login. => ' + studentAttemptCount);
      }, 300000);
@@ -73,7 +73,7 @@ const LOGIN = async (req, res) => {
    })
   }
  } else {
-  block_email = uid;
+  blockEmail = uid;
   studentAttemptCount = 0;
   return res.status(StatusCodes.FORBIDDEN).send({
    message: 'You exceed the 5 login attempt. Please try again after 5 min !!',

@@ -6,17 +6,19 @@ const jobScheduler = require("../utils/scheduler/index");
 const POST_ROUTINE = async (req, res) => {
   //destructuring incoming data
   const {
-    course_type,
-    module_name,
-    lecturer_name,
-    class_type,
+    courseType,
+    moduleName,
+    lecturerName,
+    classType,
     group,
-    room_name,
-    block_name,
+    roomName,
+    blockName,
     day,
-    start_time,
-    end_time,
+    startTime,
+    endTime,
   } = req.body
+
+  
 
   //check if all attributes are recieved or not ?
   if (Object.keys(req.body).length < 9) {
@@ -27,35 +29,35 @@ const POST_ROUTINE = async (req, res) => {
 
   //minor validation
   if (
-    course_type.length > 0 &&
-    module_name.length > 0 &&
-    lecturer_name.length > 0 &&
-    class_type.length > 0 &&
+    courseType.length > 0 &&
+    moduleName.length > 0 &&
+    lecturerName.length > 0 &&
+    classType.length > 0 &&
     group.length > 0 &&
-    room_name.length > 0 &&
+    roomName.length > 0 &&
     day.length > 0 &&
-    start_time.length > 0 &&
-    end_time.length > 0 &&
-    block_name.length > 0
+    startTime.length > 0 &&
+    endTime.length > 0 &&
+    blockName.length > 0
   ) {
     const data = new routineModel({
-      course_type: course_type.toUpperCase(),
-      module_name: module_name.toUpperCase(),
-      lecturer_name: lecturer_name,
-      class_type: class_type.toUpperCase(),
+      courseType: courseType.toUpperCase(),
+      moduleName: moduleName.toUpperCase(),
+      lecturerName: lecturerName,
+      classType: classType.toUpperCase(),
       group: group.toUpperCase(),
-      room_name: room_name.toUpperCase(),
-      block_name: block_name,
+      roomName: roomName.toUpperCase(),
+      blockName: blockName,
       day: day.toUpperCase(),
-      start_time: start_time,
-      end_time: end_time,
+      startTime: startTime,
+      endTime: endTime,
       status: "Upcoming",
       createdOn: new Date().toLocaleDateString(),
     });
 
-    const result = await routineModel.find({ createdOn: new Date().toLocaleDateString(), day: day, module_name: module_name });
+    const result = await routineModel.find({ createdOn: new Date().toLocaleDateString(), day: day, moduleName: moduleName });
     if (result.length > 0) {
-      res.status(404).send(`Routine of ${module_name} for the date ${new Date().toLocaleDateString()} has already been created.`)
+      res.status(404).send(`Routine of ${moduleName} for the date ${new Date().toLocaleDateString()} has already been created.`)
     }
 
     data.save().then(async () => {
@@ -63,7 +65,7 @@ const POST_ROUTINE = async (req, res) => {
       
       //upload message to notification db
       const notifData = new notifModel({
-        message: `Dear ${group} of ${course_type}, a new routine of ${module_name} has recently published. Please see it once.`,
+        message: `Dear ${group} of ${courseType}, a new routine of ${moduleName} has recently published. Please see it once.`,
         group: group,
         createdOn: new Date().toLocaleDateString(),
       });
@@ -72,7 +74,7 @@ const POST_ROUTINE = async (req, res) => {
         const result = await notifData.save()
         if (result.message) {
           pusher.trigger("my-channel", "notice", {
-            message: `Dear ${group} of ${course_type}, a new routine of ${module_name} has recently published. Please see it once.`
+            message: `Dear ${group} of ${courseType}, a new routine of ${moduleName} has recently published. Please see it once.`
           });
           return res.status(200).send({
             message: 'Routine posted successfully !!',
@@ -151,31 +153,31 @@ const GET_ROUTINE_BY_GROUP = async (req, res) => {
 const UPDATE_ROUTINE = (req, res) => {
   //get the routine doc id
   const {
-    course_type,
-    module_name,
-    lecturer_name,
-    class_type,
+    courseType,
+    moduleName,
+    lecturerName,
+    classType,
     group,
-    room_name,
-    block_name,
+    roomName,
+    blockName,
     day,
-    start_time,
-    end_time,
+    startTime,
+    endTime,
   } = req.body;
 
   routineModel.findByIdAndUpdate(
     routineID,
     {
-      course_type: course_type.toUpperCase(),
-      module_name: module_name.toUpperCase(),
-      lecturer_name: lecturer_name,
-      class_type: class_type.toUpperCase(),
+      courseType: courseType.toUpperCase(),
+      moduleName: moduleName.toUpperCase(),
+      lecturerName: lecturerName,
+      classType: classType.toUpperCase(),
       group: group.toUpperCase(),
-      room_name: room_name.toUpperCase(),
-      block_name: block_name,
+      roomName: roomName.toUpperCase(),
+      blockName: blockName,
       day: day.toUpperCase(),
-      start_time: start_time,
-      end_time: end_time,
+      startTime: startTime,
+      endTime: endTime,
       createdOn: new Date().toLocaleDateString(),
     },
     (err, data) => {
@@ -211,11 +213,11 @@ const DELETE_ROUTINE = (req, res) => {
 }
 
 const SEARCH_ROUTINE = async (req, res) => {
-  const { module_name, group } = req.headers
+  const { moduleName, group } = req.headers
 
   //search routine in db
   const result = await routineModel.find({
-    module_name: module_name,
+    moduleName: moduleName,
     group: group,
   })
 

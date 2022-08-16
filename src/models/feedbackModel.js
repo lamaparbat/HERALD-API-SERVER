@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 //define schema
 const feedbackSchema = new mongoose.Schema({
- report_type: String,
+ reportType: String,
  description: String,
  file: Object,
  date: String

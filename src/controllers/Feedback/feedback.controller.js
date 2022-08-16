@@ -2,14 +2,14 @@ const { StatusCodes } = require("http-status-codes");
 
 const POST_FEEDBACK = async (req, res) => {
  // destructuring the binded data
- const { report_type, description } = req.body;
+ const { reportType, description } = req.body;
 
  // validation
  if (Object.keys(req.body).length < 7) {
-  if (report_type.length > 3 && description.length > 3 && uploadFileName !== null) {
+  if (reportType.length > 3 && description.length > 3 && uploadFileName !== null) {
    //db insertion
    const data = new feedbackModel({
-    report_type: report_type,
+    reportType: reportType,
     description: description,
     file: uploadFileName
    });

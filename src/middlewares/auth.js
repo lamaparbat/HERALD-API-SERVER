@@ -9,14 +9,14 @@ const VerifyJWT = async(req, res, next) => {
       message:"Token is empty !!"
     });
   } 
-  var access_token = req.header('authorization')
+  var accessToken = req.header('authorization')
 
   //remove the bearer text from token
-  access_token = access_token.substr(7, access_token.length);
+  accessToken = accessToken.substr(7, accessToken.length);
   
   
   try {
-    const res = await jwt.verify(access_token, ACCESS_TOKEN_KEY)
+    const res = await jwt.verify(accessToken, ACCESS_TOKEN_KEY)
     next()
   } catch (err) {
     return res.status(404).send({
@@ -27,14 +27,14 @@ const VerifyJWT = async(req, res, next) => {
 
 //generate jwt token
 const GenerateJWT = (uid) => {
-  const access_token = jwt.sign({ id: uid }, ACCESS_TOKEN_KEY, {
+  const accessToken = jwt.sign({ id: uid }, ACCESS_TOKEN_KEY, {
     expiresIn: "24h"
   })
-  const refresh_token = jwt.sign({ id: uid }, REFRESH_TOKEN_KEY)
+  const refreshToken = jwt.sign({ id: uid }, REFRESH_TOKEN_KEY)
   
   return {
-    access_token: access_token,
-    refresh_token:refresh_token
+    accessToken: accessToken,
+    refreshToken:refreshToken
   }
 }
 
@@ -42,12 +42,12 @@ const GenerateJWT = (uid) => {
 //regenerate the access token using refresh token
 const regenerateAccessToken = (req, res, next) => {
   // fetch the refresh token
-  var refresh_token = req.header("authorization")
-  refresh_token = refresh_token.substr(14, refresh_token.length);
+  var refreshToken = req.header("authorization")
+  refreshToken = refreshToken.substr(14, refreshToken.length);
   
   //verify refresh token
   try {
-    const response = jwt.verify(refresh_token, REFRESH_TOKEN_KEY);
+    const response = jwt.verify(refreshToken, REFRESH_TOKEN_KEY);
     
     //regenerate the access token    
     req.body.uid = response.id
