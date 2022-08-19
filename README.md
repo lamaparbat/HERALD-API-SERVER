@@ -161,7 +161,7 @@ onFailure: {
 
 2. Read/Fetched routine data
 ```perl
-GET: /api/v4/routines/getRoutineData
+GET: /api/v4/routines
  
  //header.authorization.bearer
 token: ""
