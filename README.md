@@ -1,5 +1,6 @@
-# Routine Management System Backend (API DOCS)
-# Swagger Documentation Link
+# HERALD BACKEND API SERVICES
+
+
 ## Student endpoints
 1. Login
 ```perl
