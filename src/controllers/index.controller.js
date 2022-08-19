@@ -1,12 +1,12 @@
 const controllers = {
- adminControllers: require("./admin.controller"),
- studentControllers: require("./student.controller"),
- routineControllers: require("./routine.controller"),
- teacherControllers: require("./teacher.controller"),
- feedbackControllers: require("./feedback.controller"),
- notificationControllers: require("./notification.controller"),
+ adminControllers: require("./Admin/admin.controller"),
+ studentControllers: require("./Student/student.controller"),
+ routineControllers: require("./Routines/routine.controller"),
+ teacherControllers: require("./Teacher/teacher.controller"),
+ feedbackControllers: require("./Feedback/feedback.controller"),
+ notificationControllers: require("./Notification/notification.controller"),
  uploaderControllers: require("./uploader.controller"),
- commonControllers: require("./common.controller"),
+ commonControllers: require("./Common/common.controller"),
 }
 
 module.exports = controllers;

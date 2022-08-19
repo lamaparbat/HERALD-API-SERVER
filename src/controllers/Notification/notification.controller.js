@@ -1,4 +1,4 @@
-const notifModel = require("../models/notificationModel");
+const notifModel = require("../../models/notificationModel");
 const { StatusCodes } = require("http-status-codes");
 
 

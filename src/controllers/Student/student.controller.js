@@ -1,5 +1,5 @@
-const studentModel = require('../models/studentModel');
-const auth = require('../middlewares/auth');
+const studentModel = require('../../models/studentModel');
+const auth = require('../../middlewares/auth');
 const { StatusCodes } = require("http-status-codes" );
 
 

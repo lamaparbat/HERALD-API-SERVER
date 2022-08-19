@@ -1,4 +1,4 @@
-const teacherModel = require('../models/teacherModel');
+const teacherModel = require('../../models/teacherModel');
 const bcrypt = require("bcryptjs");
 const { StatusCodes } = require("http-status-codes");
 

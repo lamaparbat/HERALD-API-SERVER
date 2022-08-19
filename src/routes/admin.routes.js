@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { LOGIN, SIGNUP } = require('../controllers/Admin/index.controller').adminControllers;
+const { LOGIN, SIGNUP } = require('../controllers/Admin/admin.controller');
 
 
 // Admin Login

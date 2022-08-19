@@ -1,5 +1,5 @@
 const bcrypt = require("bcryptjs");
-const adminModel = require('../models/adminModel');
+const adminModel = require('../../models/adminModel');
 const {StatusCodes} = require("http-status-codes");
 
 

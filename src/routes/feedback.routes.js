@@ -5,7 +5,7 @@ const {
  POST_FEEDBACK,
  GET_FEEDBACK,
  DELETE_FEEDBACK
-} = require("../controllers/Feedback/feedback.controller").feedbackControllers;
+} = require("../controllers/Feedback/feedback.controller");
 
 
 //upload image name
