@@ -13,7 +13,7 @@ const {
 router.post('/api/v4/admin/postRoutineData', auth.VerifyJWT, POST_ROUTINE);
 
 //get all routine data
-router.get('/api/v4/routines/getRoutineData', auth.VerifyJWT, GET_ROUTINE);
+router.get('/api/v4/routines', auth.VerifyJWT, GET_ROUTINE);
 
 //update routine data
 router.put('/api/v4/admin/updateRoutineData', auth.VerifyJWT, UPDATE_ROUTINE )
