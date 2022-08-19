@@ -9,6 +9,7 @@ const routes = require("../src/routes/index.routes.js");
 const { START_DB_CONNECTION } = require("../src/utils/index.utils");
 const { PORT } = require("./configs/index.config");
 const routineModel = require("./models/routineModel");
+const path = require("path");
 
 // **** -> server config <- *******
 const server = express();
@@ -23,6 +24,7 @@ const swaggerDocs = YAML.load("./api.yaml");
 //middleware
 server.use(express.json());
 server.use(cookieParser());
+server.use(express.static(path.join(__dirname , "/public")))
 server.use(routes);
 server.use(
   cors({
