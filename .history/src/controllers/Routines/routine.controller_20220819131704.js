@@ -106,6 +106,50 @@ const GET_ROUTINE = async (req, res) => {
   }
 }
 
+const GET_ROUTINE_BY_LEVEL = async (req, res) => {
+  // destructuring the level from headers
+  const level = `L${req.headers.level}`;
+
+  //fetch all routine from db
+  const result = await routineModel.find();
+
+  const filterData = result.filter(data => {
+    return data.group.includes(level);
+  })
+
+  if (filterData.length != 0) {
+    return res.status(StatusCodes.OK).send({
+      data: filterData,
+    })
+  } else {
+    return res.status(StatusCodes.NO_CONTENT).send({
+      message: 'Result: 0 found !!',
+    })
+  }
+}
+
+const GET_ROUTINE_BY_GROUP = async (req, res) => {
+  // destructuring the level from headers
+  const group = `G${req.headers.group}`;
+
+  //fetch all routine from db
+  const result = await routineModel.find();
+
+  const filterData = result.filter(data => {
+    return data.group.includes(group);
+  })
+
+  if (filterData.length != 0) {
+    return res.status(StatusCodes.OK).send({
+      data: filterData,
+    })
+  } else {
+    return res.status(StatusCodes.NO_CONTENT).send({
+      message: 'Result: 0 found !!',
+    })
+  }
+}
+
 const UPDATE_ROUTINE = (req, res) => {
   //get the routine doc id
   const {
@@ -168,9 +212,32 @@ const DELETE_ROUTINE = (req, res) => {
   //   })
 }
 
+const SEARCH_ROUTINE = async (req, res) => {
+  const { moduleName, group } = req.headers
+
+  //search routine in db
+  const result = await routineModel.find({
+    moduleName: moduleName,
+    group: group,
+  })
+
+  if (result.length != 0) {
+    return res.status(StatusCodes.OK).send({
+      data: result,
+    })
+  } else {
+    return res.status(StatusCodes.NO_CONTENT).send({
+      message: 'Routine not found !!',
+    })
+  }
+}
+
 module.exports = {
   POST_ROUTINE,
   GET_ROUTINE,
+  GET_ROUTINE_BY_LEVEL,
+  GET_ROUTINE_BY_GROUP,
   UPDATE_ROUTINE,
-  DELETE_ROUTINE
+  DELETE_ROUTINE,
+  SEARCH_ROUTINE
 }
