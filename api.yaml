@@ -11,22 +11,25 @@ info:
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
 servers:
   - url: http://localhost:8000
-  - url: https://rms-server-8080.herokuapp.com
+  - url: https://dev-herald-server.herokuapp.com/
+  - url: https://prod-herald-server.herokuapp.com/
 tags:
 - name: "Routine"
-  description: "Operations related to Routine"
+  description: "Routine api endpoints"
 - name: "Admin"
-  description: "Operations related to Admin user"
+  description: "Admin api endpoints"
 - name: "Teacher"
-  description: "Operations related to Teacher user"
+  description: "Teacher api endpoints"
 - name: "Student"
-  description: "Operations related to Student user"
+  description: "Student api endpoints"
 - name: "Logout"
+  description: "Logout api endpoints"
 - name: "Upload"
-  description: "Operations related to upload college data"
+  description: "File upload api endpoints"
 - name: "Regenerate Token"
+  description: "Regenerate token api endpoints"
 - name: "Feedback"
-  description: "Operations related to feedbacks"
+  description: "Feedback api endpoints"
 schemes:
   - https
   - http
@@ -143,7 +146,7 @@ paths:
               message:
                 type: "string"
                 example: "Failed to post the routine !!"
-  /api/v4/routines/getRoutineData:
+  /api/v4/routines:
     get:
       security:
         - Bearer: []     
@@ -174,7 +177,6 @@ paths:
               message:
                 type: "string"
                 example: "500 Internal Server Error !"
-  /api/v4/routines/getRoutineByLevel:
     get:
       security:
         - Bearer: []     
@@ -213,7 +215,6 @@ paths:
               message:
                 type: "string"
                 example: "500 Internal Server Error !"
-  /api/v4/routines/getRoutineByGroup:
     get:
       security:
         - Bearer: []     
@@ -252,7 +253,6 @@ paths:
                 message:
                   type: "string"
                   example: "500 Internal Server Error !"
-  /api/v4/routines/searchRoutine:
     get:
       security:
         - Bearer: []     
