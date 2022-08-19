@@ -21,9 +21,13 @@
 .container__img-container img {
   margin: 10px;
   height: 100px;
-  width: 300px;
+  width: 400px;
 }
 
-#copyright{
+.container #container__link {
+  margin-top: 10px;
+}
+
+#copyright {
   margin-left: 100px;
 }
