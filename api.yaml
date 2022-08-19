@@ -10,8 +10,6 @@ info:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
 servers:
-  - url: http://localhost:8000
-  - url: https://dev-herald-server.herokuapp.com/
   - url: https://prod-herald-server.herokuapp.com/
 tags:
 - name: "Routine"
