@@ -161,7 +161,7 @@ onFailure: {
 
 2. Read/Fetched routine data
 ```perl
-GET: /api/v4/routines/getRoutineData
+GET: /api/v4/routines
  
  //header.authorization.bearer
 token: ""
@@ -269,69 +269,6 @@ onSuccess: {
 onFailure: {
    message: "Internal Server Error !!"
 }
-
-5. Search routine by group and module_name
-```perl
-GET: /api/v4/routines/searchRoutine
- 
- //headers
- module_name:"",
- group:""
- 
- //header.authorization.bearer
-token: "",
-
-
-For example: In Javascript using axios,
-
-const res = await axios.post('https://httpbin.org/post', { data }, {
-  headers: {
-    "Authorization":'Bearer' + 'a23adjbd3knvbjdf.f3jsbfvjbbjb3.skja8adkfsbfvjbfvj',
-    "module_name": "HCI",
-    "group":"L5CG8"
-  }
-});
-```
-5. Get routine by Group.  (Recently updated !!)
-```perl
-GET: /api/v4/routines/getRoutineByGroup
- 
- //headers
- group:""
- 
- //header.authorization.bearer
-token: "",
-
-
-For example: In Javascript using axios,
-
-const res = await axios.post('https://httpbin.org/post', { data }, {
-  headers: {
-    "Authorization":'Bearer' + 'a23adjbd3knvbjdf.f3jsbfvjbbjb3.skja8adkfsbfvjbfvj',
-    "group":"8"
-  }
-});
-```
-5. Get routine by Level. (Recently updated !!)
-```perl
-GET: /api/v4/routines/getRoutineByLevel
- 
- //headers
- level:""
- 
- //header.authorization.bearer
-token: "",
-
-
-For example: In Javascript using axios,
-
-const res = await axios.post('https://httpbin.org/post', { data }, {
-  headers: {
-    "Authorization":'Bearer' + 'a23adjbd3knvbjdf.f3jsbfvjbbjb3.skja8adkfsbfvjbfvj',
-    "level":"5"
-  }
-});
-```
 
 # User feedback CRUD (Recently updated !!)
 1. Post feeback 
