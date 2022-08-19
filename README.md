@@ -22,15 +22,7 @@ onFailure: {
 }
 
 ```
-## Regenerated access token endpoints (Recently updated !!)
-
-### When to call this endpoint ?
-When the session time for access token is ended/out, the jwt server reset the access_token which caused you to  you get the response like this => 
-    {
-      message:"Session timeout."
-    }
-Therefore, inorder to regenerate access token, you have hit this endpoint by attaching refresh_token on the header of "authorization/oAuth 2.0/refresh_token: value" which in response you get the new access_token and refresh token. The session time for access_token is 24 hrs, that means your access_token is only justified with a day.
-
+## Regenerated access token endpoints.
 ```perl
 PUT : /api/v4/RegenerateToken
 
