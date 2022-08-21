@@ -1,5 +1,5 @@
-# HERALD COLLEGE KATHMANDU API SERVICES 🎉🎉
-
+# HCK API SERVICES  🎉🎉
+ 
 ## Student endpoints
 1. Login
 ```perl
