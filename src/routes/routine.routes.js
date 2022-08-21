@@ -10,15 +10,15 @@ const {
 
 // ****** --> CRUD Routine Operation <-- *********
 //post routine data
-router.post('/api/v4/admin/postRoutineData', auth.VerifyJWT, POST_ROUTINE);
+router.post('/admin/postRoutineData', auth.VerifyJWT, POST_ROUTINE);
 
 //get all routine data
-router.get('/api/v4/routines', auth.VerifyJWT, GET_ROUTINE);
+router.get('/routines', auth.VerifyJWT, GET_ROUTINE);
 
 //update routine data
-router.put('/api/v4/admin/updateRoutineData', auth.VerifyJWT, UPDATE_ROUTINE )
+router.put('/admin/updateRoutineData', auth.VerifyJWT, UPDATE_ROUTINE )
 
 //delete routine data
-router.delete('/api/v4/admin/deleteRoutineData', auth.VerifyJWT, DELETE_ROUTINE)
+router.delete('/admin/deleteRoutineData', auth.VerifyJWT, DELETE_ROUTINE)
 
 module.exports = router;

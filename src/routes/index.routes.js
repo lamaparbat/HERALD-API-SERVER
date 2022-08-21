@@ -8,7 +8,8 @@ const TEACHER_ROUTES = require("./teacher.routes.js");
 const UPLOADER_ROUTES = require("./uploader.routes.js");
 const FEEDBACK_ROUTES = require("./feedback.routes.js");
 const UTILS_ROUTES = require("./common.routes.js");
-const DEFAULT_ROUTES = require("./default.routes")
+const DEFAULT_ROUTES = require("./default.routes");
+const LOSTFOUND_ROUTES = require("./lostfound.routes");
 
 Router.use(ROUTINE_ROUTES);
 Router.use(ADMIN_ROUTES);
@@ -17,6 +18,7 @@ Router.use(TEACHER_ROUTES);
 Router.use(UPLOADER_ROUTES);
 Router.use(FEEDBACK_ROUTES);
 Router.use(UTILS_ROUTES);
+Router.use(LOSTFOUND_ROUTES);
 Router.use(DEFAULT_ROUTES);
 
 module.exports = Router;

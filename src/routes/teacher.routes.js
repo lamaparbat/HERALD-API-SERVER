@@ -5,10 +5,10 @@ const {
   SIGNUP } = require("../controllers/index.controller").teacherControllers;
 
 // Teacher Login
-router.post('/api/v4/teacher/Login',LOGIN);
+router.post('/teacher/Login',LOGIN);
 
 //register new Teacher
-router.post('/api/v4/teacher/Signup', SIGNUP );
+router.post('/teacher/Signup', SIGNUP );
 
 module.exports = router;
 

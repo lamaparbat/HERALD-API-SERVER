@@ -6,11 +6,11 @@ const {
 } = require("../controllers/index.controller").commonControllers;
 
 //logout
-router.post('/api/v4/Logout', LOGOUT);
+router.post('/Logout', LOGOUT);
 
 
 //request for regenerate access token
-router.put("/api/v4/RegenerateToken", auth.regenerateAccessToken, REGENERATE_TOKEN)
+router.put("/RegenerateToken", auth.regenerateAccessToken, REGENERATE_TOKEN)
 
 
 
