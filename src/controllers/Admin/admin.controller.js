@@ -36,7 +36,7 @@ const LOGIN = (req, res) => {
 }
 
 const SIGNUP = async (req, res) => {
- const { email, password } = req.body;
+ let { email, password } = req.body;
 
  // encrypt the password
  password = await bcrypt.hash(password, salt = 10);
