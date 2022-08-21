@@ -105,24 +105,20 @@ const GET_ROUTINE = async (req, res) => {
   }
 
   // destructuring query strings
-
   const fields = req.query;
   let length = Object.keys(fields).length;
   
-  // if level or group is provided or both level and group is provided filter according to fields
-
+  // if level or group is provided filter according to fields
   if(length != 0){
-    const filterData =  result.filter(data=>{
-      return  (fields.level ?  data.group.includes(`L${fields.level}`) : true)
-       && (fields.group ? data.group.includes(`CG${fields.group}`) : true)
-    })
+    const filterData =  result.filter(data=>
+          (fields.level ?  data.group.includes(`L${fields.level}`) : true) &&
+          (fields.group ? data.group.includes(`CG${fields.group}`) : true)
+    )
     return res.status(StatusCodes.ACCEPTED).send({
       message: filterData
     })
   }
-
   // if both level and group is not provided show all routines
-
   else{
     return res.status(StatusCodes.ACCEPTED).send({
       message: result,
