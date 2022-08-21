@@ -1,5 +1,5 @@
-# HERALD COLLEGE KATHMANDU API SERVICES 🎉🎉
-
+# HCK API SERVICES  🎉🎉
+ 
 ## Student endpoints
 1. Login
 ```perl
@@ -23,7 +23,7 @@ onFailure: {
 }
 
 ```
-## Regenerated access token endpoints (Recently updated !!)
+## Regenerated access token endpoints
 
 ```perl
 PUT : /api/v4/RegenerateToken
