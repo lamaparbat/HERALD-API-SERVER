@@ -23,7 +23,7 @@ onFailure: {
 }
 
 ```
-## Regenerated access token endpoints (Recently updated !!)
+## Regenerated access token endpoints
 
 ```perl
 PUT : /api/v4/RegenerateToken
