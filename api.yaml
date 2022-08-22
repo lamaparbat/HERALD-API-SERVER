@@ -1,33 +1,83 @@
 swagger: "2.0"
 info:
-  description: "API Documentation of Routine Management System consisting several CRUD featues and Authentication"
+  description: |
+    <img src="https://dev-herald-server.herokuapp.com/images/logo.png" alt="Herald College Kathmandu logo" width="400" height="100" />
+
+    # API Documentation
+
+    API Documentation of Herald College Application developed by **Herald Development Platform Community**.
+    <img src="https://dev-herald-server.herokuapp.com/images/community.jpeg" alt="Development Platform Community logo" width="400" height="100" />
+    ---
+
+    ### ✨ Features 
+
+      1. Routine Management System Backend
+      2. Library Management System Backend
+      3. RTE Management System Backend
+      4. Student Service (Lost & Found)
+
+    ---
+
+    ### 🆕 Latest Updates 
+
+      1. Isolated Versioning and configs (Into Production & Development)
+      2. Password Hashing (SHA256) (Secure Hash Algorithm)
+      3. Lost & Found services
+
+    ---
+
+    ### 🔔 Upcoming Updates 
+
+      1. Concurrency -> PM2 (CPU Core Utilization Technique + Load Balancing)
+      2. Social Media API Sync (Public API + Scrapping [Alternatives])
+      
+    ---
+
+    ### ⚒️ Things To Change
+
+      1. Aggregation Framework for data mapping
+      2. Devops + AWS Service integration [Premium]
+      3. Log tracing & Management [Premium]
+      
+    ---
+
+    ### ✅ Things Accomplished Until now
+
+      1. Routine Management System.
+      
+    ---
+
   version: "1.0.0"
-  title: "Routine Management System API Docs"
+  title: "Herald College Kathmandu App"
   contact:
-    name: "Parbat Lama"
+    name: "Backend Team"
     email: "np03cs4s210069@heraldcollege.edu.np"
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
 servers:
+  - url: http://localhost:8000
+  - url: https://dev-herald-server.herokuapp.com/
   - url: https://prod-herald-server.herokuapp.com/
 tags:
-- name: "Routine"
-  description: "Routine api endpoints"
-- name: "Admin"
-  description: "Admin api endpoints"
-- name: "Teacher"
-  description: "Teacher api endpoints"
-- name: "Student"
-  description: "Student api endpoints"
-- name: "Logout"
-  description: "Logout api endpoints"
-- name: "Upload"
-  description: "File upload api endpoints"
-- name: "Regenerate Token"
-  description: "Regenerate token api endpoints"
-- name: "Feedback"
-  description: "Feedback api endpoints"
+  - name: "Routine"
+    description: "Operations related to Routine"
+  - name: "Admin"
+    description: "Operations related to Admin user"
+  - name: "Teacher"
+    description: "Operations related to Teacher user"
+  - name: "Student"
+    description: "Operations related to Student user"
+  - name: "Common"
+    description: "Operations common to all users"
+  - name: "Upload"
+    description: "Operations related to upload college data"
+  - name: "Feedback"
+    description: "Operations related to feedbacks"
+  - name: "Notification"
+    description: "Operations related to Notification"
+  - name: "Lost & Found"
+    description: "Operations related to Lost & Found"
 schemes:
   - https
   - http
@@ -40,749 +90,858 @@ paths:
   /api/v4/student/Login:
     post:
       security:
-        - Bearer: []    
+        - Bearer: []
       tags:
-      - "Student"
+        - "Student"
       summary: "Student Login"
       description: ""
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: "body"
-        name: "body"
-        required: true
-        schema:
-          $ref: "#/definitions/Student"
-      responses:
-        "400":
-          description: "Unverified users"
+        - in: "body"
+          name: "body"
+          required: true
           schema:
-            properties: 
+            $ref: "#/definitions/Student"
+      responses:
+        "401":
+          description: "UNAUTHORIZED"
+          schema:
+            properties:
               message:
                 type: "string"
-                example: "Failed to login.  Please use correct email!"
+                example: "Unverified user"
               token:
                 type: "string"
                 example: "null"
         "200":
-          description: "Login successful"
+          description: "OK"
           schema:
-            properties: 
+            properties:
               message:
                 type: "string"
                 example: "Login succesfully"
-              access_token:
+              email:
+                type: "string"
+                example: "np03cs4s210869@heraldcollege.edu.np"
+              scope:
+                type: "string"
+                example: "student"
+              group:
+                type: "string"
+              accessToken:
                 type: "string"
                 example: "s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
-              refresh_token:
+              refreshToken:
                 type: "string"
                 example: "s32241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
-        "500":
-          description: "500 Internal Server Error !"
+        "203":
+          description: "NON_AUTHORITATIVE_INFORMATION"
           schema:
-            properties: 
+            properties:
               message:
                 type: "string"
-                example: "500 Internal Server Error !"
+                example: "Failed to login. Please use correct email !!"
               token:
                 type: "string"
                 example: "null"
+        "403":
+          description: "FORBIDDEN"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "You exceed the 5 login attempt. Please try again after 5 min !!"
+              token:
+                type: "string"
+                example: "null"
+        "500":
+          description: "INTERNAL_SERVER_ERROR"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "500. SERVER ERROR!!"
+              token:
+                type: "string"
+                example: "null"
+
   /api/v4/Logout:
     post:
       security:
-        - Bearer: []   
+        - Bearer: []
       tags:
-      - "Logout"
+        - "Common"
       summary: "Logout"
       description: ""
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       responses:
         "200":
-          description: "Logout successful"
+          description: "OK"
           schema:
-            properties: 
+            properties:
               message:
                 type: "string"
                 example: "Logout sucessfull !!"
+
   /api/v4/admin/postRoutineData:
     post:
       security:
-        - Bearer: []     
+        - Bearer: []
       tags:
         - "Routine"
       summary: "Posts Routine Data"
       description: ""
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: "body"
-        name: "body"
-        required: true
-        schema:
-          $ref: "#/definitions/Routine"
-      responses:
-        "200":
-          description: "Routine posted successfully!"
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "Routine posted successfully!"
-        "404":
-          description: "Some fields are missing. Please provide all the fields !!"
-        "500":
-          description: "500 Internal Server Error !"
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "Failed to post the routine !!"
-  /api/v4/routines:
-    get:
-      security:
-        - Bearer: []     
-      tags:
-      - "Routine"
-      summary: "Gets routine data"
-      description: ""
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      responses:
-        "200":
-          description: "Got Routine Data Successfully"
+        - in: "body"
+          name: "body"
+          required: true
           schema:
             $ref: "#/definitions/Routine"
-        "404":
-          description: "No results"
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "Result: 0 found !!"  
-        "500":
-          description: "500 Internal Server Error !"
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "500 Internal Server Error !"
-    get:
-      security:
-        - Bearer: []     
-      tags:
-      - "Routine"
-      summary: "Gets routine data by level"
-      description: ""
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        required: true
-        schema:
-          properties: 
-            group:
-              type: "string"
       responses:
         "200":
-          description: "Got Routine Data Successfully"
-          schema:
-            $ref: "#/definitions/Routine"
-        "404":
-          description: "No results"
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "Result: 0 found !!"  
-        "500":
-          description: "500 Internal Server Error !"
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "500 Internal Server Error !"
-    get:
-      security:
-        - Bearer: []     
-      tags:
-      - "Routine"
-      summary: "Gets routine data by group"
-      description: ""
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        required: true
-        schema:
-          properties: 
-            group:
-              type: "string"
-      responses:
-        "200":
-          description: "Got Routine Data Successfully"
-          schema:
-            $ref: "#/definitions/Routine"
-        "404":
-          description: "No results"
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "Result: 0 found !!"  
-        "500":
-          description: "500 Internal Server Error !"
-          schema:
-              properties:
-                message:
-                  type: "string"
-                  example: "500 Internal Server Error !"
-    get:
-      security:
-        - Bearer: []     
-      tags:
-        - "Routine"
-      summary: "Search Routine Data"
-      description: ""
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        required: true
-        schema:
-          properties: 
-            module_name:
-              type: "string"
-            group:
-              type: "string"
-      responses:
-        "200":
-          description: "Routine searched successfully!"
-          schema:
-            $ref: "#/definitions/Routine"
-        "404":
-          description: "No results"
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "Result not found !!"  
-        "500":
-          description: "500 Internal Server Error !"
-          schema:
-              properties:
-                message:
-                  type: "string"
-                  example: "500 Internal Server Error !"                  
-  /api/v4/admin/updateRoutineData:
-    put:
-      security:
-        - Bearer: []     
-      tags:
-        - "Routine"
-      summary: "Updates Routine Data"
-      description: ""
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        required: true
-        schema:
-          $ref: "#/definitions/Routine"
-      responses:
-        "200":
-          description: "Routine updated successfully!"
-          schema:
-              properties:
-                message:
-                  type: "string"
-                  example: "Routine updated successfully!"
-        "500":
-          description: "500 Internal Server Error !"
-          schema:
-              properties:
-                message:
-                  type: "string"
-                  example: "500 Internal Server Error !"
-  /api/v4/admin/deleteRoutineData:
-    delete:
-      security:
-        - Bearer: []     
-      tags:
-        - "Routine"
-      summary: "Delete Routine Data"
-      description: ""
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        required: true
-        schema:
-          properties: 
-            routineID:
-              type: "string"
-      responses:
-        "200":
-          description: "Routine deleted successfully!"
-          schema:
-              properties:
-                message:
-                  type: "string"
-                  example: "Routine deleted successfully!"
-        "500":
-          description: "500 Internal Server Error !"
-          schema:
-              properties:
-                message:
-                  type: "string"
-                  example: "Failed to delete routine !!"
-  /api/v4/admin/Login:
-    post:
-      security:
-        - Bearer: []     
-      tags:
-        - "Admin"
-      summary: "Admin Login"
-      description: ""
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        required: true
-        schema:
-          $ref: "#/definitions/Admin"
-      responses:
-        "200":
-          description: "Login successfully!"
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "Login succesfully"
-              token:
-                type: "string"
-                example: "s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
-        "412":
-          description: "Wrong email or password !!"
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "Failed to login"
-              token:
-                type: "string"
-                example: "null"
-  /api/v4/admin/Signup:
-    post:
-      security:
-        - Bearer: []     
-      tags:
-        - "Admin"
-      summary: "Register new Admin"
-      description: ""
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        required: true
-        schema:
-          $ref: "#/definitions/Admin"
-      responses:
-        "201":
-          description: "Admin created successfully!"
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "Admin created succesfully"
-        "500":
-          description: "500 Internal Server Error !"
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "Failed to signup"
-        "412":
-          description: "User already exists"
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "Failed to signup"
-  /api/v4/teacher/Login:
-    post:
-      security:
-        - Bearer: []     
-      tags:
-        - "Teacher"
-      summary: "Teacher Login"
-      description: ""
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        required: true
-        schema:
-          $ref: "#/definitions/Teacher"
-      responses:
-        "200":
-          description: "Login successfully!"
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "Login succesfully"
-              token:
-                type: "string"
-                example: "s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
-        "412":
-          description: "Wrong email or password !!"
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "Failed to login"
-              token:
-                type: "string"
-                example: "null"
-        "500":
-          description: "Login Attempt Exceed"
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "You exceed the 5 login attempt. Please wait for 5 min to retry again !!"
-
-  /api/v4/teacher/Signup:
-    post:
-      security:
-        - Bearer: []     
-      tags:
-        - "Teacher"
-      summary: "Register new teacher"
-      description: ""
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        required: true
-        schema:
-          $ref: "#/definitions/Teacher"
-      responses:
-        "201":
-          description: "Account created successfully!"
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "Account created succesfully"
-        "500":
-          description: "500 Internal Server Error !"
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "Failed to signup"
-        "412":
-          description: "User already exists"
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "Failed to signup"
-  /api/v4/uploadStudentList:
-    post:
-      security:
-          - Bearer: []     
-      tags:
-        - "Upload"
-      summary: "Upload Student Excel Sheet"
-      description: ""
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        required: true
-        schema:
-          properties: 
-            file:
-              type: "object"
-      responses:
-        "200":
-          description: "Data extracted and import to DB successfully."
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "Data extracted and import to DB successfully."
-        "400":
-          description: "Client side failure"
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "Please donot upload file other than xlsx"        
-        "500":
-          description: "Server side failure"
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "Failed to parse the given file. Please upload the xlsx formate file only !!!"  
-  /api/v4/RegenerateToken:
-    put:
-      security:
-        - Bearer: []     
-      tags:
-        - "Regenerate Token"
-      summary: "Regenerate Token"
-      description: ""
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        required: true
-        schema:
-          properties: 
-            uid:
-              type: "string"
-      responses:
-        "200":
-          description: "Token regenerated succesfully!"
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "Token regenerated succesfully!"
-              access_token:
-                type: "string"
-                example: "s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
-              refresh_token:
-                type: "string"
-                example: "s32241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
-        "500":
-          description: "Refresh token cannot verified."
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "Refresh token cannot verified."
-  /api/v4/feedback/postFeedback:
-    post:
-      security:
-          - Bearer: []     
-      tags:
-        - "Feedback"
-      summary: "Regenerate Token"
-      description: ""
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        required: true
-        schema:
-          $ref: "#/definitions/Feedback"
-      responses:
-        "200":
-          description: "Feedback posted successfully !!"
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "Feedback posted successfully !!"
-        "500":
-          description: "500 Internal Server Error !"
-          schema:
-            properties: 
-              message:
-                type: "string"
-                example: "500 BACKEND SERVER ERROR !!"  
-        "404":
-          description: "Validation issues"
+          description: "OK"
           schema:
             properties:
               message:
                 type: "string"
-                example: "Some fields are missing"
-  /api/v4/feedback/getFeedback:
-    get:
-      security:
-          - Bearer: []     
-      tags:
-        - "Feedback"
-      summary: "Get Feedback"
-      description: ""
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      responses:
-        "200":
-          description: "Got Feedback successfully !!"
-        "500":
-          description: "500 Internal Server Error !"
+                example: "Routine posted successfully!"
+        "206":
+          description: "PARTIAL_CONTENT"
           schema:
-            properties: 
+            properties:
               message:
                 type: "string"
-                example: "500 BACKEND SERVER ERROR !!"  
-        "404":
-          description: "Validation issues"
+                example: "Some fields are missing. Please provide all the fields !!"
+        "503":
+          description: "SERVICE_UNAVAILABLE"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Failed to post the routine !!"
+
+  /api/v4/routines:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Routine"
+      summary: "Gets routine data"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Routine"
+        "204":
+          description: "NO_CONTENT"
           schema:
             properties:
               message:
                 type: "string"
                 example: "Result: 0 found !!"
+
+  /api/v4/admin/updateRoutineData:
+    put:
+      security:
+        - Bearer: []
+      tags:
+        - "Routine"
+      summary: "Updates Routine Data"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/Routine"
+      responses:
+        "201":
+          description: "CREATED"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Routine updated successfully!"
+        "500":
+          description: "INTERNAL_SERVER_ERROR"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "500. SERVER ERROR!!"
+
+  /api/v4/admin/deleteRoutineData:
+    delete:
+      security:
+        - Bearer: []
+      tags:
+        - "Routine"
+      summary: "Delete Routine Data"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            properties:
+              routineID:
+                type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Routine deleted successfully!"
+        "500":
+          description: "INTERNAL_SERVER_ERROR"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Failed to delete routine !!"
+
+  /api/v4/admin/Login:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin"
+      summary: "Admin Login"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/Admin"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Login succesfully"
+              email:
+                type: "string"
+                example: "nirmal55@gmail.com"
+              scope:
+                type: "string"
+                example: "admin"
+              accessToken:
+                type: "string"
+                example: "s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
+              refreshToken:
+                type: "string"
+                example: "s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
+        "401":
+          description: "UNAUTHORIZED"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Wrong email or password !!"
+              token:
+                type: "string"
+                example: "null"
+        "403":
+          description: "FORBIDDEN"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "You exceed the 5 login attempt. Please try again after 5 min !!"
+              token:
+                type: "string"
+                example: "null"
+
+  /api/v4/admin/Signup:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin"
+      summary: "Register new Admin"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/Admin"
+      responses:
+        "201":
+          description: "CREATED"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Admin created succesfully"
+        "409":
+          description: "CONFLICT"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Failed to signup"
+        "500":
+          description: "INTERNAL_SERVER_ERROR"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "500. SERVER ERROR!!"
+
+  /api/v4/teacher/Login:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Teacher"
+      summary: "Teacher Login"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/Teacher"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Login succesfully"
+              email:
+                type: "string"
+                example: "bishalkhadka32@gmail.com"
+              scope:
+                type: "string"
+                example: "teacher"
+              accessToken:
+                type: "string"
+                example: "s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
+              refreshToken:
+                type: "string"
+                example: "s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
+        "203":
+          description: "NON_AUTHORITATIVE_INFORMATION"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Wrong email or password !!"
+              token:
+                type: "string"
+                example: "null"
+        "500":
+          description: "INTERNAL_SERVER_ERROR"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Failed to login"
+
+  /api/v4/teacher/Signup:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Teacher"
+      summary: "Register new teacher"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/Teacher"
+      responses:
+        "201":
+          description: "CREATED"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Teachers created succesfully !!"
+        "409":
+          description: "CONFLICT"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "User already exists !!"
+        "500":
+          description: "INTERNAL_SERVER_ERROR"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "500. SERVER ERROR!!"
+
+  /api/v4/uploadStudentList:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Upload"
+      summary: "Upload Student Excel Sheet"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            properties:
+              file:
+                type: "object"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Data extracted and import to DB successfully."
+        "406":
+          description: "NOT_ACCEPTABLE"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Failed to parse the given file. Please upload the xlsx formate file only !!"
+        "500":
+          description: "INTERNAL_SERVER_ERROR"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Failed to parse the given file. Please upload the xlsx formate file only !!!"
+
+  /api/v4/RegenerateToken:
+    put:
+      security:
+        - Bearer: []
+      tags:
+        - "Common"
+      summary: "Regenerate Token"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            properties:
+              uid:
+                type: "string"
+      responses:
+        "201":
+          description: "CREATED"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Token regenerated succesfully!"
+              accessToken:
+                type: "string"
+                example: "s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
+              refreshToken:
+                type: "string"
+                example: "s32241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
+        "500":
+          description: "INTERNAL_SERVER_ERROR"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Refresh token cannot verified."
+
+  /api/v4/feedback/postFeedback:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Feedback"
+      summary: "Regenerate Token"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/Feedback"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Feedback posted successfully !!"
+        "404":
+          description: "NOT_FOUND"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Some fields are missing"
+        "422":
+          description: "UNPROCESSABLE_ENTITY"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Validaton issues."
+        "500":
+          description: "INTERNAL_SERVER_ERROR"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "500. SERVER ERROR!!"
+
+  /api/v4/feedback/getFeedback:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Feedback"
+      summary: "Get Feedback"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Got Feedback successfully !!"
+        "204":
+          description: "NO_CONTENT"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Result: 0 found !!"
+                
   /api/v4/feedback/deleteFeedback:
     delete:
       security:
-          - Bearer: []     
+        - Bearer: []
       tags:
         - "Feedback"
       summary: "Delete Feedback"
       description: ""
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: "body"
-        name: "body"
-        required: true
-        schema:
-          properties: 
-            feedbackid:
-              type: "string"
-            filename:
-              type: "string"
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            properties:
+              feedbackid:
+                type: "string"
+              filename:
+                type: "string"
+      responses:
+        "201":
+          description: "CREATED"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Feedback deleted successfully !!"
+        "406":
+          description: "NOT_ACCEPTABLE"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Invalid feedback ID !!"
+        "500":
+          description: "INTERNAL_SERVER_ERROR"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "500. SERVER ERROR!!"
+
+  /api/v4/getNotifications:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Notification"
+      summary: "Get Notification"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
       responses:
         "200":
-          description: "Feedback deleted successfully !!"
+          description: "OK"
           schema:
-            properties: 
+            properties:
               message:
                 type: "string"
-                example: "Feedback deleted successfully !!"  
+        "404":
+          description: "NOT_FOUND"
+          schema:
+            properties:
+              message:
+                type: "string"
+
+  /api/v4/lf/losts:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Lost & Found"
+      summary: "Get Lost & Found"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            properties:
+              message:
+                type: "string"
+        "204":
+          description: "NO_CONTENT"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Result: 0 found !!"
+
+  /api/v4/lf/report:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Lost & Found"
+      summary: "Post Lost & Found"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/LostReport"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Report posted successfully !!"
+        "404":
+          description: "NOT_FOUND"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Some fields are missing"
+        "422":
+          description: "UNPROCESSABLE_ENTITY"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Validaton issues."
         "500":
-          description: "500 Internal Server Error !"
+          description: "INTERNAL_SERVER_ERROR"
           schema:
-            properties: 
+            properties:
               message:
                 type: "string"
-                example: "Invalid feedback ID !!"  
+                example: "500. SERVER ERROR!!"
+
+  /api/v4/lf/update:
+    put:
+      security:
+        - Bearer: []
+      tags:
+        - "Lost & Found"
+      summary: "Update Lost & Found"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/LostReport"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Report updated successfully !!"
+        "500":
+          description: "INTERNAL_SERVER_ERROR"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "500. SERVER ERROR!!"
+
 definitions:
   Routine:
     type: "object"
     properties:
-      course_type:
-        type: "string"
-        enum: 
-        - "BIT"
-        - "BIBM"
-        - "IMBA"
-      module_name:
-        type: "string"
-      lecturer_name:
-        type: "string"
-      class_type:
+      courseType:
         type: "string"
         enum:
-        - "Lecture"
-        - "Tutorial"
-        - "Workshop"
+          - "BIT"
+          - "BIBM"
+          - "IMBA"
+      moduleName:
+        type: "string"
+      lecturerName:
+        type: "string"
+      classType:
+        type: "string"
+        enum:
+          - "Lecture"
+          - "Tutorial"
+          - "Workshop"
       group:
         type: "string"
-      room_name:
+      roomName:
         type: "string"
-      block_name:
+      blockName:
         type: "string"
         enum:
-        - "HCK"
-        - "Wolverhampton"
+          - "HCK"
+          - "Wolverhampton"
       day:
         type: "string"
         enum:
-        - "Sunday"
-        - "Monday"
-        - "Tuesday"
-        - "Wednesday"
-        - "Thursday"
-        - "Friday"
-      start_time:
+          - "Sunday"
+          - "Monday"
+          - "Tuesday"
+          - "Wednesday"
+          - "Thursday"
+          - "Friday"
+      startTime:
         type: "string"
         format: "date-time"
-      end_time:
+      endTime:
         type: "string"
         format: "date-time"
   Teacher:
     type: "object"
     properties:
-      email: 
+      email:
         type: "string"
-      password: 
+      password:
         type: "string"
   Admin:
     type: "object"
     properties:
-      email: 
+      email:
         type: "string"
-      password: 
+      password:
         type: "string"
   Student:
     type: "object"
     properties:
-      uid: 
+      uid:
         type: "string"
   Feedback:
     type: "object"
     properties:
-      report_type:
+      reportType:
         type: "string"
       description:
         type: "string"
       file:
         type: "object"
+  LostReport:
+    type: "object"
+    properties:
+      items:
+        type: "string"
+      desc:
+        type: "string"
+      lostDate:
+        type: "string"
+        format: "date-time"
