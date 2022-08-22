@@ -47,7 +47,7 @@ info:
       
     ---
 
-  version: "1.0.0"
+  version: "1.0.1"
   title: "Herald College Kathmandu App"
   contact:
     name: "Backend Team"
@@ -939,9 +939,16 @@ definitions:
     type: "object"
     properties:
       items:
-        type: "string"
+        type: "array"
+        items:
+          type: "string"
       desc:
         type: "string"
       lostDate:
+        type: "string"
+        format: "date-time"
+      isVictimRecievedData:
+        type: "string"
+      createdAt:
         type: "string"
         format: "date-time"
