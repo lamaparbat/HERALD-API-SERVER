@@ -25,7 +25,7 @@ const swaggerDocs = YAML.load("./api.yaml");
 server.use(express.json());
 server.use(cookieParser());
 server.use(express.static(path.join(__dirname , "/public")))
-server.use(routes);
+server.use('/api/v4',routes);
 server.use(
   cors({
     origin: [process.env.LOCALHOST, process.env.WEB_URL],

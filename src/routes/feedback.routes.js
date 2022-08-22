@@ -21,11 +21,11 @@ const storage = multer.diskStorage({
 });
 const feedbackUpload = multer({ storage: storage });
 
-router.post('/api/v4/feedback/postFeedback', auth.VerifyJWT, feedbackUpload.single('file'), POST_FEEDBACK);
+router.post('/feedback/postFeedback', auth.VerifyJWT, feedbackUpload.single('file'), POST_FEEDBACK);
 
-router.get('/api/v4/feedback/getFeedback', auth.VerifyJWT, GET_FEEDBACK);
+router.get('/feedback/getFeedback', auth.VerifyJWT, GET_FEEDBACK);
 
-router.delete('/api/v4/feedback/deleteFeedback', auth.VerifyJWT, DELETE_FEEDBACK);
+router.delete('/feedback/deleteFeedback', auth.VerifyJWT, DELETE_FEEDBACK);
 
 
 module.exports = router;
