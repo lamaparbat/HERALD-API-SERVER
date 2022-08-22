@@ -7,7 +7,11 @@ const GetLostFoundData = async (req, res) => {
 
  if (data.length != 0) {
   return res.status(StatusCodes.OK).send({
-   data: data,
+   items:data[0].items,
+   desc:data[0].desc,
+   lostDate: data[0].lostDate,
+   isVictimRecievedData: data[0].isVictimRecievedData,
+   createdAt: data[0].createdAt,
   });
  } else {
   return res.status(204).json({
