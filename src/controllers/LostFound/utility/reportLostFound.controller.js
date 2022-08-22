@@ -8,8 +8,9 @@ const ReportLostFoundData = (req, res) => {
   if (items.length > 3 && desc.length > 3 && lostDate.length > 3  ) {
    //db insertion
    const data = new lostFoundModel({
-    items, desc,
-    lostDate: new Date().toLocaleDateString(),
+    items, 
+    desc,
+    lostDate,
     isVictimRecievedData: false,
     createdAt: new Date().toLocaleDateString(),
     updatedAt: new Date().toLocaleDateString(),
