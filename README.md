@@ -29,14 +29,14 @@ onFailure: {
 PUT : /api/v4/RegenerateToken
 
 header:{
-  "Authorization": "refresh_token ${refresh_token}"
+  "Authorization": "refreshToken ${refreshToken}"
 }
 
 ****** -> Response  <- *******
 onSuccess: {
   message: 'Token regenerated succesfully !!',
-  access_token: access_token,
-  refresh_token: refresh_token
+  accessToken: accessToken,
+  refreshToken: refreshToken
 }
 onFailure: {
   message:"Refresh token cannot verified."
@@ -140,15 +140,15 @@ token: ""
 
 // send data
 payload: {
-    course_type:"",
-    module_name:"",
-    lecturer_name:"",
+    courseType:"",
+    moduleName:"",
+    lecturerName:"",
     group: "",
-    room_name: "",
-    block_name: "",
+    roomName: "",
+    blockName: "",
     day:"",
-    start_time:"",
-    end_time:""
+    startTime:"",
+    endTime:""
 }
 
 ****** -> Response  <- *******
@@ -179,26 +179,26 @@ const res = await axios.post('https://httpbin.org/post', { data }, {
 onSuccess: {
    [
       {
-        course_type:"",
-        module_name:"",
-        lecturer_name:"",
+        courseType:"",
+        moduleName:"",
+        lecturerName:"",
         group: "",
-        room_name: "",
-        block_name: "",
+        roomName: "",
+        blockName: "",
         day:"",
-        start_time:"",
-        end_time:""
+        startTime:"",
+        endTime:""
       },
       {
-        course_type:"",
-        module_name:"",
-        lecturer_name:"",
+        courseType:"",
+        moduleName:"",
+        lecturerName:"",
         group: "",
-        room_name: "",
-        block_name: "",
+        roomName: "",
+        blockName: "",
         day:"",
-        start_time:"",
-        end_time:""
+        startTime:"",
+        endTime:""
       },
       .....
    ]
@@ -225,15 +225,15 @@ const res = await axios.post('https://httpbin.org/post', { data }, {
 });
 
 payload: {
-    course_type:"",
-    module_name:"",
-    lecturer_name:"",
+    courseType:"",
+    moduleName:"",
+    lecturerName:"",
     group: "",
-    room_name: "",
-    block_name: "",
+    roomName: "",
+    blockName: "",
     day:"",
-    start_time:"",
-    end_time:""
+    startTime:"",
+    endTime:""
 }
 
 
@@ -280,7 +280,7 @@ POST: /api/v4/feedback/postFeedback
 token: ""
 
  payload = {
-            report_type:String,
+            reportType:String,
             description:String,
             file:Object
            }
@@ -296,7 +296,7 @@ token: ""
  response = "data": [
                        {
                            "_id": "62a2de564582e52de9b8f891",
-                           "report_type": "suggestion",
+                           "reportType": "suggestion",
                            "description": "i am testing mode",
                            "file": "1654840918671-next.png",
                            "__v": 0
