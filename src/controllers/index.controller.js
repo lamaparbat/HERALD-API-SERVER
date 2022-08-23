@@ -1,7 +1,7 @@
 const controllers = {
  adminControllers: require("./Admin/admin.controller"),
  studentControllers: require("./Student/student.controller"),
- routineControllers: require("./Routines/routine.controller"),
+ routineControllers: require("./Routines/index.controller"),
  teacherControllers: require("./Teacher/teacher.controller"),
  feedbackControllers: require("./Feedback/feedback.controller"),
  notificationControllers: require("./Notification/notification.controller"),
