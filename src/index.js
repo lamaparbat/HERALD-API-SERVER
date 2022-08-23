@@ -22,6 +22,7 @@ START_DB_CONNECTION();
 const swaggerDocs = YAML.load("./api.yaml");
 
 //middleware
+server.use(cors());
 server.use(express.json());
 server.use(cookieParser());
 server.use(express.static(path.join(__dirname , "/public")))
