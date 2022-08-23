@@ -1,5 +1,5 @@
-# Routine Management System Backend (API DOCS)
-# Swagger Documentation Link
+# HCK API SERVICES  🎉🎉
+ 
 ## Student endpoints
 1. Login
 ```perl
@@ -12,8 +12,10 @@ payload: {
 ****** -> Response  <- *******
 onSuccess: {
   message: 'Login succesfull !!',
-  access_token: access_token,
-  refresh_token: refresh_token
+  email:"np03cs4s210869@heraldcollege.edu.np",
+  scope:"student",
+  accessToken:"s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd",
+  refreshToken:"s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd",
 }
 onFailure: {
   message: 'Failed to login. Please use correct email !!',
@@ -21,27 +23,20 @@ onFailure: {
 }
 
 ```
-## Regenerated access token endpoints (Recently updated !!)
-
-### When to call this endpoint ?
-When the session time for access token is ended/out, the jwt server reset the access_token which caused you to  you get the response like this => 
-    {
-      message:"Session timeout."
-    }
-Therefore, inorder to regenerate access token, you have hit this endpoint by attaching refresh_token on the header of "authorization/oAuth 2.0/refresh_token: value" which in response you get the new access_token and refresh token. The session time for access_token is 24 hrs, that means your access_token is only justified with a day.
+## Regenerated access token endpoints
 
 ```perl
 PUT : /api/v4/RegenerateToken
 
 header:{
-  "Authorization": "refresh_token ${refresh_token}"
+  "Authorization": "refreshToken ${refreshToken}"
 }
 
 ****** -> Response  <- *******
 onSuccess: {
   message: 'Token regenerated succesfully !!',
-  access_token: access_token,
-  refresh_token: refresh_token
+  accessToken: accessToken,
+  refreshToken: refreshToken
 }
 onFailure: {
   message:"Refresh token cannot verified."
@@ -61,7 +56,10 @@ payload: {
 ****** -> Response  <- *******
 onSuccess: {
    message:"Login succesfully",
-   token:"s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
+   email:"bishalkhadka32@gmail.com",
+   scope:"teacher",
+   accessToken:"s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd",
+   refreshToken:"s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd",
 }
 onFailure: {
    message:"Failed to login",
@@ -101,7 +99,10 @@ payload: {
 ****** -> Response  <- *******
 onSuccess: {
    message:"Login succesfully",
-   token:"s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd"
+   email:"nirmal55@gmail.com",
+   scope:"admin",
+   accessToken:"s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd",
+   refreshToken:"s23241sfsdf.ad34fdsfdsdf.34sfgsfsfsfsd",
 }
 onFailure: {
    message:"Failed to login",
@@ -139,15 +140,15 @@ token: ""
 
 // send data
 payload: {
-    course_type:"",
-    module_name:"",
-    lecturer_name:"",
+    courseType:"",
+    moduleName:"",
+    lecturerName:"",
     group: "",
-    room_name: "",
-    block_name: "",
+    roomName: "",
+    blockName: "",
     day:"",
-    start_time:"",
-    end_time:""
+    startTime:"",
+    endTime:""
 }
 
 ****** -> Response  <- *******
@@ -178,28 +179,30 @@ const res = await axios.post('https://httpbin.org/post', { data }, {
 onSuccess: {
    [
       {
-        course_type:"",
-        module_name:"",
-        lecturer_name:"",
+        courseType:"",
+        moduleName:"",
+        lecturerName:"",
+        classType: "",
         group: "",
-        room_name: "",
-        block_name: "",
+        roomName: "",
+        blockName: "",
         day:"",
-        start_time:"",
-        end_time:""
+        startTime:"",
+        endTime:""
       },
       {
-        course_type:"",
-        module_name:"",
-        lecturer_name:"",
+        courseType:"",
+        moduleName:"",
+        lecturerName:"",
+        classType: "",
         group: "",
-        room_name: "",
-        block_name: "",
+        roomName: "",
+        blockName: "",
         day:"",
-        start_time:"",
-        end_time:""
+        startTime:"",
+        endTime:""
       },
-      .....
+      ...
    ]
 }
 
@@ -224,15 +227,16 @@ const res = await axios.post('https://httpbin.org/post', { data }, {
 });
 
 payload: {
-    course_type:"",
-    module_name:"",
-    lecturer_name:"",
+    courseType:"",
+    moduleName:"",
+    lecturerName:"",
+    classType: "",
     group: "",
-    room_name: "",
-    block_name: "",
+    roomName: "",
+    blockName: "",
     day:"",
-    start_time:"",
-    end_time:""
+    startTime:"",
+    endTime:""
 }
 
 
@@ -279,7 +283,7 @@ POST: /api/v4/feedback/postFeedback
 token: ""
 
  payload = {
-            report_type:String,
+            reportType:String,
             description:String,
             file:Object
            }
@@ -295,7 +299,7 @@ token: ""
  response = "data": [
                        {
                            "_id": "62a2de564582e52de9b8f891",
-                           "report_type": "suggestion",
+                           "reportType": "suggestion",
                            "description": "i am testing mode",
                            "file": "1654840918671-next.png",
                            "__v": 0
@@ -340,19 +344,30 @@ Status Code: 500
 message = SERVER ERROR
 ```
 
-# Latest features
+# Latest features 👈🏽
 1. Isolated versioning and configs (Into Production & Development)
 2. Password Hashing (SHA256) (Secure Hash Algorithm)
+3. Lost & Found services
 
-# Upcoming features
+# Upcoming features 👷🏻
 1. Concurrency -> PM2 (cpu core utilization technique + Load balancing)
-2. Aggregation Framework for data mapping
+2. Social media api sync (Public api + Scrapping [Alternatives])
+
+
+# Things need to optimize 🥷
+1. Aggregation Framework for data mapping
+2. Devops + AWS Serivice integration [Premium]
+3. Log tracing & Management  [Premium]
+
+# Things accomplished untill now 👨‍🚀
+1. Routine Management System.
 
 
 
 
 
-Author: Parbat Lama
+
+Author: Parbat Lama 
 
 Happy Learning ✌️
 Happy Coding 👨‍💻
