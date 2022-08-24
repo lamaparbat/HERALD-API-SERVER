@@ -1,8 +1,8 @@
 
-const GetRoutine = require("./utility/getRoutine.controller");
-const PostRoutine = require("./utility/postRoutine.controller");
-const UpdateRoutine = require("./utility/updateRoutine.controller");
-const DeleteRoutine = require("./utility/deleteRoutine.controller");
+const GetRoutine = require("./sub-controllers/getRoutine.controller");
+const PostRoutine = require("./sub-controllers/postRoutine.controller");
+const UpdateRoutine = require("./sub-controllers/updateRoutine.controller");
+const DeleteRoutine = require("./sub-controllers/deleteRoutine.controller");
 
 
 module.exports = {
