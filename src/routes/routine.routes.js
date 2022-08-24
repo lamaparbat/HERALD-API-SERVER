@@ -5,7 +5,7 @@ const {
   GetRoutine,
   UpdateRoutine,
   DeleteRoutine,
-} = require("../controllers/Routines/index.controller");
+} = require("../controllers/index.controller").routineControllers;
 
 
 // ****** --> CRUD Routine Operation <-- *********

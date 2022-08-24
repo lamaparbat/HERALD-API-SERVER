@@ -1,9 +1,9 @@
 const controllers = {
- adminControllers: require("./Admin/admin.controller"),
- studentControllers: require("./Student/student.controller"),
+ adminControllers: require("./Admin/index.controller"),
+ studentControllers: require("./Student/index.controller"),
  routineControllers: require("./Routines/index.controller"),
- teacherControllers: require("./Teacher/teacher.controller"),
- feedbackControllers: require("./Feedback/feedback.controller"),
+ teacherControllers: require("./Teacher/index.controller"),
+ feedbackControllers: require("./Feedback/index.controller"),
  notificationControllers: require("./Notification/notification.controller"),
  uploaderControllers: require("./uploader.controller"),
  commonControllers: require("./Common/common.controller"),

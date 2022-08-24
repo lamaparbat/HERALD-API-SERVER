@@ -1,4 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
+const feedbackModel = require('../../../models/feedbackModel');
+
 
 const POST_FEEDBACK = async (req, res) => {
  // destructuring the binded data
@@ -36,38 +38,4 @@ const POST_FEEDBACK = async (req, res) => {
  }
 }
 
-const GET_FEEDBACK = async (req, res) => {
- //db mapping
- const data = await feedbackModel.find();
-
- if (data.length != 0) {
-  return res.status(StatusCodes.OK).send({
-   data: data,
-  })
- } else {
-  return res.status(StatusCodes.NO_CONTENT).send({
-   message: 'Result: 0 found !!',
-  })
- }
-}
-
-const DELETE_FEEDBACK = async (req, res) => {
- const { feedbackid, filename } = req.headers;
-
- //delete feedback post using id
- try {
-  feedbackModel.deleteOne({ _id: feedbackid }, (err, doc) => {
-   if (err) {
-    return res.status(StatusCodes.NOT_ACCEPTABLE).send("Invalid feedback ID !!");
-   } else {
-    //deleting local file 
-    fs.unlinkSync(`uploads/${filename}`)
-    return res.status(StatusCodes.CREATED).send("Routine deleted successfully !!");
-   }
-  });
- } catch (error) {
-  return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send('500 INTERNAL SERVER ERROR !!');
- }
-}
-
-module.exports = { POST_FEEDBACK, GET_FEEDBACK, DELETE_FEEDBACK }
+module.exports = POST_FEEDBACK
