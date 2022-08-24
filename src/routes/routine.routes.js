@@ -1,24 +1,24 @@
 const router = require('express').Router();
 const auth = require("../middlewares/auth");
 const {
-  POST_ROUTINE,
-  GET_ROUTINE,
-  UPDATE_ROUTINE,
-  DELETE_ROUTINE
+  PostRoutine,
+  GetRoutine,
+  UpdateRoutine,
+  DeleteRoutine,
 } = require("../controllers/index.controller").routineControllers;
 
 
 // ****** --> CRUD Routine Operation <-- *********
 //post routine data
-router.post('/admin/postRoutineData', auth.VerifyJWT, POST_ROUTINE);
+router.post('/admin/postRoutineData', auth.VerifyJWT, PostRoutine);
 
 //get all routine data
-router.get('/routines', auth.VerifyJWT, GET_ROUTINE);
+router.get('/routines', auth.VerifyJWT, GetRoutine);
 
 //update routine data
-router.put('/admin/updateRoutineData', auth.VerifyJWT, UPDATE_ROUTINE )
+router.put('/admin/updateRoutineData', auth.VerifyJWT, UpdateRoutine )
 
 //delete routine data
-router.delete('/admin/deleteRoutineData', auth.VerifyJWT, DELETE_ROUTINE)
+router.delete('/admin/deleteRoutineData', auth.VerifyJWT, DeleteRoutine)
 
 module.exports = router;
