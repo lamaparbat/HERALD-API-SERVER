@@ -1,9 +1,10 @@
 const router = require('express').Router();
+const auth = require("../middlewares/auth");
 const { LOGIN, GET_STUDENT_LIST } = require('../controllers/index.controller').studentControllers;
 
 router.post('/student/Login', LOGIN);
 
-router.get('/student/studentlist', GET_STUDENT_LIST);
+router.get('/student/studentlist', auth.VerifyJWT, GET_STUDENT_LIST);
 
 module.exports = router;
 
