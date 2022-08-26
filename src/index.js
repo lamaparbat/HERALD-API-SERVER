@@ -35,9 +35,10 @@ server.use(
 server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 
-routineModel.watch().on("change", (data) => {
-  console.log("DB updated: ", data);
-})
+// listen the changes in db 
+// routineModel.watch().on("change", (data) => {
+//   console.log("DB updated: ", data);
+// })
 
 // ***** port listneer *****
 server.listen(PORT, () => {

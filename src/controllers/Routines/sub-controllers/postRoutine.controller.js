@@ -1,5 +1,7 @@
 const routineModel = require('../../../models/routineModel');
+const notifModel = require('../../../models/notificationModel');
 const { StatusCodes } = require("http-status-codes");
+const pusher = require('../../../utils/Socket/SocketConnection');
 
 const PostRoutine = async (req, res) => {
   //destructuring incoming data
@@ -15,8 +17,6 @@ const PostRoutine = async (req, res) => {
     startTime,
     endTime,
   } = req.body
-
-  
 
   //check if all attributes are recieved or not ?
   if (Object.keys(req.body).length < 9) {
