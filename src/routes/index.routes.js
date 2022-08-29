@@ -10,17 +10,17 @@ const FEEDBACK_ROUTES = require("./feedback.routes.js");
 const UTILS_ROUTES = require("./common.routes.js");
 const DEFAULT_ROUTES = require("./default.routes");
 const LOSTFOUND_ROUTES = require("./lostfound.routes");
-const NOTIFICATIONS = require("./notifications.routes")
+const NOTIFICATION_ROUTES = require("./notifications.routes");
 
 Router.use(ROUTINE_ROUTES);
 Router.use(ADMIN_ROUTES);
 Router.use(STUDENT_ROUTES);
 Router.use(TEACHER_ROUTES);
-Router.use(NOTIFICATIONS);
 Router.use(UPLOADER_ROUTES);
 Router.use(FEEDBACK_ROUTES);
 Router.use(UTILS_ROUTES);
 Router.use(LOSTFOUND_ROUTES);
 Router.use(DEFAULT_ROUTES);
+Router.use(NOTIFICATION_ROUTES);
 
 module.exports = Router;
