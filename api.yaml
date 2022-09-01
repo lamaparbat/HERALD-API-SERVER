@@ -47,7 +47,7 @@ info:
       
     ---
 
-  version: "1.0.2"
+  version: "1.0.3"
   title: "Herald College Kathmandu App"
   contact:
     name: "Backend Team"
@@ -167,7 +167,6 @@ paths:
               token:
                 type: "string"
                 example: "null"
-
   /api/v4/Logout:
     post:
       security:
@@ -188,7 +187,6 @@ paths:
               message:
                 type: "string"
                 example: "Logout sucessfull !!"
-
   /api/v4/admin/postRoutineData:
     post:
       security:
@@ -229,7 +227,6 @@ paths:
               message:
                 type: "string"
                 example: "Failed to post the routine !!"
-
   /api/v4/routines:
     get:
       security:
@@ -254,7 +251,6 @@ paths:
               message:
                 type: "string"
                 example: "Result: 0 found !!"
-
   /api/v4/admin/updateRoutineData:
     put:
       security:
@@ -288,7 +284,6 @@ paths:
               message:
                 type: "string"
                 example: "500. SERVER ERROR!!"
-
   /api/v4/admin/deleteRoutineData:
     delete:
       security:
@@ -324,7 +319,6 @@ paths:
               message:
                 type: "string"
                 example: "Failed to delete routine !!"
-
   /api/v4/admin/Login:
     post:
       security:
@@ -383,7 +377,6 @@ paths:
               token:
                 type: "string"
                 example: "null"
-
   /api/v4/admin/Signup:
     post:
       security:
@@ -424,7 +417,6 @@ paths:
               message:
                 type: "string"
                 example: "500. SERVER ERROR!!"
-
   /api/v4/teacher/Login:
     post:
       security:
@@ -480,7 +472,6 @@ paths:
               message:
                 type: "string"
                 example: "Failed to login"
-
   /api/v4/teacher/Signup:
     post:
       security:
@@ -521,7 +512,6 @@ paths:
               message:
                 type: "string"
                 example: "500. SERVER ERROR!!"
-
   /api/v4/uploadStudentList:
     post:
       security:
@@ -564,7 +554,6 @@ paths:
               message:
                 type: "string"
                 example: "Failed to parse the given file. Please upload the xlsx formate file only !!!"
-
   /api/v4/RegenerateToken:
     put:
       security:
@@ -606,7 +595,6 @@ paths:
               message:
                 type: "string"
                 example: "Refresh token cannot verified."
-
   /api/v4/feedback/postFeedback:
     post:
       security:
@@ -654,7 +642,6 @@ paths:
               message:
                 type: "string"
                 example: "500. SERVER ERROR!!"
-
   /api/v4/feedback/getFeedback:
     get:
       security:
@@ -682,7 +669,6 @@ paths:
               message:
                 type: "string"
                 example: "Result: 0 found !!"
-                
   /api/v4/feedback/deleteFeedback:
     delete:
       security:
@@ -703,8 +689,10 @@ paths:
             properties:
               feedbackid:
                 type: "string"
+                example: "as23vd34dvfv"
               filename:
                 type: "string"
+                example: "abc.png"
       responses:
         "201":
           description: "CREATED"
@@ -727,7 +715,6 @@ paths:
               message:
                 type: "string"
                 example: "500. SERVER ERROR!!"
-
   /api/v4/getNotifications:
     get:
       security:
@@ -744,16 +731,13 @@ paths:
         "200":
           description: "OK"
           schema:
-            properties:
-              message:
-                type: "string"
+            $ref: "#/definitions/Notification"
         "404":
           description: "NOT_FOUND"
           schema:
             properties:
               message:
                 type: "string"
-
   /api/v4/lf/losts:
     get:
       security:
@@ -778,7 +762,6 @@ paths:
               message:
                 type: "string"
                 example: "Result: 0 found !!"
-
   /api/v4/lf/report:
     post:
       security:
@@ -826,7 +809,6 @@ paths:
               message:
                 type: "string"
                 example: "500. SERVER ERROR!!"
-
   /api/v4/lf/update:
     put:
       security:
@@ -860,7 +842,6 @@ paths:
               message:
                 type: "string"
                 example: "500. SERVER ERROR!!"
-
 definitions:
   Routine:
     type: "object"
@@ -905,11 +886,14 @@ definitions:
       endTime:
         type: "string"
         format: "date-time"
+      status:
+        type: "string"
   Teacher:
     type: "object"
     properties:
       email:
         type: "string"
+        example: "bishalkhadka32@gmail.com"
       password:
         type: "string"
   Admin:
@@ -917,6 +901,7 @@ definitions:
     properties:
       email:
         type: "string"
+        example: "nirmal55@gmail.com"
       password:
         type: "string"
   Student:
@@ -924,15 +909,19 @@ definitions:
     properties:
       uid:
         type: "string"
+        example: "np03cs4s210869@heraldcollege.edu.np"
   Feedback:
     type: "object"
     properties:
       reportType:
         type: "string"
+        example: "suggestion"
       description:
         type: "string"
+        example: "i am testing mode"
       file:
         type: "object"
+        example: "1654840918671-next.png"
   LostReport:
     type: "object"
     properties:
@@ -947,6 +936,10 @@ definitions:
         format: "date-time"
       isVictimRecievedData:
         type: "string"
-      createdAt:
+  Notification:
+    type: "object"
+    properties:
+      message:
         type: "string"
-        format: "date-time"
+      group:
+        type: "string"
