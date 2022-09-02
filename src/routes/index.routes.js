@@ -21,5 +21,6 @@ Router.use(FEEDBACK_ROUTES);
 Router.use(UTILS_ROUTES);
 Router.use(LOSTFOUND_ROUTES);
 Router.use(DEFAULT_ROUTES);
+Router.use(NOTIFICATION_ROUTES);
 
 module.exports = Router;

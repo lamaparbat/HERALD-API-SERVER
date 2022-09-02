@@ -22,13 +22,13 @@ const GetRoutine = async (req, res) => {
         (fields.level ? data.group.includes(`L${fields.level}`) : true) &&
         (fields.group ? data.group.includes(`CG${fields.group}`) : true)
       )
-      return res.status(StatusCodes.ACCEPTED).send({
+      return res.status(StatusCodes.OK).send({
         message: filterData
       })
     }
     // if both level and group is not provided show all routines
     else {
-      return res.status(StatusCodes.ACCEPTED).send({
+      return res.status(StatusCodes.OK).send({
         message: result,
       })
     }

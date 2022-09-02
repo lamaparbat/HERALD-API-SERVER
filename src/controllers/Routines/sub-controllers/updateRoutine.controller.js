@@ -18,6 +18,12 @@ const UpdateRoutine = (req, res) => {
     endTime,
   } = req.body;
 
+    // checking if routineID is in req.body
+    if (routineID === undefined)
+    return res.status(StatusCodes.NOT_ACCEPTABLE).send({
+      message: "routine ID is empty" 
+    });
+
   routineModel.findByIdAndUpdate(
     routineID,
     {

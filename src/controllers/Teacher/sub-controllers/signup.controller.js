@@ -16,7 +16,7 @@ const SIGNUP = async (req, res) => {
       .then((data) => {
         if (data.length === 0) {
           //insert new admin data
-          const data = new adminModel({
+          const data = new teacherModel({
             email: email,
             password: password,
             createdOn: new Date().toDateString(),
