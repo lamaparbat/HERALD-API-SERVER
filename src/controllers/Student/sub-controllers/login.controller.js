@@ -7,6 +7,7 @@ var studentAttemptCount = 0, blockEmail;
 
 const LOGIN = async (req, res) => {
    // destructuring the incoming data
+
    var { uid } = req.body;
    uid = uid.toUpperCase();
 

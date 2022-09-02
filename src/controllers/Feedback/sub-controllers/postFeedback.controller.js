@@ -4,8 +4,9 @@ const feedbackModel = require('../../../models/feedbackModel');
 
 const POST_FEEDBACK = async (req, res) => {
  // destructuring the binded data
- const { reportType, description } = req.body;
-
+ const { reportType, description, uploadFileName } = req.body;
+ const file = req.file;
+ console.log(uploadFileName)
  // validation
  if (Object.keys(req.body).length < 7) {
   if (reportType.length > 3 && description.length > 3 && uploadFileName !== null) {
@@ -13,7 +14,8 @@ const POST_FEEDBACK = async (req, res) => {
    const data = new feedbackModel({
     reportType: reportType,
     description: description,
-    file: uploadFileName
+    file: uploadFileName,
+    date: new Date().toISOString()
    });
 
    //save the data

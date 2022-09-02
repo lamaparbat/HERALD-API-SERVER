@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const feedbackSchema = new mongoose.Schema({
  reportType: String,
  description: String,
- file: Object,
+ file: String,
  date: String
 });
 

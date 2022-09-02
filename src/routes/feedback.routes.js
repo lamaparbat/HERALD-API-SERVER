@@ -16,12 +16,14 @@ const storage = multer.diskStorage({
  },
  filename: (req, file, cb) => {
   uploadFileName = Date.now() + "-" + file.originalname;
+  req.body.uploadFileName = uploadFileName;
   cb(null, uploadFileName);
  }
 });
+
 const feedbackUpload = multer({ storage: storage });
 
-router.post('/feedback/postFeedback', auth.VerifyJWT, feedbackUpload.single('file'), POST_FEEDBACK);
+router.post('/feedback/postFeedback', feedbackUpload.single('file'), POST_FEEDBACK);
 
 router.get('/feedback/getFeedback', auth.VerifyJWT, GET_FEEDBACK);
 
