@@ -309,14 +309,13 @@ token: ""
 ```
 3. Delete feedbacks
 ```perl
-DELETE: /api/v4/feedback/deleteFeedback
+DELETE: /api/v4/feedback/deleteFeedback?feedbackId=
   
+ // query
+ feedbackId = String
+ 
  //header.authorization.bearer
-token: ""
-
- //header.authorization
-feedbackid: "as23vd34dvfv",
-filename:"abc.png"
+token: String
 
 ```
 
