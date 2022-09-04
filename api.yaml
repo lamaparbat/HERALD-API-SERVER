@@ -47,7 +47,7 @@ info:
       
     ---
 
-  version: "1.0.3"
+  version: "1.0.4"
   title: "Herald College Kathmandu App"
   contact:
     name: "Backend Team"
@@ -715,7 +715,7 @@ paths:
               message:
                 type: "string"
                 example: "500. SERVER ERROR!!"
-  /api/v4/getNotifications:
+  /api/v4/getNotifications/{group}:
     get:
       security:
         - Bearer: []
@@ -727,6 +727,11 @@ paths:
         - "application/json"
       produces:
         - "application/json"
+      parameters:
+        - in: "path"
+          name: "group"
+          required: true
+          type: "string"
       responses:
         "200":
           description: "OK"
