@@ -5,8 +5,8 @@ const ReportLostFoundData = (req, res) => {
  const { items, desc, lostDate } = req.body;
  
  // validation
- if (Object.keys(req.body).length < 3) {
-  if (items.length > 3 && desc.length > 3 && lostDate.length > 3  ) {
+ if (Object.keys(req.body).length === 3) {
+  if (items.length && desc.length > 3 && lostDate.length > 3  ) {
    //db insertion
    const data = new lostFoundModel({
     items, 

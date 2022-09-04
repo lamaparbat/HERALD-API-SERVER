@@ -10,15 +10,15 @@ const {
 
 // ****** --> CRUD Routine Operation <-- *********
 //post routine data
-router.post('/admin/postRoutineData', auth.VerifyJWT, PostRoutine);
+router.post('/admin/postRoutineData', auth.VerifyJWT(["admin"]), PostRoutine);
 
 //get all routine data
-router.get('/routines', auth.VerifyJWT, GetRoutine);
+router.get('/routines', auth.VerifyJWT(["admin", "student","teacher"]), GetRoutine);
 
 //update routine data
-router.put('/admin/updateRoutineData', auth.VerifyJWT, UpdateRoutine )
+router.put('/admin/updateRoutineData', auth.VerifyJWT("admin"), UpdateRoutine )
 
 //delete routine data
-router.delete('/admin/deleteRoutineData', auth.VerifyJWT, DeleteRoutine)
+router.delete('/admin/deleteRoutineData', auth.VerifyJWT("admin"), DeleteRoutine)
 
 module.exports = router;

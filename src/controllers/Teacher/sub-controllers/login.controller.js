@@ -29,7 +29,7 @@ const LOGIN = async (req, res) => {
         return res.status(StatusCodes.NON_AUTHORITATIVE_INFORMATION).send('Password didnt matched !!')
       }
 
-      const { accessToken, refreshToken } = auth.GenerateJWT(email);
+      const { accessToken, refreshToken } = auth.GenerateJWT(scope = "teacher", email);
       return res.status(200).send({
         message: 'Login succesfully.',
         email: email,

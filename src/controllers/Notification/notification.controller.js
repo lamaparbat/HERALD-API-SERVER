@@ -5,7 +5,6 @@ const { StatusCodes } = require("http-status-codes");
 const GET_NOTIFICATION = async (req, res) => {
  // destructure group
  const { group } = req.query;
-
  try {
   const result = await notifModel.find({ group: group.toUpperCase() })
   res.status(StatusCodes.OK).send(result);

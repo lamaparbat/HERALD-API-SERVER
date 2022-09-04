@@ -28,7 +28,7 @@ const LOGIN = (req, res) => {
         return res.status(StatusCodes.UNAUTHORIZED).send('Password didnt matched !!')
       }
 
-      const { accessToken, refreshToken } = auth.GenerateJWT(email);
+      const { accessToken, refreshToken } = auth.GenerateJWT(scope = "admin",email);
       return res.status(200).send({
         message: 'Login succesfully.',
         email: email,

@@ -29,7 +29,7 @@ const LOGIN = async (req, res) => {
 
       // ***** database data mapping *****
       try {
-         const data = await studentModel.find({ uid: uid })
+         const data = await studentModel.find({ uid: uid });
 
          if (data.length !== 0) {
             //reset the attempt account details
@@ -37,7 +37,7 @@ const LOGIN = async (req, res) => {
             blockEmail = null;
 
             //generate the token
-            const { accessToken, refreshToken } = auth.GenerateJWT(uid);
+            const { accessToken, refreshToken } = auth.GenerateJWT(scope="student",uid);
             return res.status(StatusCodes.OK).send({
                message: 'Login succesfull !!',
                email: data[0].uid,

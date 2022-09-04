@@ -3,7 +3,7 @@ const auth = require("../middlewares/auth");
 const { GET_NOTIFICATION } = require("../controllers/index.controller").notificationControllers;
 
 
-router.get('/getNotifications', auth.VerifyJWT, GET_NOTIFICATION);
+router.get('/getNotifications', auth.VerifyJWT(["","teacher","admin"]), GET_NOTIFICATION);
 
 
 module.exports = router;
