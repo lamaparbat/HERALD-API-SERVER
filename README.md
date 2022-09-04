@@ -162,7 +162,11 @@ onFailure: {
 
 2. Read/Fetched routine data
 ```perl
-GET: /api/v4/routines
+GET: /api/v4/routines?group=&level
+ 
+ //params || query
+ group=8
+ level=
  
  //header.authorization.bearer
 token: ""
