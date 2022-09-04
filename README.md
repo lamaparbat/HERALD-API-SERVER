@@ -309,14 +309,40 @@ token: ""
 ```
 3. Delete feedbacks
 ```perl
-DELETE: /api/v4/feedback/deleteFeedback
+DELETE: /api/v4/feedback/deleteFeedback?feedbackId=
   
+ // query
+ feedbackId = String
+ 
  //header.authorization.bearer
-token: ""
+token: String
 
- //header.authorization
-feedbackid: "as23vd34dvfv",
-filename:"abc.png"
+```
+
+# Notifications regarding each update on routine,..
+1. Get notificaitons
+```perl
+GET: /api/v4/getNotifications
+
+// query
+group: String
+
+// headers
+accessToken: Bear token
+
+// success response
+StatusCode: 200 (OK)
+[
+    {
+        _id: String,
+        message: String,
+        group: String,
+        createdOn: String
+    }
+]
+
+// failure response
+StatusCode: 400 
 
 ```
 
