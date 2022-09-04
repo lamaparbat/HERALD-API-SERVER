@@ -319,6 +319,33 @@ token: String
 
 ```
 
+# Notifications regarding each update on routine,..
+1. Get notificaitons
+```perl
+GET: /api/v4/getNotifications
+
+// query
+group: String
+
+// headers
+accessToken: Bear token
+
+// success response
+StatusCode: 200 (OK)
+[
+    {
+        _id: String,
+        message: String,
+        group: String,
+        createdOn: String
+    }
+]
+
+// failure response
+StatusCode: 400 
+
+```
+
 # Upload Data in Excellsheet form (Student List)
 1. Upload student excell sheet (Please donot upload file other than xlsx format)
 ```perl
