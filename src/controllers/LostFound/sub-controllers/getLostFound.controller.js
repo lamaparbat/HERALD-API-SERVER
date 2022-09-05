@@ -6,13 +6,7 @@ const GetLostFoundData = async (req, res) => {
  const data = await lostFoundModel.find();
 
  if (data.length != 0) {
-  return res.status(StatusCodes.OK).send({
-   items:data[0].items,
-   desc:data[0].desc,
-   lostDate: data[0].lostDate,
-   isVictimRecievedData: data[0].isVictimRecievedData,
-   createdAt: data[0].createdAt,
-  });
+  return res.status(StatusCodes.OK).send(data);
  } else {
   return res.status(204).json({
    message: 'Result: 0 found !!',

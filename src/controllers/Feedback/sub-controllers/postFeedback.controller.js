@@ -5,7 +5,6 @@ const feedbackModel = require('../../../models/feedbackModel');
 const POST_FEEDBACK = async (req, res) => {
  // destructuring the binded data
  const { reportType, description, uploadFileName } = req.body;
- const file = req.file;
 
  // validation
  if (Object.keys(req.body).length < 7) {
