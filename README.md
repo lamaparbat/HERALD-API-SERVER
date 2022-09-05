@@ -165,19 +165,10 @@ onFailure: {
 GET: /api/v4/routines?group=&level
  
  //params || query
- group=8
- level=
+ group=String     [format='l5cg8' where '5', 'c' & '8' is varaible and remaining are constant.]
  
  //header.authorization.bearer
 token: ""
-
-For example: In Javascript using axios,
-
-const res = await axios.post('https://httpbin.org/post', { data }, {
-  headers: {
-    "Authorization":'Bearer' + 'a23adjbd3knvbjdf.f3jsbfvjbbjb3.skja8adkfsbfvjbfvj'
-  }
-});
 
 ****** -> Response  <- *******
 onSuccess: {
@@ -193,21 +184,8 @@ onSuccess: {
         day:"",
         startTime:"",
         endTime:""
-      },
-      {
-        courseType:"",
-        moduleName:"",
-        lecturerName:"",
-        classType: "",
-        group: "",
-        roomName: "",
-        blockName: "",
-        day:"",
-        startTime:"",
-        endTime:""
-      },
-      ...
-   ]
+      }, ...
+    ]
 }
 
 onFailure: {
