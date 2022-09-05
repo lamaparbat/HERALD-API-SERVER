@@ -29,30 +29,11 @@ const VerifyJWT = (scope) => {
 
     //remove the bearer text from token
     accessToken = accessToken.substr(7, accessToken.length);
-
-
-    // let flag = accessToken;
-    // let shuffledScopes = reverseWord(scope);   // ["ram","hari"] => ["mar","irah"]
-    // for (let i = 0; i < shuffledScopes.length; i++) {
-    //   if (accessToken.indexOf(shuffledScopes[i]) > -1) {
-    //     if (accessToken.includes(reverseWord("student"))) {
-    //       if (!STUDENT_TOKEN.ACCESS_TOKEN.includes(accessToken)) return res.status(404).send({ message: "Session timeout !!" });
-    //       accessToken = accessToken.split(reverseWord("student"))[0];
-    //     } else if (accessToken.includes(reverseWord("teacher"))) {
-    //       if (!TEACHER_TOKEN.ACCESS_TOKEN.includes(accessToken)) return res.status(404).send({ message: "Session timeout !!" });
-    //       accessToken = accessToken.split(reverseWord("teacher"))[0];
-    //     } else if (accessToken.includes(reverseWord("admin"))) {
-    //       if (!ADMIN_TOKEN.ACCESS_TOKEN.includes(accessToken)) return res.status(404).send({ message: "Session timeout !!" });
-    //       accessToken = accessToken.split(reverseWord("admin"))[0];
-    //     }
-    //     break;
-    //   }
-    // }
-
-    // if (flag === accessToken)
-    //   return res.status(403).send({ message: "Insufficient scope." });
     
+    // shallow copy
+    let shallow = accessToken;
     
+    // session timeout check
     if (accessToken.includes(reverseWord("student"))) {
       if (!STUDENT_TOKEN.ACCESS_TOKEN.includes(accessToken)) return res.status(404).send({ message: "Session timeout !!" });
       accessToken = accessToken.split(reverseWord("student"))[0];
@@ -63,6 +44,16 @@ const VerifyJWT = (scope) => {
       if (!ADMIN_TOKEN.ACCESS_TOKEN.includes(accessToken)) return res.status(404).send({ message: "Session timeout !!" });
       accessToken = accessToken.split(reverseWord("admin"))[0];
     }
+
+    
+    // scope validation
+    let shuffledScopes = reverseWord(scope);   // ["ram","hari"] => ["mar","irah"]
+    let extractedScopeFromToken = shallow.substr(accessToken.length, accessToken.length + scope.length);
+    
+    if (!shuffledScopes.includes(extractedScopeFromToken)) {
+      return res.status(403).send({ message: "Insufficient scope !!" });
+    }
+
     try {
       const res = await jwt.verify(accessToken, ACCESS_TOKEN_KEY);
       next();

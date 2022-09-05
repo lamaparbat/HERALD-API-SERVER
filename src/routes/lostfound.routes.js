@@ -3,14 +3,10 @@ const {
  GetLostFoundData,
  ReportLostFoundData,
  UpdateLostData } = require('../controllers/LostFound/index.controller');
+const auth = require('../middlewares/auth');
 
-const auth = (req, res, next) => {
- req.headers.scope = "teacher";
- next();
-}
-
-router.get('/lf/losts',auth, GetLostFoundData);
-router.post('/lf/report', ReportLostFoundData);
-router.put('/lf/update', UpdateLostData);
+router.get('/lf/losts', auth.VerifyJWT(["admin", "student", "teacher"]), GetLostFoundData);
+router.post('/lf/report', auth.VerifyJWT(["admin", "student", "teacher"]), ReportLostFoundData);
+router.put('/lf/update', auth.VerifyJWT(["admin", "student", "teacher"]), UpdateLostData);
 
 module.exports = router;

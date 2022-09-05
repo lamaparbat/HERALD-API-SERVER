@@ -20,13 +20,13 @@ const storage2 = multer.diskStorage({
 const collegeUpload = multer({ storage: storage2 });
 
 
-router.post("/uploadStudentList", auth.VerifyJWT, collegeUpload.single("file"), UPLOAD_STUDENT_LIST );
+router.post("/uploadStudentList", auth.VerifyJWT(["admin"]), collegeUpload.single("file"), UPLOAD_STUDENT_LIST );
 
 
-router.post("/uploadTeacherList", auth.VerifyJWT, UPLOAD_TEACHER_LIST);
+router.post("/uploadTeacherList", auth.VerifyJWT(["admin"]), UPLOAD_TEACHER_LIST);
 
 
-router.post("/uploadAdminList", auth.VerifyJWT, UPLOAD_ADMIN_LIST);
+router.post("/uploadAdminList", auth.VerifyJWT(["admin"]), UPLOAD_ADMIN_LIST);
 
 
 module.exports = router;
