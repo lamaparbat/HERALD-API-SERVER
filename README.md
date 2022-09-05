@@ -162,7 +162,7 @@ onFailure: {
 
 2. Read/Fetched routine data
 ```perl
-GET: /api/v4/routines?group=&level
+GET: /api/v4/routines?group=
  
  //params || query
  group=String     [format='l5cg8' where '5', 'c' & '8' is varaible and remaining are constant.]
