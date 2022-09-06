@@ -3,10 +3,10 @@ const { StatusCodes } = require("http-status-codes");
 
 const ReportLostFoundData = (req, res) => {
  const { items, desc, lostDate } = req.body;
- 
+
  // validation
  if (Object.keys(req.body).length === 3) {
-  if (items.length && desc.length > 3 && lostDate.length > 3  ) {
+  if (items.length > 0 && desc.length > 3 && lostDate.length > 3  ) {
    //db insertion
    const data = new lostFoundModel({
     items, 
@@ -18,7 +18,7 @@ const ReportLostFoundData = (req, res) => {
    });
 
    //save the data
-   data.save().then(() => {
+   data.save().then((data) => {
     res.status(StatusCodes.OK).send({
      message: "Report posted successfully !!"
     });

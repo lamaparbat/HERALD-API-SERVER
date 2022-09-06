@@ -23,7 +23,7 @@ const storage = multer.diskStorage({
 
 const feedbackUpload = multer({ storage: storage });
 
-router.post('/feedback/postFeedback', feedbackUpload.single('file'), auth.VerifyJWT(["admin", "student", "teacher"]), POST_FEEDBACK);
+router.post('/feedback/postFeedback', feedbackUpload.single('file'), auth.VerifyJWT(["admin", "student","teacher"]), POST_FEEDBACK);
 
 router.get('/feedback/getFeedback', auth.VerifyJWT(["admin"]), GET_FEEDBACK);
 

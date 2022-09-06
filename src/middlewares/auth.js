@@ -101,8 +101,6 @@ const regenerateAccessToken = (req, res, next) => {
     //regenerate the access token    
     req.body.uid = response.id;
 
-    console.log(response.id)
-
     //shift the process
     next();
   } catch (error) {
