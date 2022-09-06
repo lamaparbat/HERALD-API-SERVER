@@ -30,6 +30,8 @@ info:
 
       1. Concurrency -> PM2 (CPU Core Utilization Technique + Load Balancing)
       2. Social Media API Sync (Public API + Scrapping [Alternatives])
+      3. In-Memory Caching (REDIS)
+      4. Optimization...
       
     ---
 
@@ -44,10 +46,13 @@ info:
     ### ✅ Things Accomplished Until now
 
       1. Routine Management System.
+      2. User Centered Authentication
+      3. Dynamic Project Structure
+      4. Scope Base Routes Authentication. (Available scopes -> ["Admin", "Teacher", "Student"])
       
     ---
 
-  version: "1.0.5"
+  version: "1.0.6"
   title: "Herald College Kathmandu App"
   contact:
     name: "Backend Team"
@@ -74,8 +79,6 @@ tags:
     description: "Operations related to upload college data"
   - name: "Feedback"
     description: "Operations related to feedbacks"
-  - name: "Notification"
-    description: "Operations related to Notification"
   - name: "Lost & Found"
     description: "Operations related to Lost & Found"
 schemes:
@@ -242,11 +245,6 @@ paths:
       parameters:
         - name: "group"
           description: "The name of group"
-          in: "query"
-          required: false
-          type: "string"
-        - name: "level"
-          description: "The name of level"
           in: "query"
           required: false
           type: "string"
@@ -731,7 +729,7 @@ paths:
       security:
         - Bearer: []
       tags:
-        - "Notification"
+        - "Common"
       summary: "Get Notification"
       description: ""
       consumes:
@@ -865,38 +863,20 @@ definitions:
     properties:
       courseType:
         type: "string"
-        enum:
-          - "BIT"
-          - "BIBM"
-          - "IMBA"
       moduleName:
         type: "string"
       lecturerName:
         type: "string"
       classType:
         type: "string"
-        enum:
-          - "Lecture"
-          - "Tutorial"
-          - "Workshop"
       group:
         type: "string"
       roomName:
         type: "string"
       blockName:
         type: "string"
-        enum:
-          - "HCK"
-          - "Wolverhampton"
       day:
         type: "string"
-        enum:
-          - "Sunday"
-          - "Monday"
-          - "Tuesday"
-          - "Wednesday"
-          - "Thursday"
-          - "Friday"
       startTime:
         type: "string"
         format: "date-time"
@@ -910,7 +890,6 @@ definitions:
     properties:
       email:
         type: "string"
-        example: "bishalkhadka32@gmail.com"
       password:
         type: "string"
   Admin:
@@ -918,7 +897,6 @@ definitions:
     properties:
       email:
         type: "string"
-        example: "nirmal55@gmail.com"
       password:
         type: "string"
   Student:
@@ -926,19 +904,15 @@ definitions:
     properties:
       uid:
         type: "string"
-        example: "np03cs4s210869@heraldcollege.edu.np"
   Feedback:
     type: "object"
     properties:
       reportType:
         type: "string"
-        example: "suggestion"
       description:
         type: "string"
-        example: "i am testing mode"
       file:
         type: "object"
-        example: "1654840918671-next.png"
   LostReport:
     type: "object"
     properties:
