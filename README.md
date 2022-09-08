@@ -171,14 +171,6 @@ GET: /api/v4/routines?group=&level
  //header.authorization.bearer
 token: ""
 
-For example: In Javascript using axios,
-
-const res = await axios.post('https://httpbin.org/post', { data }, {
-  headers: {
-    "Authorization":'Bearer' + 'a23adjbd3knvbjdf.f3jsbfvjbbjb3.skja8adkfsbfvjbfvj'
-  }
-});
-
 ****** -> Response  <- *******
 onSuccess: {
    [
@@ -222,14 +214,6 @@ PUT: /api/v4/admin/updateRoutineData
 !! the token must be attached to the header =>  header.authorization.bearer
 token: ""
 
-For example: In ReactJS,
-
-const res = await axios.post('https://httpbin.org/post', { data }, {
-  headers: {
-    "Authorization":'Bearer' + 'a23adjbd3knvbjdf.f3jsbfvjbbjb3.skja8adkfsbfvjbfvj'
-  }
-});
-
 payload: {
     courseType:"",
     moduleName:"",
@@ -257,14 +241,6 @@ onFailure: {
 4. Delete routine data
 ```perl
 DELETE: /api/v4/admin/deleteRoutineData
-
-const res = await axios.post('https://httpbin.org/post', { data }, {
-
-  //token must be attatched to header.authorization.bearer
-  headers: {
-    "Authorization":'Bearer' + 'a23adjbd3knvbjdf.f3jsbfvjbbjb3.skja8adkfsbfvjbfvj'
-  }
-});
 
 payload: {
     routineID:""
