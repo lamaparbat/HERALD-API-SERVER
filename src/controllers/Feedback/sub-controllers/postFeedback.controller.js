@@ -7,7 +7,7 @@ const POST_FEEDBACK = async (req, res) => {
  const { reportType, description, uploadFileName } = req.body;
 
  // validation
- if (Object.keys(req.body).length < 7) {
+ if (Object.keys(req.body).length < 3) {
   if (reportType.length > 3 && description.length > 3 && uploadFileName !== null) {
    //db insertion
    const data = new feedbackModel({
