@@ -22,7 +22,7 @@ const LOGIN = async (req, res) => {
   }
 
   //database mapping
-  teacherModel.find({ email: email, password: password}).then((data) => {
+  teacherModel.find({ email: email}).then((data) => {
     if (data.length > 0) {
       //compare encrypt password
       if (bcrypt.compare(data[0].password, password) === false) {

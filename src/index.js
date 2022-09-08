@@ -12,7 +12,6 @@ const { START_DB_CONNECTION } = require("../src/utils/index.utils");
 const { PORT } = require("./configs/index.config");
 const routineModel = require("./models/routineModel");
 const path = require("path");
-
 // **** -> server config <- *******
 const server = express();
 

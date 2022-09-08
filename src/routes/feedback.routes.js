@@ -7,12 +7,11 @@ const {
  DELETE_FEEDBACK
 } = require("../controllers/index.controller").feedbackControllers;
 
-
 //upload image name
 var uploadFileName = null;
 const storage = multer.diskStorage({
  destination: (req, file, cb) => {
-  cb(null, "uploads");
+  cb(null, "../../uploads/");
  },
  filename: (req, file, cb) => {
   uploadFileName = Date.now() + "-" + file.originalname;
@@ -21,9 +20,12 @@ const storage = multer.diskStorage({
  }
 });
 
-const feedbackUpload = multer({ storage: storage });
+const feedbackUpload = multer({
+ storage: storage,
+ limits: { fileSize: 1000000 }
+}).single("proof_file");
 
-router.post('/feedback/postFeedback', feedbackUpload.single('file'), auth.VerifyJWT(["admin", "student","teacher"]), POST_FEEDBACK);
+router.post('/feedback/postFeedback', feedbackUpload, POST_FEEDBACK);
 
 router.get('/feedback/getFeedback', auth.VerifyJWT(["admin"]), GET_FEEDBACK);
 

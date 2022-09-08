@@ -21,7 +21,7 @@ const LOGIN = (req, res) => {
   }
 
   //database mapping
-  adminModel.find({ email: email, password: password }).then((data) => {
+  adminModel.find({ email: email }).then((data) => {
     if (data.length > 0) {
       //compare encrypt password
       if (bcrypt.compare(data[0].password, password) === false) {
