@@ -32,7 +32,7 @@ const LOGIN = (req, res) => {
       return res.status(200).send({
         message: 'Login succesfully.',
         email: email,
-        scope: "teacher",
+        scope: "admin",
         accessToken: accessToken,
         refreshToken: refreshToken
       })

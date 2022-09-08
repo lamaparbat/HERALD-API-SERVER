@@ -382,6 +382,7 @@ message = SERVER ERROR
 # Upcoming features 👷🏻
 1. Concurrency -> PM2 (cpu core utilization technique + Load balancing)
 2. Social media api sync (Public api + Scrapping [Alternatives])
+3. Auto scaling with Cloud Services 
 
 
 # Things need to optimize 🥷
@@ -389,10 +390,11 @@ message = SERVER ERROR
 2. Devops + AWS Serivice integration [Premium]
 3. Log tracing & Management  [Premium]
 
+
 # Things accomplished untill now 👨‍🚀
 1. Routine Management System.
-
-
+2. Lost and Found
+3. Role based Authentication 
 
 
 
