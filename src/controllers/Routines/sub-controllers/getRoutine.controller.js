@@ -3,6 +3,16 @@ const { StatusCodes } = require("http-status-codes");
 
 const GetRoutine = async (req, res) => {
   const field = req.query;
+  
+  
+  if (req.scope.includes("nimda")) {
+    const result = await routineModel.find();
+    return res.status(StatusCodes.OK).send({
+      data: result,
+    });
+  }
+  
+  
   let fieldLength = Object.keys(field).length;
   // if there is no payload
   if (fieldLength === 0)

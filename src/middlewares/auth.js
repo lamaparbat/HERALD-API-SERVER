@@ -56,6 +56,7 @@ const VerifyJWT = (scope) => {
 
     try {
       const res = await jwt.verify(accessToken, ACCESS_TOKEN_KEY);
+      req.scope = shuffledScopes;
       next();
     } catch (err) {
       console.log(err)
