@@ -15,7 +15,7 @@ const SIGNUP = async (req, res) => {
     adminModel
       .find({ email: email })
       .then((data) => {
-        if (data.length === 0) {
+        if (!data.length) {
           //insert new admin data
           const data = new adminModel({
             email: email,
@@ -27,7 +27,8 @@ const SIGNUP = async (req, res) => {
           data
             .save()
             .then((savedData) => {
-              redisClient.hSet('admin', email, JSON.stringify(savedData), { EX: 180, NX: true})
+              redisClient.hSet('admin', email, JSON.stringify(savedData))
+              redisClient.expire('admin', 180)
               return res.status(StatusCodes.CREATED).send('Admin created succesfully !!');
             })
             .catch((err) => {
