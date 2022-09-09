@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } = require("../configs/index.config");
+const { SCOPE } = require("../constants/index");
 const reverseWord = require('../utils/reverseWord');
 
 const STUDENT_TOKEN = {
@@ -34,15 +35,15 @@ const VerifyJWT = (scope) => {
     let shallow = accessToken;
     
     // session timeout check
-    if (accessToken.includes(reverseWord("student"))) {
+    if (accessToken.includes(reverseWord(SCOPE.STUDENT_SCOPE))) {
       if (!STUDENT_TOKEN.ACCESS_TOKEN.includes(accessToken)) return res.status(404).send({ message: "Session timeout !!" });
-      accessToken = accessToken.split(reverseWord("student"))[0];
-    } else if (accessToken.includes(reverseWord("teacher"))) {
+      accessToken = accessToken.split(reverseWord(SCOPE.STUDENT_SCOPE))[0];
+    } else if (accessToken.includes(reverseWord(SCOPE.TEACHER_SCOPE))) {
       if (!TEACHER_TOKEN.ACCESS_TOKEN.includes(accessToken)) return res.status(404).send({ message: "Session timeout !!" });
-      accessToken = accessToken.split(reverseWord("teacher"))[0];
-    } else if (accessToken.includes(reverseWord("admin"))) {
+      accessToken = accessToken.split(reverseWord(SCOPE.TEACHER_SCOPE))[0];
+    } else if (accessToken.includes(reverseWord(SCOPE.ADMIN_SCOPE))) {
       if (!ADMIN_TOKEN.ACCESS_TOKEN.includes(accessToken)) return res.status(404).send({ message: "Session timeout !!" });
-      accessToken = accessToken.split(reverseWord("admin"))[0];
+      accessToken = accessToken.split(reverseWord(SCOPE.ADMIN_SCOPE))[0];
     }
 
     
@@ -56,7 +57,7 @@ const VerifyJWT = (scope) => {
 
     try {
       const res = await jwt.verify(accessToken, ACCESS_TOKEN_KEY);
-      req.scope = shuffledScopes;
+      req.scope = extractedScopeFromToken;
       next();
     } catch (err) {
       console.log(err)
@@ -112,10 +113,10 @@ const regenerateAccessToken = (req, res, next) => {
 
 // scope based token differentiation
 const storeToken = (scope, accessToken, refreshToken) => {
-  if (scope === "student") {
+  if (scope === SCOPE.STUDENT_SCOPE) {
     STUDENT_TOKEN.ACCESS_TOKEN.push(accessToken);
     STUDENT_TOKEN.REFRESH_TOKEN.push(refreshToken);
-  } else if (scope === "teacher") {
+  } else if (scope === SCOPE.TEACHER_SCOPE) {
     TEACHER_TOKEN.ACCESS_TOKEN.push(accessToken);
     TEACHER_TOKEN.REFRESH_TOKEN.push(refreshToken);
   } else {

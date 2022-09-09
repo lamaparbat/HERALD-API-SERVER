@@ -13,7 +13,7 @@ const {
 router.post('/admin/postRoutineData', auth.VerifyJWT(["admin"]), PostRoutine);
 
 //get all routine data
-router.get('/routines', auth.VerifyJWT(["admin", "student","teacher"]), GetRoutine);
+router.get('/routines', auth.VerifyJWT(["admin", "teacher","student"]), GetRoutine);
 
 //update routine data
 router.put('/admin/updateRoutineData', auth.VerifyJWT(["admin"]), UpdateRoutine )
