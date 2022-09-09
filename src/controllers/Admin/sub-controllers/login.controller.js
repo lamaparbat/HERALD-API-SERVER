@@ -19,30 +19,30 @@ const LOGIN = async (req, res) => {
   if (adminAttemptCount > 4 && blockEmail === email) {
     return res.status(StatusCodes.FORBIDDEN).send({
       message: 'You exceed the 5 login attempt. Please try again after 5 min !!',
-    }); 
+    });
   }
 
   //database mapping, getting data from redis
   const adminFromRedis = await redisClient.hGet('admin', email)
   admin = adminFromRedis ? JSON.parse(adminFromRedis) : null
   passwordCheck = admin ? await bcrypt.compare(password, admin.password) : null
-  if (adminFromRedis && passwordCheck){
-    const { accessToken, refreshToken } = auth.GenerateJWT(scope="admin", email)
+  if (adminFromRedis && passwordCheck) {
+    const { accessToken, refreshToken } = auth.GenerateJWT(scope = "admin", email)
     adminAttemptCount = 0
     return res.send({
       message: 'Login succesfully.',
       email: email,
       scope: "admin",
-      accessToken: accessToken,
-      refreshToken: refreshToken
+      accessToken,
+      refreshToken
     })
   }
 
   //database mapping
-  admin = await adminModel.findOne({email})
+  admin = await adminModel.findOne({ email })
   passwordCheck = admin ? await bcrypt.compare(password, admin.password) : null
-  if (admin && passwordCheck){
-    const { accessToken, refreshToken } = auth.GenerateJWT(scope="admin", email)
+  if (admin && passwordCheck) {
+    const { accessToken, refreshToken } = auth.GenerateJWT(scope = "admin", email)
     //saving to redis if data has expired already or if found in MongoDB but not in redis
     await redisClient.hSet('admin', email, JSON.stringify(admin))
     redisClient.expire('admin', 180)
@@ -51,11 +51,11 @@ const LOGIN = async (req, res) => {
       message: 'Login succesfully.',
       email: email,
       scope: "admin",
-      accessToken: accessToken,
-      refreshToken: refreshToken
+      accessToken,
+      refreshToken
     })
-  } 
-  
+  }
+
   else {
     //increase the wrong email counter by 1
     adminAttemptCount++;
