@@ -22,14 +22,8 @@ const GetRoutine = async (req, res) => {
   //validating the groupName expression
   let groupName = field.group;
   groupName = groupName.toUpperCase();
-  if (
-    groupName.length >= 5 &&
-    groupName[0] === "L" &&
-    !isNaN(groupName[1]) &&
-    (groupName[2] === "C" || groupName[2] === "B") &&
-    groupName[3] === "G" &&
-    !isNaN(groupName[4])
-  ) {
+  const regEx = new RegExp(/(L[4-6][CB]G\d+)/)
+  if (regEx.test(groupName)) {
     //fetch all routine from db and filter with groupName
     const result = await routineModel.find();
     const filteredData = result.filter((data) =>
