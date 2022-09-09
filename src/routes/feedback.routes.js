@@ -22,14 +22,16 @@ const storage = multer.diskStorage({
 
 const feedbackUpload = multer({
  storage: storage,
- limits: { fileSize: 1000000 }
 }).single("proof_file");
 
-router.post('/feedback/postFeedback', feedbackUpload, POST_FEEDBACK);
+router.post('/feedback/postFeedback',
+ feedbackUpload, POST_FEEDBACK);
 
-router.get('/feedback/getFeedback', auth.VerifyJWT(["admin"]), GET_FEEDBACK);
+router.get('/feedback/getFeedback',
+ auth.VerifyJWT(["admin"]), GET_FEEDBACK);
 
-router.delete('/feedback/deleteFeedback', auth.VerifyJWT(["admin"]), DELETE_FEEDBACK);
+router.delete('/feedback/deleteFeedback',
+ auth.VerifyJWT(["admin"]), DELETE_FEEDBACK);
 
 
 module.exports = router;

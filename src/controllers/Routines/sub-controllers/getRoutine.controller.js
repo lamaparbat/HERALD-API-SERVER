@@ -1,24 +1,27 @@
 const routineModel = require("../../../models/routineModel");
 const { StatusCodes } = require("http-status-codes");
+const { SCOPE } = require("../../../constants/index");
+const reverseWord = require("../../../utils/reverseWord");
 
 const GetRoutine = async (req, res) => {
   const field = req.query;
-  
-  
-  if (req.scope.includes("nimda")) {
+  let fieldLength = Object.keys(field).length;
+
+  // provide all the routines on admin scope
+  if ((req.scope !== reverseWord(SCOPE.STUDENT_SCOPE)) && fieldLength === 0) {
     const result = await routineModel.find();
     return res.status(StatusCodes.OK).send({
       data: result,
     });
   }
   
-  
-  let fieldLength = Object.keys(field).length;
-  // if there is no payload
-  if (fieldLength === 0)
+  // if there is no payload on studen scope 
+  if (fieldLength === 0 && (req.scope === reverseWord(SCOPE.STUDENT_SCOPE)))
     return res.status(StatusCodes.BAD_REQUEST).send({
       message: "Please provide group name!",
     });
+  
+  
   //validating the groupName expression
   let groupName = field.group;
   groupName = groupName.toUpperCase();
