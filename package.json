@@ -27,6 +27,7 @@
     "nodemailer": "^6.7.5",
     "nodemon": "^2.0.15",
     "pusher": "^5.1.0-beta",
+    "redis": "^4.3.1",
     "swagger-jsdoc": "^6.2.1",
     "swagger-ui-express": "^4.3.0",
     "xlsx2json": "^1.0.0",
