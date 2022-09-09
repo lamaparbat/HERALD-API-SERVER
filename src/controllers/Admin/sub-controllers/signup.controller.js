@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const adminModel = require('../../../models/adminModel');
 const { StatusCodes } = require("http-status-codes");
+const redisClient = require('../../../utils/Database/REDIS_client')
 
 
 
@@ -25,7 +26,8 @@ const SIGNUP = async (req, res) => {
           //final upload to db
           data
             .save()
-            .then(() => {
+            .then((savedData) => {
+              redisClient.hSet('admin', email, JSON.stringify(savedData), { EX: 180, NX: true})
               return res.status(StatusCodes.CREATED).send('Admin created succesfully !!');
             })
             .catch((err) => {
