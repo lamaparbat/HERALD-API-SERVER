@@ -162,11 +162,10 @@ onFailure: {
 
 2. Read/Fetched routine data
 ```perl
-GET: /api/v4/routines?group=&level
+GET: /api/v4/routines
  
  //params || query
- group=8
- level=
+ group= 8  [For STUDENT = required  , For ADMIN & TEACHER = Optional ]
  
  //header.authorization.bearer
 token: ""
