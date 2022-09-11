@@ -350,9 +350,7 @@ message = SERVER ERROR
 ```
 
 # Latest features 👈🏽
-1. Isolated versioning and configs (Into Production & Development)
-2. Password Hashing (SHA256) (Secure Hash Algorithm)
-3. Lost & Found services
+1.
 
 # Upcoming features 👷🏻
 1. Concurrency -> PM2 (cpu core utilization technique + Load balancing)
@@ -370,6 +368,9 @@ message = SERVER ERROR
 1. Routine Management System.
 2. Lost and Found
 3. Role based Authentication 
+4. Isolated versioning and configs (Into Production & Development)
+5. Password Hashing (SHA256) (Secure Hash Algorithm)
+6. Lost & Found services
 
 
 
