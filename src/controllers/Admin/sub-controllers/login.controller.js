@@ -21,14 +21,14 @@ const LOGIN = (req, res) => {
   }
 
   //database mapping
-  adminModel.find({ email: email }).then((data) => {
-    if (data.length > 0) {
+  adminModel.find({ email: email }).then(async ([data]) => {
+    if (data) {
       //compare encrypt password
-      if (bcrypt.compare(data[0].password, password) === false) {
+      if (!await bcrypt.compare(password, data.password)) {
         return res.status(StatusCodes.UNAUTHORIZED).send('Password didnt matched !!')
       }
 
-      const { accessToken, refreshToken } = auth.GenerateJWT(scope = "admin",email);
+      const { accessToken, refreshToken } = auth.GenerateJWT(scope = "admin", email);
       return res.status(200).send({
         message: 'Login succesfully.',
         email: email,
