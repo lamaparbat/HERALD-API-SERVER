@@ -22,10 +22,10 @@ const LOGIN = async (req, res) => {
   }
 
   //database mapping
-  teacherModel.find({ email: email}).then((data) => {
-    if (data.length > 0) {
+  teacherModel.find({ email: email }).then(async ([data]) => {
+    if (data) {
       //compare encrypt password
-      if (bcrypt.compare(data[0].password, password) === false) {
+      if (!await bcrypt.compare(password, data.password)) {
         return res.status(StatusCodes.NON_AUTHORITATIVE_INFORMATION).send('Password didnt matched !!')
       }
 
