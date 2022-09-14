@@ -165,8 +165,8 @@ onFailure: {
 GET: /api/v4/routines
  
  //params || query
- group= 8  [For STUDENT = required  , For ADMIN & TEACHER = Optional ]
- 
+ group= 8  [For STUDENT = required  , For ADMIN & TEACHER = Optional ].    
+ id = string     [Optional]
  //header.authorization.bearer
 token: ""
 
