@@ -7,6 +7,11 @@ const GetRoutine = async (req, res) => {
   const field = req.query;
   let fieldLength = Object.keys(field).length;
 
+  
+
+
+  
+
   // provide all the routines on admin scope
   if ((req.scope !== reverseWord(SCOPE.STUDENT_SCOPE)) && fieldLength === 0) {
     const result = await routineModel.find();
@@ -22,11 +27,33 @@ const GetRoutine = async (req, res) => {
     });
 
 
+
+    
+    
+ 
+
   //validating the groupName expression
-  let groupName = field.group;
-  groupName = groupName.toUpperCase();
+  
 
   const pattern = new RegExp(/L[4-6][CB]G\d+/)
+  let id = field.id;
+      // if there is id 
+
+      if (id) {
+        const result = await routineModel.findById(id);
+        return res.status(StatusCodes.OK).send({
+          data: result,
+        });
+      }
+      else{
+
+      
+        let groupName = field.group;
+        
+      
+        
+        groupName = groupName.toUpperCase();
+
 
   if (pattern.test(groupName)) {
     //fetch all routine from db and filter with groupName
@@ -50,5 +77,5 @@ const GetRoutine = async (req, res) => {
     });
   }
 };
-
+}
 module.exports = GetRoutine;
