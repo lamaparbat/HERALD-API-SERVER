@@ -5,7 +5,7 @@ const pusher = require("../../../utils/Socket/SocketConnection");
 
 const PostRoutine = async (req, res, next) => {
   //destructuring incoming data
-  let {
+  const {
     courseType,
     moduleName,
     lecturerName,
@@ -32,8 +32,8 @@ const PostRoutine = async (req, res, next) => {
     let modifiedStartingTime = 0;
     // for AM format
     if (
-      time.charAt(time.length - 2) === "A" ||
-      time.charAt(time.length - 2) === "a"
+      (time.charAt(time.length - 2) === "A" )||
+      (time.charAt(time.length - 2) === "a")
     ) {
       startingTime = time.split(":");
       modifiedStartingTime = parseInt(startingTime[0] + startingTime[1]);
@@ -71,13 +71,13 @@ const PostRoutine = async (req, res, next) => {
       }
     });
     if (test && type === "room") {
-      return true;
+      return "room";
     } else if (test && type === "teacher") {
-      return true;
+      return "teacher";
     } else if (test && type === "class") {
-      return true;
+      return "class";
     } else {
-      return false;
+      return "none";
     }
   };
 
@@ -85,9 +85,9 @@ const PostRoutine = async (req, res, next) => {
   // case 1 : check if classroom is blocked or not
 
   const check = await routineModel.find({
-    blockName: blockName.toUpperCase(),
-    roomName: roomName.toUpperCase(),
-    day: day.toUpperCase(),
+    blockName: blockName,
+    roomName: roomName,
+    day: day,
   });
   console.log(check)
   // if end time is less than start time
@@ -97,7 +97,7 @@ const PostRoutine = async (req, res, next) => {
       message: "end time should be greater than start time",
     });
   }
-  if (checkTime(check, "room")) {
+  if (checkTime(check, "room")==="room") {
     return res.status(StatusCodes.BAD_REQUEST).send({
       success: false,
       message:
@@ -109,14 +109,15 @@ const PostRoutine = async (req, res, next) => {
 
   try {
     const teacherData = await routineModel.find({
-      lecturerName: lecturerName.toUpperCase(),
-      day: day.toUpperCase(),
+      lecturerName: lecturerName,
+      day: day,
     });
-    if (checkTime(teacherData, "teacher")) {
+    console.log("teacherData: "+teacherData)
+    if (checkTime(teacherData, "teacher")==="teacher") {
       return res.status(StatusCodes.BAD_REQUEST).send({
         success: false,
         message: 
-          "The teacher already reserved for another class in this time",
+          "The teacher is already reserved for another class in this time",
       });
     }
   } catch (error) {
@@ -127,10 +128,10 @@ const PostRoutine = async (req, res, next) => {
 
   try {
     const classData = await routineModel.find({
-      day: day.toUpperCase(),
-      group: group.toUpperCase(),
+      day: day,
+      group: group,
     });
-    if (checkTime(classData, "class")) {
+    if (checkTime(classData, "class")==="class") {
       return res.status(StatusCodes.BAD_REQUEST).send({
         success: false,
         message:
@@ -159,11 +160,11 @@ const PostRoutine = async (req, res, next) => {
     const data = new routineModel({
       courseType: courseType.toUpperCase(),
       moduleName: moduleName.toUpperCase(),
-      lecturerName: lecturerName,
+      lecturerName: lecturerName.toUpperCase(),
       classType: classType.toUpperCase(),
       group: group.toUpperCase(),
       roomName: roomName.toUpperCase(),
-      blockName: blockName,
+      blockName: blockName.toUpperCase(),
       day: day.toUpperCase(),
       startTime: startTime,
       endTime: endTime,
