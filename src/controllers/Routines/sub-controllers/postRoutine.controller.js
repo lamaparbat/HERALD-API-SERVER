@@ -18,6 +18,8 @@ const PostRoutine = async (req, res, next) => {
     endTime,
   } = req.body;
 
+  console.log(group);
+
   //check if all attributes are recieved or not ?
   if (Object.keys(req.body).length < 9) {
     return res
@@ -32,8 +34,8 @@ const PostRoutine = async (req, res, next) => {
     let modifiedStartingTime = 0;
     // for AM format
     if (
-      (time.charAt(time.length - 2) === "A" )||
-      (time.charAt(time.length - 2) === "a")
+      time.charAt(time.length - 2) === "A" ||
+      time.charAt(time.length - 2) === "a"
     ) {
       startingTime = time.split(":");
       modifiedStartingTime = parseInt(startingTime[0] + startingTime[1]);
@@ -41,9 +43,12 @@ const PostRoutine = async (req, res, next) => {
     // for PM format
     else {
       startingTime = time.split(":");
-      modifiedStartingTime = parseInt(
-        parseInt(startingTime[0]) + 12 + startingTime[1]
-      );
+      if (startingTime[0] === "12")
+        modifiedStartingTime = parseInt(startingTime[0] + startingTime[1]);
+      else
+        modifiedStartingTime = parseInt(
+          parseInt(startingTime[0]) + 12 + startingTime[1]
+        );
     }
     return modifiedStartingTime;
   };
@@ -81,15 +86,21 @@ const PostRoutine = async (req, res, next) => {
     }
   };
 
+  // making payload upper case
+  let modifiedBlockName = blockName.toUpperCase();
+  let modifiedRoomName = roomName.toUpperCase();
+  let modifiedDay = day.toUpperCase();
+  let modifiedGroup = group.map((element) => element.toUpperCase());
+  let modifiedLecturerName = lecturerName.toUpperCase();
+
   //logical validation
   // case 1 : check if classroom is blocked or not
 
   const check = await routineModel.find({
-    blockName: blockName,
-    roomName: roomName,
-    day: day,
+    blockName: modifiedBlockName,
+    roomName: modifiedRoomName,
+    day: modifiedDay,
   });
-  console.log(check)
   // if end time is less than start time
   if (payLoadEndTime <= payLoadStartTime) {
     return res.status(StatusCodes.BAD_REQUEST).send({
@@ -97,7 +108,7 @@ const PostRoutine = async (req, res, next) => {
       message: "end time should be greater than start time",
     });
   }
-  if (checkTime(check, "room")==="room") {
+  if (checkTime(check, "room") === "room") {
     return res.status(StatusCodes.BAD_REQUEST).send({
       success: false,
       message:
@@ -109,14 +120,13 @@ const PostRoutine = async (req, res, next) => {
 
   try {
     const teacherData = await routineModel.find({
-      lecturerName: lecturerName,
-      day: day,
+      lecturerName: modifiedLecturerName,
+      day: modifiedDay,
     });
-    console.log("teacherData: "+teacherData)
-    if (checkTime(teacherData, "teacher")==="teacher") {
+    if (checkTime(teacherData, "teacher") === "teacher") {
       return res.status(StatusCodes.BAD_REQUEST).send({
         success: false,
-        message: 
+        message:
           "The teacher is already reserved for another class in this time",
       });
     }
@@ -128,19 +138,21 @@ const PostRoutine = async (req, res, next) => {
 
   try {
     const classData = await routineModel.find({
-      day: day,
-      group: group,
+      day: modifiedDay,
+      group: modifiedGroup,
     });
-    if (checkTime(classData, "class")==="class") {
+    console.log("classData " + classData);
+    if (checkTime(classData, "class") === "class") {
       return res.status(StatusCodes.BAD_REQUEST).send({
         success: false,
-        message:
-          "This group has another class in this time",
+        message: "This group has another class in this time",
       });
     }
   } catch (error) {
     console.log(error.message);
   }
+
+  console.log(modifiedGroup);
 
   // case 4: In one room, multiple groups can study at same time
 
@@ -162,7 +174,7 @@ const PostRoutine = async (req, res, next) => {
       moduleName: moduleName.toUpperCase(),
       lecturerName: lecturerName.toUpperCase(),
       classType: classType.toUpperCase(),
-      group: group.toUpperCase(),
+      group: ["L4CG5", "l5CG5"],
       roomName: roomName.toUpperCase(),
       blockName: blockName.toUpperCase(),
       day: day.toUpperCase(),
@@ -178,42 +190,50 @@ const PostRoutine = async (req, res, next) => {
       moduleName: moduleName,
     });
     if (result.length > 0) {
-      res
+      return res
         .status(404)
         .send(
           `Routine of ${moduleName} for the date ${new Date().toLocaleDateString()} has already been created.`
         );
     }
-
-    data
-      .save()
-      .then(async () => {
-        // init the scheduler tracker
-
-        //upload message to notification db
-        const notifData = new notifModel({
-          message: `Dear ${group} of ${courseType}, a new routine of ${moduleName} has recently published. Please see it once.`,
-          group: group,
-          createdOn: new Date().toLocaleDateString(),
-        });
-
-        try {
-          const result = await notifData.save();
-          if (result.message) {
-            pusher.trigger("my-channel", "notice", {
-              message: `Dear ${group} of ${courseType}, a new routine of ${moduleName} has recently published. Please see it once.`,
-            });
-            return res.status(200).send({
+    try {
+      await data.save();
+      return res.status(StatusCodes.OK).send({
               message: "Routine posted successfully !!",
             });
-          }
-        } catch (error) {
-          return res.status(StatusCodes.SERVICE_UNAVAILABLE).send(err);
-        }
-      })
-      .catch((err) => {
-        return res.status(StatusCodes.SERVICE_UNAVAILABLE).send(err);
-      });
+    } catch (error) {
+      return res.status(StatusCodes.SERVICE_UNAVAILABLE).send(err);
+    }
+
+    // data.save()
+    // .then(async () => {
+    // init the scheduler tracker
+
+    // //upload message to notification db
+    // const notifData = new notifModel({
+    //   message: `Dear ${group} of ${courseType}, a new routine of ${moduleName} has recently published. Please see it once.`,
+    //   group: group,
+    //   createdOn: new Date().toLocaleDateString(),
+    // });
+
+    // try {
+    //   const result = await notifData.save();
+    //   if (result.message) {
+    //     pusher.trigger("my-channel", "notice", {
+    //       message: `Dear ${group} of ${courseType}, a new routine of ${moduleName} has recently published. Please see it once.`,
+    //     });
+    //     return res.status(200).send({
+    //       message: "Routine posted successfully !!",
+    //     });
+    //   }
+    // } catch (error) {
+    //   return res.status(StatusCodes.SERVICE_UNAVAILABLE).send(err);
+    // }
+    // })
+    // .catch((err) => {
+    //   console.log("hello");
+    //   return res.status(StatusCodes.SERVICE_UNAVAILABLE).send(err);
+    // });
   } else {
     return res
       .status(StatusCodes.PARTIAL_CONTENT)

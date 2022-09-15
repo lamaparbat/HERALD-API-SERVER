@@ -7,7 +7,7 @@ const routineSchema = new mongoose.Schema({
  moduleName: String,
  lecturerName: String,
  classType: String,
- group: String,
+ group: Array,
  roomName: String,
  blockName: String,
  day:String,
