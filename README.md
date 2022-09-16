@@ -165,8 +165,8 @@ onFailure: {
 GET: /api/v4/routines
  
  //params || query
- group= 8  [For STUDENT = required  , For ADMIN & TEACHER = Optional ]
- 
+ group= 8  [For STUDENT = required  , For ADMIN & TEACHER = Optional ].    
+ id = string     [Optional]
  //header.authorization.bearer
 token: ""
 
@@ -350,9 +350,7 @@ message = SERVER ERROR
 ```
 
 # Latest features 👈🏽
-1. Isolated versioning and configs (Into Production & Development)
-2. Password Hashing (SHA256) (Secure Hash Algorithm)
-3. Lost & Found services
+1.
 
 # Upcoming features 👷🏻
 1. Concurrency -> PM2 (cpu core utilization technique + Load balancing)
@@ -364,12 +362,16 @@ message = SERVER ERROR
 1. Aggregation Framework for data mapping
 2. Devops + AWS Serivice integration [Premium]
 3. Log tracing & Management  [Premium]
+4. Add routine ID based search on params way [Current !]
 
 
 # Things accomplished untill now 👨‍🚀
 1. Routine Management System.
 2. Lost and Found
 3. Role based Authentication 
+4. Isolated versioning and configs (Into Production & Development)
+5. Password Hashing (SHA256) (Secure Hash Algorithm)
+6. Lost & Found services
 
 
 
