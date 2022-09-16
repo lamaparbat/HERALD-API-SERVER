@@ -9,7 +9,7 @@ const PostRoutine = async (req, res, next) => {
   const {
     courseType,
     moduleName,
-    lecturerName,
+    teacherName,
     classType,
     group,
     roomName,
@@ -97,7 +97,7 @@ const PostRoutine = async (req, res, next) => {
   else modifiedGroup.push(group.toUpperCase())
   console.log(modifiedGroup)
   
-  let modifiedLecturerName = lecturerName.toUpperCase();
+  let modifiedTeacherName = teacherName.toUpperCase();
   console.log(CLASS_TYPE.LECTURE)
   console.log(modifiedClassType)
   // validate classType
@@ -137,7 +137,7 @@ const PostRoutine = async (req, res, next) => {
 
   try {
     const teacherData = await routineModel.find({
-      lecturerName: modifiedLecturerName,
+      teacherName: modifiedTeacherName,
       day: modifiedDay,
     });
     if (checkTime(teacherData, "teacher") === "teacher") {
@@ -195,7 +195,7 @@ const PostRoutine = async (req, res, next) => {
   if (
     courseType.length > 0 &&
     moduleName.length > 0 &&
-    lecturerName.length > 0 &&
+    teacherName.length > 0 &&
     classType.length > 0 &&
     group.length > 0 &&
     roomName.length > 0 &&
@@ -207,7 +207,7 @@ const PostRoutine = async (req, res, next) => {
     const data = new routineModel({
       courseType: courseType.toUpperCase(),
       moduleName: moduleName.toUpperCase(),
-      lecturerName: lecturerName.toUpperCase(),
+      teacherName: modifiedTeacherName,
       classType: classType.toUpperCase(),
       group: modifiedGroup,
       roomName: roomName.toUpperCase(),

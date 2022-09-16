@@ -11,4 +11,5 @@ const CLASS_TYPE = {
 }
 
 
+
 module.exports = { SCOPE , CLASS_TYPE };
