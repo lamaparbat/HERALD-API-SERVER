@@ -1,5 +1,6 @@
 const routineModel = require("../../../models/routineModel");
 const notifModel = require("../../../models/notificationModel");
+const CLASS_TYPE = require("../../../constants/index").CLASS_TYPE
 const { StatusCodes } = require("http-status-codes");
 const pusher = require("../../../utils/Socket/SocketConnection");
 
@@ -17,7 +18,6 @@ const PostRoutine = async (req, res, next) => {
     startTime,
     endTime,
   } = req.body;
-
   console.log(group);
 
   //check if all attributes are recieved or not ?
@@ -90,8 +90,25 @@ const PostRoutine = async (req, res, next) => {
   let modifiedBlockName = blockName.toUpperCase();
   let modifiedRoomName = roomName.toUpperCase();
   let modifiedDay = day.toUpperCase();
-  let modifiedGroup = group.map((element) => element.toUpperCase());
+  let modifiedModuleName = moduleName.toUpperCase();
+  let modifiedClassType = classType.toUpperCase();
+  let modifiedGroup=[]
+  if(Array.isArray(group))modifiedGroup = group.map((element) => element.toUpperCase());
+  else modifiedGroup.push(group.toUpperCase())
+  console.log(modifiedGroup)
+  
   let modifiedLecturerName = lecturerName.toUpperCase();
+  console.log(CLASS_TYPE.LECTURE)
+  console.log(modifiedClassType)
+  // validate classType
+  if(modifiedClassType !== CLASS_TYPE.LECTURE &&
+    modifiedClassType !== CLASS_TYPE.TUTORIAL &&
+    modifiedClassType !== CLASS_TYPE.WORKSHOP){
+      return res.status(StatusCodes.BAD_REQUEST).send({
+        success: false,
+        message: "Invalid class type!"
+      })
+    }
 
   //logical validation
   // case 1 : check if classroom is blocked or not
@@ -139,7 +156,7 @@ const PostRoutine = async (req, res, next) => {
   try {
     const classData = await routineModel.find({
       day: modifiedDay,
-      group: modifiedGroup,
+      group: { $in: modifiedGroup },
     });
     console.log("classData " + classData);
     if (checkTime(classData, "class") === "class") {
@@ -152,9 +169,27 @@ const PostRoutine = async (req, res, next) => {
     console.log(error.message);
   }
 
-  console.log(modifiedGroup);
+  // case 4: One group cannot have multiple class of same module in a single day
 
-  // case 4: In one room, multiple groups can study at same time
+  try {
+    const dayData = await routineModel.find({
+      group: {$in: modifiedGroup},
+      moduleName: modifiedModuleName,
+    });
+    console.log("dayData: "+dayData)
+    let check = false;
+    dayData.forEach(element => {
+      if(modifiedModuleName === element.moduleName) check = true;
+    });
+    if(check){
+      return res.status(StatusCodes.BAD_REQUEST).send({
+        success: false,
+        message: "The given group has already taken this class"
+      })
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
 
   //minor validation
   if (
@@ -174,7 +209,7 @@ const PostRoutine = async (req, res, next) => {
       moduleName: moduleName.toUpperCase(),
       lecturerName: lecturerName.toUpperCase(),
       classType: classType.toUpperCase(),
-      group: ["L4CG5", "l5CG5"],
+      group: modifiedGroup,
       roomName: roomName.toUpperCase(),
       blockName: blockName.toUpperCase(),
       day: day.toUpperCase(),

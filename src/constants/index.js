@@ -4,5 +4,11 @@ const SCOPE = {
  STUDENT_SCOPE:"student"
 }
 
+const CLASS_TYPE = {
+    LECTURE: "LECTURE",
+    TUTORIAL: "TUTORIAL",
+    WORKSHOP: "WORKSHOP",
+}
 
-module.exports = { SCOPE };
+
+module.exports = { SCOPE , CLASS_TYPE };
