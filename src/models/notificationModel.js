@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 //define schema
 const notifSchema = new mongoose.Schema({
  message: String,
- group:String,
+ group:Array,
  createdOn: String
 });
 

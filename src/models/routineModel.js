@@ -5,9 +5,9 @@ const mongoose = require("mongoose");
 const routineSchema = new mongoose.Schema({
  courseType:String,
  moduleName: String,
- lecturerName: String,
+ teacherName: String,
  classType: String,
- group: String,
+ group: Array,
  roomName: String,
  blockName: String,
  day:String,
