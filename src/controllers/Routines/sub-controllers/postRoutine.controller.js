@@ -6,6 +6,8 @@ const HCK_BLOCK = require('../../../constants/index').HCK_BLOCK
 const ROUTINE_PAYLOAD = require('../../../constants/index').ROUTINE_PAYLOAD
 const { StatusCodes } = require('http-status-codes')
 const pusher = require('../../../utils/Socket/SocketConnection')
+const timeConvertor = require('../../../utils/timeConvertor')
+
 
 const PostRoutine = async (req, res, next) => {
   //destructuring incoming data
@@ -37,64 +39,19 @@ const PostRoutine = async (req, res, next) => {
     })
   }
 
-  // converting 10:00AM or 1:00PM type format to 24 hours
-
-  const timeConvertor = (time) => {
-    let startingTime = time.slice(0, -2)
-    let modifiedStartingTime = 0
-    // for AM format
-    if (
-      time.charAt(time.length - 2) === 'A' ||
-      time.charAt(time.length - 2) === 'a'
-    ) {
-      startingTime = time.split(':')
-      modifiedStartingTime = parseInt(startingTime[0] + startingTime[1])
-    }
-    // for PM format
-    else {
-      startingTime = time.split(':')
-      if (startingTime[0] === '12')
-        modifiedStartingTime = parseInt(startingTime[0] + startingTime[1])
-      else
-        modifiedStartingTime = parseInt(
-          parseInt(startingTime[0]) + 12 + startingTime[1],
-        )
-    }
-    return modifiedStartingTime
+  // validate time format
+  var regex = new RegExp(/^([0]?[1-9]|1[0-2]):([0-5]\d)\s?(AM|PM)?$/i);
+  if(!(regex.test(startTime) && regex.test(endTime))){
+    return res.status(StatusCodes.BAD_REQUEST).send({
+      success: false,
+      message:"Invalid time format! Please provide time in AM/PM format"
+    })
   }
-
   // converting given payload to proper format
-
   let payLoadStartTime = startTime
   let payLoadEndTime = endTime
   payLoadEndTime = timeConvertor(payLoadEndTime)
   payLoadStartTime = timeConvertor(payLoadStartTime)
-
-  const checkTime = (array, type) => {
-    let test = false
-    array.forEach((element) => {
-      let startingTime = element.startTime
-      let endingTime = element.endTime
-      startingTime = timeConvertor(startingTime)
-      endingTime = timeConvertor(endingTime)
-      if (
-        (payLoadStartTime < endingTime && payLoadStartTime >= startingTime) ||
-        (payLoadEndTime <= endingTime && payLoadEndTime > startingTime) ||
-        (payLoadStartTime <= startingTime && payLoadEndTime >= endingTime)
-      ) {
-        test = true
-      }
-    })
-    if (test && type === 'room') {
-      return 'room'
-    } else if (test && type === 'teacher') {
-      return 'teacher'
-    } else if (test && type === 'class') {
-      return 'class'
-    } else {
-      return 'none'
-    }
-  }
 
   // making payload upper case
   let modifiedBlockName = blockName.toUpperCase()
@@ -148,7 +105,26 @@ const PostRoutine = async (req, res, next) => {
       message: 'BlockName or room name is invalid!',
     })
   }
-
+  const checkTime = (array, type) => {
+    let test = false
+    array.forEach((element) => {
+      let startingTime = element.startTime
+      let endingTime = element.endTime
+      startingTime = timeConvertor(startingTime)
+      endingTime = timeConvertor(endingTime)
+      if (
+        (payLoadStartTime < endingTime && payLoadStartTime >= startingTime) ||
+        (payLoadEndTime <= endingTime && payLoadEndTime > startingTime) ||
+        (payLoadStartTime <= startingTime && payLoadEndTime >= endingTime)
+      ) {
+        test = true
+      }
+    })
+    if (test && type === 'room') return 'room'
+    else if (test && type === 'teacher') return 'teacher'
+    else if (test && type === 'class') return 'class'
+    else return 'none'
+  }
   //logical validation
   // case 1 : check if classroom is blocked or not
 
@@ -230,19 +206,7 @@ const PostRoutine = async (req, res, next) => {
     return res.status(StatusCodes.SERVICE_UNAVAILABLE).send(err)
   }
 
-  //minor validation
-  if (
-    courseType.length > 0 &&
-    moduleName.length > 0 &&
-    teacherName.length > 0 &&
-    classType.length > 0 &&
-    group.length > 0 &&
-    roomName.length > 0 &&
-    day.length > 0 &&
-    startTime.length > 0 &&
-    endTime.length > 0 &&
-    blockName.length > 0
-  ) {
+
     const data = new routineModel({
       courseType: courseType.toUpperCase(),
       moduleName: moduleName.toUpperCase(),
@@ -300,7 +264,6 @@ const PostRoutine = async (req, res, next) => {
       .catch((err) => {
         return res.status(StatusCodes.SERVICE_UNAVAILABLE).send(err)
       })
-  } 
 }
 
 module.exports = PostRoutine
