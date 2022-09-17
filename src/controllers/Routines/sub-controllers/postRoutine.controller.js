@@ -171,7 +171,6 @@ const PostRoutine = async (req, res) => {
       day: modifiedDay,
       group: { $in: modifiedGroup },
     });
-    console.log("classData " + classData);
     if (checkTime(classData, "class") === "class") {
       return res.status(StatusCodes.BAD_REQUEST).send({
         success: false,
@@ -189,7 +188,6 @@ const PostRoutine = async (req, res) => {
       group: { $in: modifiedGroup },
       moduleName: modifiedModuleName,
     });
-    console.log("dayData: " + dayData);
     let check = false;
     dayData.forEach((element) => {
       if (modifiedModuleName === element.moduleName) check = true;
