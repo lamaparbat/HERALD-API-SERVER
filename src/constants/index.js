@@ -10,7 +10,12 @@ const CLASS_TYPE = {
   WORKSHOP: 'WORKSHOP',
 }
 
-const WLV_BLOCK = [
+const BLOCK = [
+  "HCK",
+  "WLV"
+]
+
+const WLV_ROOMS = [
   'LT-01 WULFRUNA',
   'LT-03 WALSALL',
   'SR-01 BANTOK',
@@ -21,7 +26,7 @@ const WLV_BLOCK = [
   'LAB-01 MANDAR',
   'LAB-02 MOSELEY',
 ]
-const HCK_BLOCK = [
+const HCK_ROOMS = [
     'BASANTAPUR',
     'CHANDRAGIRI',
     'SAGARMATHA',
@@ -39,4 +44,15 @@ const ROUTINE_PAYLOAD=[
     'startTime',
     'endTime',
 ]
-module.exports = { SCOPE, CLASS_TYPE ,WLV_BLOCK,HCK_BLOCK, ROUTINE_PAYLOAD}
+
+const ROUTINE_STATUS = ["Running", "Upcoming", "Cancelled", "Postponed", "Completed"]
+  
+module.exports = {
+  SCOPE,
+  CLASS_TYPE,
+  BLOCK,
+  WLV_ROOMS,
+  HCK_ROOMS,
+  ROUTINE_PAYLOAD,
+  ROUTINE_STATUS
+}

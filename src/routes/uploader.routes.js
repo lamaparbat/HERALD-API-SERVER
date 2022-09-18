@@ -3,24 +3,20 @@ const auth = require("../middlewares/auth");
 const multer = require("multer");
 const { UPLOAD_STUDENT_LIST, UPLOAD_TEACHER_LIST, UPLOAD_ADMIN_LIST } = require("../controllers/index.controller").uploaderControllers;
 
-//upload image name
-var uploadFileName = null;
-
-
 // upload college data
 const storage2 = multer.diskStorage({
  destination: (req, file, cb) => {
-  cb(null, "collegeData");
+  cb(null, `../../uploads`);
  },
  filename: (req, file, cb) => {
-  uploadFileName = Date.now() + "-" + file.originalname;
-  cb(null, uploadFileName);
+  req.body.uploadFileName = Date.now() + "-" + file.originalname;
+  cb(null, req.body.uploadFileName);
  }
 });
 const collegeUpload = multer({ storage: storage2 });
 
 
-router.post("/uploadStudentList", auth.VerifyJWT(["admin"]), collegeUpload.single("file"), UPLOAD_STUDENT_LIST );
+router.post("/uploadStudentList", collegeUpload.single("excellfile"), auth.VerifyJWT(["admin"]), UPLOAD_STUDENT_LIST );
 
 
 router.post("/uploadTeacherList", auth.VerifyJWT(["admin"]), UPLOAD_TEACHER_LIST);

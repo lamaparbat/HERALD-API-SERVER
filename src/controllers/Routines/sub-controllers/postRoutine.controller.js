@@ -5,8 +5,9 @@ const pusher = require("../../../utils/Socket/SocketConnection");
 const timeConvertor = require("../../../utils/timeConvertor");
 const {
   CLASS_TYPE,
-  WLV_BLOCK,
-  HCK_BLOCK,
+  BLOCK,
+  WLV_ROOMS,
+  HCK_ROOMS,
   ROUTINE_PAYLOAD,
 } = require("../../../constants/index");
 
@@ -87,16 +88,16 @@ const PostRoutine = async (req, res) => {
   }
 
   // validate roomName and blockName
-  if (modifiedBlockName !== "HERALD" && modifiedBlockName !== "WOLVERHAMPTON") {
+  if (modifiedBlockName !== BLOCK[0] && modifiedBlockName !== BLOCK[1]) {
     return res.status(StatusCodes.BAD_REQUEST).send({
       success: false,
       message: "Invalid Block Name!",
     });
   }
   if (
-    (modifiedBlockName === "HERALD" && !HCK_BLOCK.includes(modifiedRoomName)) ||
+    (modifiedBlockName === "HERALD" && !HCK_ROOMS.includes(modifiedRoomName)) ||
     (modifiedBlockName === "WOLVERHAMPTON" &&
-      !WLV_BLOCK.includes(modifiedRoomName))
+      !WLV_ROOMS.includes(modifiedRoomName))
   ) {
     return res.status(StatusCodes.BAD_REQUEST).send({
       success: false,
@@ -205,15 +206,15 @@ const PostRoutine = async (req, res) => {
   const data = new routineModel({
     courseType: courseType.toUpperCase(),
     moduleName: moduleName.toUpperCase(),
-    teacherName: modifiedTeacherName,
-    classType: modifiedClassType,
-    group: modifiedGroup,
-    roomName: modifiedRoomName,
-    blockName: modifiedBlockName,
-    day: modifiedDay,
+    teacherName: modifiedTeacherName.toUpperCase(),
+    classType: modifiedClassType.toUpperCase(),
+    group: modifiedGroup.toUpperCase(),
+    roomName: modifiedRoomName.toUpperCase(),
+    blockName: modifiedBlockName.toUpperCase(),
+    day: modifiedDay.toUpperCase(),
     startTime: startTime,
     endTime: endTime,
-    status: "Upcoming",
+    status: STAT,
     createdOn: new Date().toLocaleDateString(),
   });
 

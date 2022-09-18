@@ -8,7 +8,7 @@ const DELETE_FEEDBACK = async (req, res) => {
     const { feedbackId } = req.query;
     //delete feedback post using id
     try {
-        let filename = await feedbackMode.find({ _id: feedbackId });
+        let filename = await feedbackModel.find({ _id: feedbackId });
         filename = filename[0].file;
         feedbackModel.deleteOne({ _id: feedbackId }, (err, doc) => {
             if (err) {

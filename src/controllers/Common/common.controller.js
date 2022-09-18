@@ -1,4 +1,5 @@
 const { StatusCodes } = require("http-status-codes");
+const auth = require("../../middlewares/auth");
 
 const LOGOUT = async (req, res) => {
  //clear the cookies
