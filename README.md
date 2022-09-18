@@ -363,7 +363,7 @@ message = SERVER ERROR
 4. Role based Authentication.
 5. Isolated versioning and configs (Into Production & Development)
 6. System Security [Incl. Password Hashing (SHA256) (Secure Hash Algorithm), Data encapsulation ]
-7. Redis implementation completed.   []
+7. Redis implementation completed.   [TEST]
 8. Social Media api integration test.    [e.g Fetch instragram posts]
 9. Overal optimization [max time]
 
