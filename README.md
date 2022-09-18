@@ -140,15 +140,17 @@ token: ""
 
 // send data
 payload: {
-    courseType:"",
-    moduleName:"",
-    lecturerName:"",
-    group: "",
-    roomName: "",
-    blockName: "",
-    day:"",
-    startTime:"",
-    endTime:""
+   courseType: string,
+   moduleName: string,
+   teacherName: string,
+   classType: string,
+   group: string,
+   roomName: string,
+   blockName: string,
+   day: string,
+   startTime: string,
+   endTime: string,
+   status: string
 }
 
 ****** -> Response  <- *******
@@ -173,30 +175,19 @@ token: ""
 ****** -> Response  <- *******
 onSuccess: {
    [
-      {
-        courseType:"",
-        moduleName:"",
-        lecturerName:"",
-        classType: "",
-        group: "",
-        roomName: "",
-        blockName: "",
-        day:"",
-        startTime:"",
-        endTime:""
-      },
-      {
-        courseType:"",
-        moduleName:"",
-        lecturerName:"",
-        classType: "",
-        group: "",
-        roomName: "",
-        blockName: "",
-        day:"",
-        startTime:"",
-        endTime:""
-      },
+       {
+          courseType: string,
+          moduleName: string,
+          teacherName: string,
+          classType: string,
+          group: string,
+          roomName: string,
+          blockName: string,
+          day: string,
+          startTime: string,
+          endTime: string,
+          status: string
+        },
       ...
    ]
 }
@@ -362,17 +353,18 @@ message = SERVER ERROR
 1. Aggregation Framework for data mapping
 2. Devops + AWS Serivice integration [Premium]
 3. Log tracing & Management  [Premium]
-4. Add routine ID based search on params way [Current !]
 
 
 # Things accomplished untill now 👨‍🚀
-1. Routine Management System.
-2. Lost and Found
-3. Role based Authentication 
-4. Isolated versioning and configs (Into Production & Development)
-5. Password Hashing (SHA256) (Secure Hash Algorithm)
-6. Lost & Found services
-
+1. Routine Management System. [incl. Dynamic routine search ]
+2. Lost and Found services.
+3. User feedbacks.      
+4. Role based Authentication.
+5. Isolated versioning and configs (Into Production & Development)
+6. System Security [Incl. Password Hashing (SHA256) (Secure Hash Algorithm), Data encapsulation ]
+7. Redis implementation completed.   []
+8. Social Media api integration test.    [e.g Fetch instragram posts]
+9. Overal optimization [max time]
 
 
 
