@@ -205,16 +205,17 @@ PUT: /api/v4/admin/updateRoutineData
 token: ""
 
 payload: {
-    courseType:"",
-    moduleName:"",
-    lecturerName:"",
-    classType: "",
-    group: "",
-    roomName: "",
-    blockName: "",
-    day:"",
-    startTime:"",
-    endTime:""
+   courseType: string,
+   moduleName: string,
+   teacherName: string,
+   classType: string,
+   group: string,
+   roomName: string,
+   blockName: string,
+   day: string,
+   startTime: string,
+   endTime: string,
+   status: string
 }
 
 
@@ -230,9 +231,9 @@ onFailure: {
 
 4. Delete routine data
 ```perl
-DELETE: /api/v4/admin/deleteRoutineData
+DELETE: /api/v4/admin/deleteRoutineData?routineID=number
 
-payload: {
+query: {
     routineID:""
 }
 
@@ -341,7 +342,7 @@ message = SERVER ERROR
 ```
 
 # Latest features 👈🏽
-1.
+
 
 # Upcoming features 👷🏻
 1. Concurrency -> PM2 (cpu core utilization technique + Load balancing)
