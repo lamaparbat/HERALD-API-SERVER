@@ -8,6 +8,10 @@ const {
   WLV_BLOCK,
   HCK_BLOCK,
   ROUTINE_PAYLOAD,
+  ROUTINE_STATUS,
+  COURSE_TYPE,
+  BLOCK_NAME,
+  CHECK_IF_AVAILABLE
 } = require("../../../constants/index");
 
 const PostRoutine = async (req, res) => {
@@ -23,6 +27,7 @@ const PostRoutine = async (req, res) => {
     day,
     startTime,
     endTime,
+    status,
   } = req.body;
 
   //check if all attributes are recieved or not ?
@@ -36,6 +41,70 @@ const PostRoutine = async (req, res) => {
     return res.status(StatusCodes.PARTIAL_CONTENT).send({
       success: false,
       message: "Some fields are missing. Please provide all the fields !!",
+    });
+  }
+
+  // making payload upper case
+  let modifiedBlockName = blockName.toUpperCase();
+  let modifiedRoomName = roomName.toUpperCase();
+  let modifiedDay = day.toUpperCase();
+  let modifiedModuleName = moduleName.toUpperCase();
+  let modifiedClassType = classType.toUpperCase();
+  let modifiedGroup = [];
+  if (Array.isArray(group))
+    modifiedGroup = group.map((element) => element.toUpperCase());
+  else modifiedGroup.push(group.toUpperCase());
+  let modifiedTeacherName = teacherName.toUpperCase();
+  let modifiedStatus = status.toUpperCase();
+  let modifiedCourseType = courseType.toUpperCase();
+
+  // validate routine status
+  if (!ROUTINE_STATUS.includes(modifiedStatus)) {
+    return res.status(StatusCodes.PARTIAL_CONTENT).send({
+      success: false,
+      message: "Invalid routine status !!",
+    });
+  }
+  // validate course type
+  if (!COURSE_TYPE.includes(modifiedCourseType)) {
+    return res.status(StatusCodes.PARTIAL_CONTENT).send({
+      success: false,
+      message: "Invalid course type !!",
+    });
+  }
+
+  // validate classType
+  if (
+    modifiedClassType !== CLASS_TYPE.LECTURE &&
+    modifiedClassType !== CLASS_TYPE.TUTORIAL &&
+    modifiedClassType !== CLASS_TYPE.WORKSHOP
+  ) {
+    return res.status(StatusCodes.BAD_REQUEST).send({
+      success: false,
+      message: "Invalid class type!",
+    });
+  }
+
+  // validate roomName and blockName
+  if (
+    modifiedBlockName !== BLOCK_NAME.Herald &&
+    modifiedBlockName !== BLOCK_NAME.Wolverhampton
+  ) {
+    return res.status(StatusCodes.BAD_REQUEST).send({
+      success: false,
+      message: "Invalid Block Name!",
+    });
+  }
+
+  if (
+    (modifiedBlockName === BLOCK_NAME.Herald &&
+      !HCK_BLOCK.includes(modifiedRoomName)) ||
+    (modifiedBlockName === BLOCK_NAME.Wolverhampton &&
+      !WLV_BLOCK.includes(modifiedRoomName))
+  ) {
+    return res.status(StatusCodes.BAD_REQUEST).send({
+      success: false,
+      message: "BlockName or room name is invalid!",
     });
   }
 
@@ -53,18 +122,6 @@ const PostRoutine = async (req, res) => {
   payLoadEndTime = timeConvertor(payLoadEndTime);
   payLoadStartTime = timeConvertor(payLoadStartTime);
 
-  // making payload upper case
-  let modifiedBlockName = blockName.toUpperCase();
-  let modifiedRoomName = roomName.toUpperCase();
-  let modifiedDay = day.toUpperCase();
-  let modifiedModuleName = moduleName.toUpperCase();
-  let modifiedClassType = classType.toUpperCase();
-  let modifiedGroup = [];
-  if (Array.isArray(group))
-    modifiedGroup = group.map((element) => element.toUpperCase());
-  else modifiedGroup.push(group.toUpperCase());
-  let modifiedTeacherName = teacherName.toUpperCase();
-
   // check if group array has duplicate groups
 
   const checkIfDuplicateExists = (arr) => new Set(arr).size !== arr.length;
@@ -74,36 +131,7 @@ const PostRoutine = async (req, res) => {
       message: "Found duplicate group name!",
     });
 
-  // validate classType
-  if (
-    modifiedClassType !== CLASS_TYPE.LECTURE &&
-    modifiedClassType !== CLASS_TYPE.TUTORIAL &&
-    modifiedClassType !== CLASS_TYPE.WORKSHOP
-  ) {
-    return res.status(StatusCodes.BAD_REQUEST).send({
-      success: false,
-      message: "Invalid class type!",
-    });
-  }
-
-  // validate roomName and blockName
-  if (modifiedBlockName !== "HERALD" && modifiedBlockName !== "WOLVERHAMPTON") {
-    return res.status(StatusCodes.BAD_REQUEST).send({
-      success: false,
-      message: "Invalid Block Name!",
-    });
-  }
-  if (
-    (modifiedBlockName === "HERALD" && !HCK_BLOCK.includes(modifiedRoomName)) ||
-    (modifiedBlockName === "WOLVERHAMPTON" &&
-      !WLV_BLOCK.includes(modifiedRoomName))
-  ) {
-    return res.status(StatusCodes.BAD_REQUEST).send({
-      success: false,
-      message: "BlockName or room name is invalid!",
-    });
-  }
-  const checkTime = (array, type) => {
+  const checkIfAvailable = (array, type) => {
     let test = false;
     array.forEach((element) => {
       let startingTime = element.startTime;
@@ -118,9 +146,9 @@ const PostRoutine = async (req, res) => {
         test = true;
       }
     });
-    if (test && type === "room") return "room";
-    else if (test && type === "teacher") return "teacher";
-    else if (test && type === "class") return "class";
+    if (test && type === CHECK_IF_AVAILABLE['room']) return type;
+    else if (test && type === CHECK_IF_AVAILABLE['teacher']) return type;
+    else if (test && type === CHECK_IF_AVAILABLE['group']) return type;
     else return "none";
   };
   //logical validation
@@ -138,7 +166,7 @@ const PostRoutine = async (req, res) => {
       message: "end time should be greater than start time",
     });
   }
-  if (checkTime(check, "room") === "room") {
+  if (checkIfAvailable(check, "room") === CHECK_IF_AVAILABLE['room']) {
     return res.status(StatusCodes.BAD_REQUEST).send({
       success: false,
       message:
@@ -153,7 +181,7 @@ const PostRoutine = async (req, res) => {
       teacherName: modifiedTeacherName,
       day: modifiedDay,
     });
-    if (checkTime(teacherData, "teacher") === "teacher") {
+    if (checkIfAvailable(teacherData, "teacher") === CHECK_IF_AVAILABLE['teacher']) {
       return res.status(StatusCodes.BAD_REQUEST).send({
         success: false,
         message:
@@ -171,7 +199,7 @@ const PostRoutine = async (req, res) => {
       day: modifiedDay,
       group: { $in: modifiedGroup },
     });
-    if (checkTime(classData, "class") === "class") {
+    if (checkIfAvailable(classData, "group") === CHECK_IF_AVAILABLE['group']) {
       return res.status(StatusCodes.BAD_REQUEST).send({
         success: false,
         message: "This group has another class in this time",
