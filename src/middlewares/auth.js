@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } = require("../configs/index.config");
 const feedbackAuth = require("./feedbackAuth");
+const reverseWord = require('../utils/reverseWord')
 
 
 //verify jwt token
@@ -12,21 +13,49 @@ const VerifyJWT = (scope) => {
         message: "Token is empty !!"
       });
     }
-    var accessToken = req.header('authorization');
+    
+    const token = req.header('authorization');
+    //if token is not present or if token does not start with bearer then we send the error
+    if (!token && !token.toLowerCase().startswith('bearer')) {
+      return res.status(404).send({ error: 'invalid token' })
+    }
 
     //remove the bearer text from token
-    accessToken = accessToken.substr(7, accessToken.length);
+    const accessToken = token.substr(7);
 
     try {
+      /**
+       * the result variable will be populated with the object that we passed when we created the token 
+       * with the GenerateJwt function
+       */
+      
       const result = await jwt.verify(accessToken, ACCESS_TOKEN_KEY);
-      if (!scope.includes(result.scope)) {
+      /**
+       * Checking if our scope exists in the array of scopes
+       * if it does we add scope property to our req object
+       * and send the request to the next main LOGIN controller
+       */
+      if (scope.includes(reverseWord(result.scope))) {
+        req.scope = result.scope
+
+        next()
+        /**
+         * if our scope does not exists in the array of scope
+         * then we send an error message as a response
+         */
+      } else {
+
         return res.status(403).send({ message: "Insufficient scope !!" });
       }
-      req.scope = scope;
-      next();
+      /**
+       * jwt.verify will throw an error if the token is invalid 
+       * this catch handler will catch that error and pass it to the error handling middleware
+       * if token is invalid the error equals to => JsonWebTokenError
+       * if token has expired the error is => TokenExpiredError
+       */
     } catch (err) {
-      console.log(err.message)
-      return res.status(404).send({ message: err.message});
+
+      next(err)
     }
   }
 
@@ -34,10 +63,10 @@ const VerifyJWT = (scope) => {
 
 //generate jwt token
 const GenerateJWT = (scope, uid) => {
-  const accessToken = jwt.sign({ id: uid, scope: scope }, ACCESS_TOKEN_KEY, {
+  const accessToken = jwt.sign({ id: uid, scope: reverseWord(scope) }, ACCESS_TOKEN_KEY, {
     expiresIn: "24h"
   });
-  const refreshToken = jwt.sign({ id: uid, scope: scope }, REFRESH_TOKEN_KEY);
+  const refreshToken = jwt.sign({ id: uid, scope: reverseWord(scope) }, REFRESH_TOKEN_KEY);
 
   return {
     accessToken: accessToken,
