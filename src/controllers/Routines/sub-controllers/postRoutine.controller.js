@@ -11,7 +11,7 @@ const {
   ROUTINE_STATUS,
   COURSE_TYPE,
   BLOCK_NAME,
-  CHECK_IF_AVAILABLE
+  CHECK_IF_AVAILABLE,
 } = require("../../../constants/index");
 
 const PostRoutine = async (req, res) => {
@@ -44,6 +44,8 @@ const PostRoutine = async (req, res) => {
     });
   }
 
+ 
+
   // making payload upper case
   let modifiedBlockName = blockName.toUpperCase();
   let modifiedRoomName = roomName.toUpperCase();
@@ -58,22 +60,37 @@ const PostRoutine = async (req, res) => {
   let modifiedStatus = status.toUpperCase();
   let modifiedCourseType = courseType.toUpperCase();
 
+   // validate groupName format
+   const groupNameFormat = new RegExp(/L[4-6][CB]G\d+/);
+   let invalidGroup = false;
+   modifiedGroup.forEach(element => {
+      if(!groupNameFormat.test(element)) invalidGroup = true;
+   });
+   if(invalidGroup){
+    return res.status(StatusCodes.BAD_REQUEST).send({
+      success: false,
+      message: "Invalid group name format! "
+    });
+   }
+
   // validate routine status
+
   if (!ROUTINE_STATUS.includes(modifiedStatus)) {
-    return res.status(StatusCodes.PARTIAL_CONTENT).send({
+    return res.status(StatusCodes.BAD_REQUEST).send({
       success: false,
       message: "Invalid routine status !!",
     });
   }
   // validate course type
+
   if (!COURSE_TYPE.includes(modifiedCourseType)) {
-    return res.status(StatusCodes.PARTIAL_CONTENT).send({
+    return res.status(StatusCodes.BAD_REQUEST).send({
       success: false,
       message: "Invalid course type !!",
     });
   }
-
   // validate classType
+
   if (
     modifiedClassType !== CLASS_TYPE.LECTURE &&
     modifiedClassType !== CLASS_TYPE.TUTORIAL &&
@@ -84,8 +101,8 @@ const PostRoutine = async (req, res) => {
       message: "Invalid class type!",
     });
   }
-
   // validate roomName and blockName
+
   if (
     modifiedBlockName !== BLOCK_NAME.Herald &&
     modifiedBlockName !== BLOCK_NAME.Wolverhampton
@@ -109,14 +126,16 @@ const PostRoutine = async (req, res) => {
   }
 
   // validate time format
-  var regex = new RegExp(/^([0]?[1-9]|1[0-2]):([0-5]\d)\s?(AM|PM)?$/i);
+
+  var regex = new RegExp(/^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/);
   if (!(regex.test(startTime) && regex.test(endTime))) {
     return res.status(StatusCodes.BAD_REQUEST).send({
       success: false,
-      message: "Invalid time format! Please provide time in AM/PM format",
+      message: "Invalid time format! Please provide time in 24 hour format",
     });
   }
   // converting given payload to proper format
+
   let payLoadStartTime = startTime;
   let payLoadEndTime = endTime;
   payLoadEndTime = timeConvertor(payLoadEndTime);
@@ -146,42 +165,60 @@ const PostRoutine = async (req, res) => {
         test = true;
       }
     });
-    if (test && type === CHECK_IF_AVAILABLE['room']) return type;
-    else if (test && type === CHECK_IF_AVAILABLE['teacher']) return type;
-    else if (test && type === CHECK_IF_AVAILABLE['group']) return type;
-    else return "none";
+    if (test && type === CHECK_IF_AVAILABLE["room"]) return type;
+    else if (test && type === CHECK_IF_AVAILABLE["teacher"]) return type;
+    else if (test && type === CHECK_IF_AVAILABLE["group"]) return type;
+    else return "";
   };
+
   //logical validation
   // case 1 : check if classroom is blocked or not
 
-  const check = await routineModel.find({
-    blockName: modifiedBlockName,
-    roomName: modifiedRoomName,
-    day: modifiedDay,
-  });
-  // if end time is less than start time
-  if (payLoadEndTime <= payLoadStartTime) {
-    return res.status(StatusCodes.BAD_REQUEST).send({
-      success: false,
-      message: "end time should be greater than start time",
-    });
+  let resultData;
+  try {
+    resultData = await routineModel.find();
+  } catch (err) {
+    return res.status(StatusCodes.SERVICE_UNAVAILABLE).send(err);
   }
-  if (checkIfAvailable(check, "room") === CHECK_IF_AVAILABLE['room']) {
-    return res.status(StatusCodes.BAD_REQUEST).send({
-      success: false,
-      message:
-        "The room for this particular time is already reserved for another class",
-    });
+  const check = resultData.filter((element) => {
+    return (
+      element.blockName === modifiedBlockName &&
+      element.roomName === modifiedRoomName &&
+      element.day === modifiedDay
+    );
+  });
+
+  // if end time is less than start time
+  try {
+    if (payLoadEndTime <= payLoadStartTime) {
+      return res.status(StatusCodes.BAD_REQUEST).send({
+        success: false,
+        message: "end time should be greater than start time",
+      });
+    }
+    if (checkIfAvailable(check, "room") === CHECK_IF_AVAILABLE["room"]) {
+      return res.status(StatusCodes.BAD_REQUEST).send({
+        success: false,
+        message:
+          "The room for this particular time is already reserved for another class",
+      });
+    }
+  } catch (err) {
+    return res.status(StatusCodes.SERVICE_UNAVAILABLE).send(err);
   }
 
   // case 2 : check if teacher is already assigned in another class at give time
 
   try {
-    const teacherData = await routineModel.find({
-      teacherName: modifiedTeacherName,
-      day: modifiedDay,
+    const teacherData = resultData.filter((element) => {
+      return (
+        element.teacherName === modifiedTeacherName &&
+        element.day === modifiedDay
+      );
     });
-    if (checkIfAvailable(teacherData, "teacher") === CHECK_IF_AVAILABLE['teacher']) {
+    if (
+      checkIfAvailable(teacherData, "teacher") === CHECK_IF_AVAILABLE["teacher"]
+    ) {
       return res.status(StatusCodes.BAD_REQUEST).send({
         success: false,
         message:
@@ -195,11 +232,13 @@ const PostRoutine = async (req, res) => {
   // case 3: one group cannot have diferent classes on same time range
 
   try {
-    const classData = await routineModel.find({
-      day: modifiedDay,
-      group: { $in: modifiedGroup },
+    const classData = resultData.filter((element) => {
+      return (
+        element.day === modifiedDay &&
+        element.group.some((data) => modifiedGroup.includes(data))
+      );
     });
-    if (checkIfAvailable(classData, "group") === CHECK_IF_AVAILABLE['group']) {
+    if (checkIfAvailable(classData, "group") === CHECK_IF_AVAILABLE["group"]) {
       return res.status(StatusCodes.BAD_REQUEST).send({
         success: false,
         message: "This group has another class in this time",
@@ -212,9 +251,11 @@ const PostRoutine = async (req, res) => {
   // case 4: One group cannot have multiple class of same module in a single day
 
   try {
-    const dayData = await routineModel.find({
-      group: { $in: modifiedGroup },
-      moduleName: modifiedModuleName,
+    const dayData = resultData.filter((element) => {
+      return (
+        element.group.some((data) => modifiedGroup.includes(data)) &&
+        element.moduleName === modifiedModuleName
+      );
     });
     let check = false;
     dayData.forEach((element) => {
@@ -241,29 +282,16 @@ const PostRoutine = async (req, res) => {
     day: modifiedDay,
     startTime: startTime,
     endTime: endTime,
-    status: "Upcoming",
+    status: modifiedStatus,
     createdOn: new Date().toLocaleDateString(),
   });
-
-  const result = await routineModel.find({
-    createdOn: new Date().toLocaleDateString(),
-    day: day,
-    moduleName: moduleName,
-  });
-  if (result.length > 0) {
-    return res
-      .status(404)
-      .send(
-        `Routine of ${moduleName} for the date ${new Date().toLocaleDateString()} has already been created.`
-      );
-  }
 
   data
     .save()
     .then(async () => {
       // init the scheduler tracker
-
       //upload message to notification db
+
       const notifData = new notifModel({
         message: `Dear ${modifiedGroup} of ${courseType}, a new routine of ${moduleName} has recently published. Please see it once.`,
         group: modifiedGroup,

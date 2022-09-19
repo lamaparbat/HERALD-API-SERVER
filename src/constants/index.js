@@ -13,7 +13,7 @@ const CLASS_TYPE = {
 ROUTINE_STATUS = ["RUNNING", "UPCOMING", "CANCELLED", "POSTPONED", "COMPLETED"];
 COURSE_TYPE = ["BIT", "BIBM", "MBA"];
 BLOCK_NAME = { Herald: "HCK", Wolverhampton: "WLV" };
-CHECK_IF_AVAILABLE = {room: 'room',teacher: 'teacher', group: 'group'}
+CHECK_IF_AVAILABLE = { room: "room", teacher: "teacher", group: "group" };
 
 const WLV_BLOCK = [
   "LT-01 WULFRUNA",
@@ -40,12 +40,14 @@ const ROUTINE_PAYLOAD = [
   "startTime",
   "endTime",
 ];
-module.exports = { SCOPE, 
+module.exports = {
+  SCOPE,
   CLASS_TYPE,
-   WLV_BLOCK, 
-   HCK_BLOCK, 
-   ROUTINE_PAYLOAD,
-   ROUTINE_STATUS,
-   COURSE_TYPE,
-   BLOCK_NAME ,
-  CHECK_IF_AVAILABLE};
+  WLV_BLOCK,
+  HCK_BLOCK,
+  ROUTINE_PAYLOAD,
+  ROUTINE_STATUS,
+  COURSE_TYPE,
+  BLOCK_NAME,
+  CHECK_IF_AVAILABLE,
+};
