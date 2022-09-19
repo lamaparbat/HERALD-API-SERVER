@@ -39,6 +39,7 @@ const ROUTINE_PAYLOAD = [
   "day",
   "startTime",
   "endTime",
+  "status"
 ];
 module.exports = {
   SCOPE,
@@ -51,3 +52,4 @@ module.exports = {
   BLOCK_NAME,
   CHECK_IF_AVAILABLE,
 };
+

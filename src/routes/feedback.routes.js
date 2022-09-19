@@ -7,31 +7,23 @@ const {
  DELETE_FEEDBACK
 } = require("../controllers/index.controller").feedbackControllers;
 
-//upload image name
-var uploadFileName = null;
+// upload feedback data
 const storage = multer.diskStorage({
  destination: (req, file, cb) => {
-  cb(null, "../../uploads/");
+  cb(null, '../../uploads');
  },
  filename: (req, file, cb) => {
-  uploadFileName = Date.now() + "-" + file.originalname;
-  req.body.uploadFileName = uploadFileName;
-  cb(null, uploadFileName);
+  req.body.uploadFileName = Date.now() + "-" + file.originalname;
+  cb(null, req.body.uploadFileName);
  }
 });
+const feedbackUpload = multer({ storage: storage });
 
-const feedbackUpload = multer({
- storage: storage,
-}).single("proof_file");
+router.post('/feedback/postFeedback', feedbackUpload.single('proofFile'), auth.feedbackAuth(), auth.VerifyJWT(["admin"]), POST_FEEDBACK);
 
-router.post('/feedback/postFeedback',
- feedbackUpload, POST_FEEDBACK);
+router.get('/feedback/getFeedback', auth.VerifyJWT(["admin"]), GET_FEEDBACK);
 
-router.get('/feedback/getFeedback',
- auth.VerifyJWT(["admin"]), GET_FEEDBACK);
-
-router.delete('/feedback/deleteFeedback',
- auth.VerifyJWT(["admin"]), DELETE_FEEDBACK);
+router.delete('/feedback/deleteFeedback', auth.VerifyJWT(["admin"]), DELETE_FEEDBACK);
 
 
 module.exports = router;

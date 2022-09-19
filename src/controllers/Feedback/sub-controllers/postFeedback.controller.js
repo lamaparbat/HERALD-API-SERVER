@@ -3,23 +3,30 @@ const feedbackModel = require('../../../models/feedbackModel');
 
 const POST_FEEDBACK = async (req, res) => {
  // destructuring the binded data
- const { reportType, description, uploadFileName } = req.body;
- 
- // validation
- if (Object.keys(req.body).length < 3) {
+ const { reportType, description, uploadFileName, withProof } = req.body;
+
+ try {
   if (reportType.length > 3 && description.length > 3 && uploadFileName !== null) {
-   //db insertion
-   const data = new feedbackModel({
+   let data = new feedbackModel({
     reportType: reportType,
     description: description,
-    file: uploadFileName,
     date: new Date().toISOString()
    });
 
+   // including evidence file if available
+   if (withProof) {
+    data = new feedbackModel({
+     reportType: reportType,
+     description: description,
+     file: uploadFileName,
+     date: new Date().toISOString(),
+    });
+   }
+
    //save the data
-   data.save().then(() => {
+   data.save().then((data) => {
     res.status(StatusCodes.OK).send({
-     message: "Feedback posted successfully !!"
+     message: data
     });
    }).catch(err => {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
@@ -31,9 +38,9 @@ const POST_FEEDBACK = async (req, res) => {
     message: "Validaton issues."
    });
   }
- } else {
-  res.status(StatusCodes.NOT_FOUND).send({
-   message: "Some fields are missing."
+ } catch (error) {
+  res.status(StatusCodes.UNPROCESSABLE_ENTITY).send({
+   message: error.message
   });
  }
 }

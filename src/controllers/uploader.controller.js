@@ -1,10 +1,13 @@
 const xlsx2json = require('xlsx2json');
+const fs = require('fs');
 const { StatusCodes } = require("http-status-codes");
+const studentModel = require("../models/studentModel");
 
 
-const UPLOAD_STUDENT_LIST =  async (req, res) => {
+const UPLOAD_STUDENT_LIST = async (req, res) => {
+ let uploadFileName = req.body.uploadFileName;
  try {
-  xlsx2json(`collegeData/${uploadFileName}`).then(jsonArray => {
+  xlsx2json(`../../uploads/${uploadFileName}`).then(jsonArray => {
    jsonArray.map(async (array) => {
     await array.map(async (data) => {
      if (data["A"] !== "S.N.") {
@@ -30,13 +33,13 @@ const UPLOAD_STUDENT_LIST =  async (req, res) => {
    });
 
    //delete the file
-   fs.unlinkSync(`collegeData/${uploadFileName}`);
+   fs.unlinkSync(`../../uploads/${uploadFileName}`);
 
    res.status(StatusCodes.OK).send("Data extracted and import to DB successfully.")
   });
  } catch (error) {
   //delete the file
-  fs.unlinkSync(`collegeData/${uploadFileName}`);
+  fs.unlinkSync(`${process.cwd()}/uploads/${uploadFileName}`);
   res.status(StatusCodes.NOT_ACCEPTABLE).send("Failed to parse the given file. Please upload the xlsx formate file only !!")
  }
 }

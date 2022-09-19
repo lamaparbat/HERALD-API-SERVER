@@ -31,10 +31,12 @@ const PostRoutine = async (req, res) => {
   } = req.body;
 
   //check if all attributes are recieved or not ?
+  
   let checkPayload = true;
   const payload = Object.keys(req.body);
   ROUTINE_PAYLOAD.forEach((element) => {
-    if (!payload.includes(element)) checkPayload = false;
+    if (!payload.includes(element)) {checkPayload = false;
+    }
   });
 
   if (!checkPayload) {
@@ -44,9 +46,8 @@ const PostRoutine = async (req, res) => {
     });
   }
 
- 
-
   // making payload upper case
+
   let modifiedBlockName = blockName.toUpperCase();
   let modifiedRoomName = roomName.toUpperCase();
   let modifiedDay = day.toUpperCase();

@@ -20,9 +20,7 @@ info:
 
     ### 🆕 Latest Updates 
 
-      1. Isolated Versioning and configs (Into Production & Development)
-      2. Password Hashing (SHA256) (Secure Hash Algorithm)
-      3. Lost & Found services
+      
 
     ---
 
@@ -30,8 +28,7 @@ info:
 
       1. Concurrency -> PM2 (CPU Core Utilization Technique + Load Balancing)
       2. Social Media API Sync (Public API + Scrapping [Alternatives])
-      3. In-Memory Caching (REDIS)
-      4. Optimization...
+      3. Auto Scaling with Cloud Services
       
     ---
 
@@ -40,30 +37,30 @@ info:
       1. Aggregation Framework for data mapping
       2. Devops + AWS Service integration [Premium]
       3. Log tracing & Management [Premium]
-      
+      4. Add routine ID based search on params wat [Current!]
     ---
 
     ### ✅ Things Accomplished Until now
 
-      1. Routine Management System.
-      2. User Centered Authentication
-      3. Dynamic Project Structure
-      4. Scope Base Routes Authentication. (Available scopes -> ["Admin", "Teacher", "Student"])
-      
+      1. Routine Management System. [incl. Dynamic Routine Search]
+      2. Lost and Found Services
+      3. User Feedbacks
+      4. Role Based Authentication
+      5. Isolated Versioning And Configs (into Production & Development)
+      6. System Security [incl. Password Hashing(SHA256)(Secure Hash Algorithm), Data Encapsulation]
+      7. Redis Implementation Completed [TEST]
+      8. Social Media API Integration Test [e.g Fetch Instagram Posts]
+      9. Overall Optimization      
     ---
 
-  version: "1.0.6"
+  version: "1.0.7"
   title: "Herald College Kathmandu App"
   contact:
     name: "Backend Team"
     email: "np03cs4s210069@heraldcollege.edu.np"
   license:
     name: "Apache 2.0"
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-servers:
-  - url: http://localhost:8000
-  - url: https://dev-herald-server.herokuapp.com/
-  - url: https://prod-herald-server.herokuapp.com/
+    url: "http://www.apache.org/licenses/LICENSE-2"
 tags:
   - name: "Routine"
     description: "Operations related to Routine"
@@ -223,6 +220,13 @@ paths:
               message:
                 type: "string"
                 example: "Some fields are missing. Please provide all the fields !!"
+        "400":
+          description: "BAD_REQUEST"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Invalid field format!"
         "503":
           description: "SERVICE_UNAVAILABLE"
           schema:
@@ -259,7 +263,14 @@ paths:
             properties:
               message:
                 type: "string"
-                example: "Result: 0 found !!"
+                example: "No result found for this group!"
+        "400":
+          description: "BAD_REQUEST"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "invalid group name!"
   /api/v4/admin/updateRoutineData:
     put:
       security:
@@ -285,7 +296,7 @@ paths:
             properties:
               message:
                 type: "string"
-                example: "Routine updated successfully!"
+                example: "Routine Routine succesfully updated !!"
         "500":
           description: "INTERNAL_SERVER_ERROR"
           schema:
@@ -306,13 +317,11 @@ paths:
       produces:
         - "application/json"
       parameters:
-        - in: "body"
-          name: "body"
+        - name: "group"
+          description: "The name of group"
+          in: "query"
           required: true
-          schema:
-            properties:
-              routineID:
-                type: "string"
+          type: "string"
       responses:
         "200":
           description: "OK"
@@ -321,6 +330,13 @@ paths:
               message:
                 type: "string"
                 example: "Routine deleted successfully!"
+        "400":
+          description: "BAD_REQUEST"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "routineID is empty !"
         "500":
           description: "INTERNAL_SERVER_ERROR"
           schema:
@@ -418,7 +434,7 @@ paths:
             properties:
               message:
                 type: "string"
-                example: "Failed to signup"
+                example: "User already exists !!"
         "500":
           description: "INTERNAL_SERVER_ERROR"
           schema:
@@ -474,6 +490,13 @@ paths:
               token:
                 type: "string"
                 example: "null"
+        "403":
+          description: "FORBIDDEN"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "You exceed the 5 login attempt. Please try again after 5 min !!"
         "500":
           description: "INTERNAL_SERVER_ERROR"
           schema:
@@ -534,13 +557,9 @@ paths:
       produces:
         - "application/json"
       parameters:
-        - in: "body"
+        - in: "formData"
           name: "body"
-          required: true
-          schema:
-            properties:
-              file:
-                type: "object"
+          type: "file"
       responses:
         "200":
           description: "OK"
@@ -617,11 +636,15 @@ paths:
       produces:
         - "application/json"
       parameters:
-        - in: "body"
+        - in: "formData"
           name: "body"
-          required: true
-          schema:
-            $ref: "#/definitions/Feedback"
+          type: "file"
+        - in: "formData"
+          name: "reportType"
+          type: "string"
+        - in: "formData"
+          name: "description"
+          type: "string"
       responses:
         "200":
           description: "OK"
@@ -753,30 +776,6 @@ paths:
             properties:
               message:
                 type: "string"
-  /api/v4/lf/losts:
-    get:
-      security:
-        - Bearer: []
-      tags:
-        - "Lost & Found"
-      summary: "Get Lost & Found"
-      description: ""
-      consumes:
-        - "application/json"
-      produces:
-        - "application/json"
-      responses:
-        "200":
-          description: "OK"
-          schema:
-            $ref: "#/definitions/LostReport"
-        "204":
-          description: "NO_CONTENT"
-          schema:
-            properties:
-              message:
-                type: "string"
-                example: "Result: 0 found !!"
   /api/v4/lf/report:
     post:
       security:
@@ -824,6 +823,30 @@ paths:
               message:
                 type: "string"
                 example: "500. SERVER ERROR!!"
+  /api/v4/lf/losts:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Lost & Found"
+      summary: "Get Lost & Found"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/LostReport"
+        "204":
+          description: "NO_CONTENT"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Result: 0 found !!"
   /api/v4/lf/update:
     put:
       security:
@@ -863,18 +886,29 @@ definitions:
     properties:
       courseType:
         type: "string"
+        enum:
+          - "BIT"
+          - "BIBM"
+          - "MBA"
       moduleName:
         type: "string"
-      lecturerName:
+      teacherName:
         type: "string"
       classType:
         type: "string"
+        enum:
+          - "LECTURE"
+          - "TUTORIAL"
+          - "WORKSHOP"
       group:
         type: "string"
       roomName:
         type: "string"
       blockName:
         type: "string"
+        enum:
+          - "HCK"
+          - "WLV"
       day:
         type: "string"
       startTime:
@@ -885,6 +919,12 @@ definitions:
         format: "date-time"
       status:
         type: "string"
+        enum:
+          - "Running"
+          - "Upcoming"
+          - "Cancelled"
+          - "Postponed"
+          - "Completed"
   Teacher:
     type: "object"
     properties:
@@ -904,15 +944,6 @@ definitions:
     properties:
       uid:
         type: "string"
-  Feedback:
-    type: "object"
-    properties:
-      reportType:
-        type: "string"
-      description:
-        type: "string"
-      file:
-        type: "object"
   LostReport:
     type: "object"
     properties:
