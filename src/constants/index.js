@@ -15,7 +15,7 @@ COURSE_TYPE = ["BIT", "BIBM", "MBA"];
 BLOCK_NAME = { Herald: "HCK", Wolverhampton: "WLV" };
 CHECK_IF_AVAILABLE = { room: "room", teacher: "teacher", group: "group" };
 
-const WLV_BLOCK = [
+const WLV_BLOCK_ROOMS = [
   "LT-01 WULFRUNA",
   "LT-03 WALSALL",
   "SR-01 BANTOK",
@@ -26,7 +26,7 @@ const WLV_BLOCK = [
   "LAB-01 MANDAR",
   "LAB-02 MOSELEY",
 ];
-const HCK_BLOCK = ["BASANTAPUR", "CHANDRAGIRI", "SAGARMATHA"];
+const HCK_BLOCK_ROOMS = ["BASANTAPUR", "CHANDRAGIRI", "SAGARMATHA"];
 
 const ROUTINE_PAYLOAD = [
   "courseType",
@@ -44,8 +44,8 @@ const ROUTINE_PAYLOAD = [
 module.exports = {
   SCOPE,
   CLASS_TYPE,
-  WLV_BLOCK,
-  HCK_BLOCK,
+  WLV_BLOCK_ROOMS,
+  HCK_BLOCK_ROOMS,
   ROUTINE_PAYLOAD,
   ROUTINE_STATUS,
   COURSE_TYPE,

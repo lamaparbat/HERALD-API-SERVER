@@ -5,8 +5,8 @@ const pusher = require("../../../utils/Socket/SocketConnection");
 const timeConvertor = require("../../../utils/timeConvertor");
 const {
   CLASS_TYPE,
-  WLV_BLOCK,
-  HCK_BLOCK,
+  WLV_BLOCK_ROOMS,
+  HCK_BLOCK_ROOMS,
   ROUTINE_PAYLOAD,
   ROUTINE_STATUS,
   COURSE_TYPE,
@@ -116,9 +116,9 @@ const PostRoutine = async (req, res) => {
 
   if (
     (modifiedBlockName === BLOCK_NAME.Herald &&
-      !HCK_BLOCK.includes(modifiedRoomName)) ||
+      !HCK_BLOCK_ROOMS.includes(modifiedRoomName)) ||
     (modifiedBlockName === BLOCK_NAME.Wolverhampton &&
-      !WLV_BLOCK.includes(modifiedRoomName))
+      !WLV_BLOCK_ROOMS.includes(modifiedRoomName))
   ) {
     return res.status(StatusCodes.BAD_REQUEST).send({
       success: false,
