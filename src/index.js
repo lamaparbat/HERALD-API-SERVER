@@ -12,6 +12,7 @@ const { START_DB_CONNECTION } = require("../src/utils/index.utils");
 const { PORT } = require("./configs/index.config");
 const routineModel = require("./models/routineModel");
 const path = require("path");
+const errorHandler = require('./middlewares/errorHandler')
 // **** -> server config <- *******
 const server = express();
 
@@ -42,6 +43,8 @@ server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 // routineModel.watch().on("change", (data) => {
 //   console.log("DB updated: ", data);
 // })
+
+server.use(errorHandler)
 
 // ***** port listneer *****
 server.listen(PORT, () => {
