@@ -1,8 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } = require("../configs/index.config");
 const feedbackAuth = require("./feedbackAuth");
-const reverseWord = require('../utils/reverseWord')
-
 
 //verify jwt token
 const VerifyJWT = (scope) => {
@@ -35,7 +33,7 @@ const VerifyJWT = (scope) => {
        * if it does we add scope property to our req object
        * and send the request to the next main LOGIN controller
        */
-      if (scope.includes(reverseWord(result.scope))) {
+      if (scope.includes(result.scope)) {
         req.scope = result.scope
 
         next()
@@ -63,10 +61,10 @@ const VerifyJWT = (scope) => {
 
 //generate jwt token
 const GenerateJWT = (scope, uid) => {
-  const accessToken = jwt.sign({ id: uid, scope: reverseWord(scope) }, ACCESS_TOKEN_KEY, {
+  const accessToken = jwt.sign({ id: uid, scope: scope }, ACCESS_TOKEN_KEY, {
     expiresIn: "24h"
   });
-  const refreshToken = jwt.sign({ id: uid, scope: reverseWord(scope) }, REFRESH_TOKEN_KEY);
+  const refreshToken = jwt.sign({ id: uid, scope: scope }, REFRESH_TOKEN_KEY);
 
   return {
     accessToken: accessToken,
