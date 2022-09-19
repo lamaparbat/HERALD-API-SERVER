@@ -1,14 +1,13 @@
 const routineModel = require("../../../models/routineModel");
 const { StatusCodes } = require("http-status-codes");
 const { SCOPE } = require("../../../constants/index");
-const reverseWord = require("../../../utils/reverseWord");
 
 const GetRoutine = async (req, res) => {
   const field = req.query;
   let fieldLength = Object.keys(field).length;
 
   // provide all the routines on admin scope
-  if ((req.scope !== reverseWord(SCOPE.STUDENT_SCOPE)) && fieldLength === 0) {
+  if (req.scope !== SCOPE.STUDENT_SCOPE && fieldLength === 0) {
     const result = await routineModel.find();
     return res.status(StatusCodes.OK).send({
       data: result,
@@ -16,7 +15,7 @@ const GetRoutine = async (req, res) => {
   }
 
   // if there is no payload on studen scope 
-  if (fieldLength === 0 && (req.scope === reverseWord(SCOPE.STUDENT_SCOPE)))
+  if (fieldLength === 0 && req.scope === SCOPE.STUDENT_SCOPE)
     return res.status(StatusCodes.BAD_REQUEST).send({
       message: "Please provide group name!",
     });

@@ -1,0 +1,19 @@
+/**
+ * this error handling middleware will throw error accoring to the error name
+ * we handle invalid token and expired token in the handler
+ * if both the error were bypassed we send a 'bad request!' error message
+ */
+
+const errorHandler = (err, req, res, next) => {
+    if (err.name === "JsonWebTokenError") {
+        res.send({ error: 'invalid token' })
+    } else if (err.name === 'TokenExpiredError') {
+        res.send({ error: 'session timemout' })
+    } else {
+        res.send({ error: 'bad request!' })
+    }
+    //this next function will let us see the error in console without crashing our server
+    next(err)
+}
+
+module.exports = errorHandler
