@@ -29,6 +29,7 @@ server.use(express.json());
 server.use(cookieParser());
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: true }));
+server.use(multer().array());
 server.use(express.static(path.join(__dirname , "/public")))
 server.use('/api/v4',routes);
 server.use(
