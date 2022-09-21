@@ -1,6 +1,6 @@
 const routineModel = require("../../../models/routineModel");
 const { StatusCodes } = require("http-status-codes");
-const { SCOPE } = require("../../../constants/index");
+const { SCOPE } = require("../../../constants/index").COMMON_CONSTANT;
 
 const GetRoutine = async (req, res) => {
   const field = req.query;
@@ -25,7 +25,7 @@ const GetRoutine = async (req, res) => {
   let groupName = field.group;
   groupName = groupName.toUpperCase();
 
-  const pattern = new RegExp(/L[4-?][CB]G\d+/)
+  const pattern = new RegExp(/L[4-9][CB]G\d+/)
 
   if (pattern.test(groupName)) {
     //fetch all routine from db and filter with groupName
