@@ -1,7 +1,15 @@
-const routineModel = require('../../../models/routineModel');
+const routineModel = require("../../../models/routineModel");
 const { StatusCodes } = require("http-status-codes");
-
-
+const {
+  WLV_BLOCK_ROOMS,
+  HCK_BLOCK_ROOMS,
+  ROUTINE_PAYLOAD,
+  ROUTINE_STATUS,
+  BLOCK_NAME,
+  CHECK_IF_AVAILABLE,
+} = require("../../../constants/index").ROUTINE_CONSTANT;
+const { CLASS_TYPE, COURSE_TYPE } =
+  require("../../../constants/index").COMMON_CONSTANT;
 const UpdateRoutine = (req, res) => {
   //get the routine doc id
   const {
@@ -15,13 +23,14 @@ const UpdateRoutine = (req, res) => {
     day,
     startTime,
     endTime,
-    status
+    status,
+    routineID,
   } = req.body;
 
   // checking if routineID is in req.body
   if (routineID === undefined)
     return res.status(StatusCodes.NOT_ACCEPTABLE).send({
-      message: "routine ID is empty"
+      message: "routine ID is empty",
     });
 
   routineModel.findByIdAndUpdate(
@@ -37,22 +46,21 @@ const UpdateRoutine = (req, res) => {
       day: day.toUpperCase(),
       startTime: startTime,
       endTime: endTime,
-      status:status.toUpperCase(),
+      status: status.toUpperCase(),
       createdOn: new Date().toLocaleDateString(),
     },
     (err, data) => {
       if (err) {
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
-          message: 'Internal Server Error !!',
-        })
+          message: "Internal Server Error !!",
+        });
       } else {
-        console.log(data)
-        return res.status(StatusCodes.CREATED).send({
-          message: 'Routine succesfully updated !!',
-        })
+        return res.status(StatusCodes.OK).send({
+          message: "Routine succesfully updated !!",
+        });
       }
     }
-  )
-}
+  );
+};
 
 module.exports = UpdateRoutine;
