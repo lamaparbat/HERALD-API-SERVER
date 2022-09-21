@@ -4,15 +4,14 @@ const { StatusCodes } = require("http-status-codes");
 const pusher = require("../../../utils/Socket/SocketConnection");
 const timeConvertor = require("../../../utils/timeConvertor");
 const {
-  CLASS_TYPE,
   WLV_BLOCK_ROOMS,
   HCK_BLOCK_ROOMS,
   ROUTINE_PAYLOAD,
   ROUTINE_STATUS,
-  COURSE_TYPE,
   BLOCK_NAME,
   CHECK_IF_AVAILABLE,
-} = require("../../../constants/index");
+} = require("../../../constants/index").ROUTINE_CONSTANT;
+const { CLASS_TYPE, COURSE_TYPE } = require("../../../constants/index").COMMON_CONSTANT;
 
 const PostRoutine = async (req, res) => {
   //destructuring incoming data
@@ -31,11 +30,12 @@ const PostRoutine = async (req, res) => {
   } = req.body;
 
   //check if all attributes are recieved or not ?
-  
+
   let checkPayload = true;
   const payload = Object.keys(req.body);
   ROUTINE_PAYLOAD.forEach((element) => {
-    if (!payload.includes(element)) {checkPayload = false;
+    if (!payload.includes(element)) {
+      checkPayload = false;
     }
   });
 
@@ -61,18 +61,18 @@ const PostRoutine = async (req, res) => {
   let modifiedStatus = status.toUpperCase();
   let modifiedCourseType = courseType.toUpperCase();
 
-   // validate groupName format
-   const groupNameFormat = new RegExp(/L[4-6][CB]G\d+/);
-   let invalidGroup = false;
-   modifiedGroup.forEach(element => {
-      if(!groupNameFormat.test(element)) invalidGroup = true;
-   });
-   if(invalidGroup){
+  // validate groupName format
+  const groupNameFormat = new RegExp(/L[4-9][CB]G\d+/);
+  let invalidGroup = false;
+  modifiedGroup.forEach((element) => {
+    if (!groupNameFormat.test(element)) invalidGroup = true;
+  });
+  if (invalidGroup) {
     return res.status(StatusCodes.BAD_REQUEST).send({
       success: false,
-      message: "Invalid group name format! "
+      message: "Invalid group name format! ",
     });
-   }
+  }
 
   // validate routine status
 

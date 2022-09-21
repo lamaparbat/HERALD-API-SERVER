@@ -25,7 +25,7 @@ const GetRoutine = async (req, res) => {
   let groupName = field.group;
   groupName = groupName.toUpperCase();
 
-  const pattern = new RegExp(/L[4-6][CB]G\d+/)
+  const pattern = new RegExp(/L[4-?][CB]G\d+/)
 
   if (pattern.test(groupName)) {
     //fetch all routine from db and filter with groupName
