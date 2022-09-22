@@ -1,5 +1,5 @@
 const routineModel = require('../../../models/routineModel');
-const { StatusCodes } = require("http-status-codes");
+const { StatusCodes, BAD_REQUEST } = require("http-status-codes");
 
 const DeleteRoutine = (req, res) => {
   //get the routine doc id
@@ -12,10 +12,15 @@ const DeleteRoutine = (req, res) => {
       message: "routineID is empty !"
     })
   }
-  
+
   routineModel
-    .deleteOne({ _id: routineID })
+    .deleteOne({_id: routineID })
     .then((data) => {
+      if(data.deletedCount===0) {
+        return res.status(StatusCodes.BAD_REQUEST).send({
+          message: 'Incorrect routine ID! '
+        })
+      }
       return res.status(StatusCodes.OK).send({
         message: 'Routine succesfully deleted !!',
       })
