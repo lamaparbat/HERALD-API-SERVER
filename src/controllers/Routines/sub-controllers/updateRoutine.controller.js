@@ -1,15 +1,6 @@
 const routineModel = require("../../../models/routineModel");
 const { StatusCodes } = require("http-status-codes");
-const {
-  WLV_BLOCK_ROOMS,
-  HCK_BLOCK_ROOMS,
-  ROUTINE_PAYLOAD,
-  ROUTINE_STATUS,
-  BLOCK_NAME,
-  CHECK_IF_AVAILABLE,
-} = require("../../../constants/index").ROUTINE_CONSTANT;
-const { CLASS_TYPE, COURSE_TYPE } =
-  require("../../../constants/index").COMMON_CONSTANT;
+
 const UpdateRoutine = (req, res) => {
   //get the routine doc id
   const {
@@ -33,6 +24,12 @@ const UpdateRoutine = (req, res) => {
       message: "routine ID is empty",
     });
 
+  // changing group to array
+
+    let modifiedGroup = [];
+    if (Array.isArray(group)) modifiedGroup = group.map((element) => element.toUpperCase());
+    else modifiedGroup.push(group.toUpperCase());
+
   routineModel.findByIdAndUpdate(
     routineID,
     {
@@ -40,7 +37,7 @@ const UpdateRoutine = (req, res) => {
       moduleName: moduleName.toUpperCase(),
       teacherName: teacherName.toUpperCase(),
       classType: classType.toUpperCase(),
-      group: group.toUpperCase(),
+      group: modifiedGroup,
       roomName: roomName.toUpperCase(),
       blockName: blockName.toUpperCase(),
       day: day.toUpperCase(),
@@ -53,6 +50,12 @@ const UpdateRoutine = (req, res) => {
       if (err) {
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
           message: "Internal Server Error !!",
+        });
+        // if routineID is incorrect
+
+      } else if (data === null) {
+        return res.status(StatusCodes.BAD_REQUEST).send({
+          message: "Incorrect routineID! ",
         });
       } else {
         return res.status(StatusCodes.OK).send({
