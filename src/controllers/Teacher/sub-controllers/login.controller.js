@@ -3,11 +3,11 @@ const bcrypt = require("bcryptjs");
 const { StatusCodes } = require("http-status-codes");
 const auth = require("../../../middlewares/auth")
 
-// flag
-var teacherAttemptCount = 0, blockEmail;
 
 const LOGIN = async (req, res) => {
   let { email, password } = req.body;
+  // user contains object sent from extractUser middleware
+  let user = req.user
 
   //uid validation
   if (typeof email !== "string" || typeof password !== "string") {
@@ -15,7 +15,7 @@ const LOGIN = async (req, res) => {
   }
 
   // excess attempt check
-  if (teacherAttemptCount > 4 && blockEmail === email) {
+  if (user.attempts >= 5) {
     return res.status(StatusCodes.FORBIDDEN).send({
       message: 'You exceed the 5 login attempt. Please try again after 5 min !!',
     });
@@ -26,6 +26,14 @@ const LOGIN = async (req, res) => {
     if (data) {
       //compare encrypt password
       if (!await bcrypt.compare(password, data.password)) {
+        ++user.attempts
+        if (user.attempts === 5) {
+          setTimeout(() => {
+            //reset the attemptCount after 5 minutes
+            user.attempts = 0
+            console.log(`${email} you can login. => ${adminAttemptCount}`);
+          }, 300000);
+        }
         return res.status(StatusCodes.NON_AUTHORITATIVE_INFORMATION).send('Password didnt matched !!')
       }
 
@@ -37,22 +45,8 @@ const LOGIN = async (req, res) => {
         accessToken: accessToken,
         refreshToken: refreshToken
       })
-    } else {
-      //increase the wrong email counter by 1
-      teacherAttemptCount++;
-      //if email counter reach 5, then store the cache
-      if (teacherAttemptCount === 5) {
-        blockEmail = email;
-        setTimeout(() => {
-          //reset the attemptCount after 5 minutes
-          teacherAttemptCount = 0;
-          blockEmail = null;
-
-          console.log(`${email} you can login. => ${teacherAttemptCount}`);
-        }, 300000);
-      }
-      return res.status(StatusCodes.NON_AUTHORITATIVE_INFORMATION).send('Wrong email or password !!')
     }
+    return res.status(StatusCodes.NON_AUTHORITATIVE_INFORMATION).send('Wrong email or password !!')
   });
 }
 
