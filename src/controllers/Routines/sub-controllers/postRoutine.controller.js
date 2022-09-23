@@ -21,31 +21,23 @@ const PostRoutine = async (req, res) => {
 
   // making payload upper case
 
-  let modifiedBlockName = blockName.toUpperCase();
-  let modifiedRoomName = roomName.toUpperCase();
-  let modifiedDay = day.toUpperCase();
-  let modifiedModuleName = moduleName.toUpperCase();
-  let modifiedClassType = classType.toUpperCase();
   let modifiedGroup = [];
   if (Array.isArray(group))
     modifiedGroup = group.map((element) => element.toUpperCase());
   else modifiedGroup.push(group.toUpperCase());
-  let modifiedTeacherName = teacherName.toUpperCase();
-  let modifiedStatus = status.toUpperCase();
-  let modifiedCourseType = courseType.toUpperCase();
 
   const data = new routineModel({
     courseType: courseType.toUpperCase(),
     moduleName: moduleName.toUpperCase(),
-    teacherName: modifiedTeacherName,
-    classType: modifiedClassType,
+    teacherName: teacherName.toUpperCase(),
+    classType: classType.toUpperCase(),
     group: modifiedGroup,
-    roomName: modifiedRoomName,
-    blockName: modifiedBlockName,
-    day: modifiedDay,
+    roomName: roomName.toUpperCase(),
+    blockName: blockName.toUpperCase(),
+    day: day.toUpperCase(),
     startTime: startTime,
     endTime: endTime,
-    status: modifiedStatus,
+    status: status.toUpperCase(),
     createdOn: new Date().toLocaleDateString(),
   });
 

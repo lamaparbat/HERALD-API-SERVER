@@ -30,6 +30,21 @@ const routineAuth = () => {
         status,
       } = req.body;
 
+
+      // for update routine, validate routineID
+      let routineID;
+      if (req.method === "PUT") {
+        routineID = req.body.routineID;
+        try {
+          await routineModel.findOne({_id: routineID})
+        } catch (error) {
+          return res.status(StatusCodes.BAD_REQUEST).send({
+            message: "Incorrect routineID! "
+          })
+        }
+        
+      }
+
       //check if all attributes are recieved or not ?
 
       let checkPayload = true;
@@ -175,15 +190,23 @@ const routineAuth = () => {
         else return "";
       };
 
-      //logical validation
-      // case 1 : check if classroom is blocked or not
+      // getting all data from db
 
       let resultData;
       try {
-        resultData = await routineModel.find();
+        // if method is POST, get all data
+        // if method is PUT, get all data excluding routine which needs to be updated
+
+        if (req.method === "POST") resultData = await routineModel.find();
+        else if (req.method === "PUT") {
+          resultData = await routineModel.find({ _id: { $ne: routineID } });
+        }
       } catch (err) {
         return res.status(StatusCodes.SERVICE_UNAVAILABLE).send(err);
       }
+      //logical validation
+      // case 1 : check if classroom is blocked or not
+
       const check = resultData.filter((element) => {
         return (
           element.blockName === modifiedBlockName &&
@@ -191,8 +214,8 @@ const routineAuth = () => {
           element.day === modifiedDay
         );
       });
-
       // if end time is less than start time
+
       try {
         if (payLoadEndTime <= payLoadStartTime) {
           return res.status(StatusCodes.BAD_REQUEST).send({
@@ -277,6 +300,7 @@ const routineAuth = () => {
       } catch (err) {
         return res.status(StatusCodes.SERVICE_UNAVAILABLE).send(err);
       }
+      next();
     };
   } catch (error) {
     next(error);
