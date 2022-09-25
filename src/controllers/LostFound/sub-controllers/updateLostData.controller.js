@@ -3,7 +3,7 @@ const { StatusCodes } = require("http-status-codes");
 
 const UpdateLostData = async (req, res) => {
   
-  const _id = req.params.id;
+  const {_id} = req.params;
   try {
     const result = await lostFoundModel.findOneAndUpdate(
       { _id },
