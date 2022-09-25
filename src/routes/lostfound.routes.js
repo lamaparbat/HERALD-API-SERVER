@@ -8,6 +8,6 @@ const auth = require('../middlewares/auth');
 
 router.get('/lf/losts', auth.VerifyJWT(["admin", "student", "teacher"]), GetLostFoundData);
 router.post('/lf/report', auth.VerifyJWT(["admin", "student", "teacher"]), ReportLostFoundData);
-router.put('/lf/update', auth.VerifyJWT(["admin"]), UpdateLostData);
+router.put('/lf/update/:_id', auth.VerifyJWT(["admin"]), UpdateLostData);
 
 module.exports = router;
