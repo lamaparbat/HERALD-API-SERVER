@@ -341,9 +341,6 @@ Status Code: 500
 message = SERVER ERROR
 ```
 
-# Latest features 👈🏽
-
-
 # Upcoming features 👷🏻
 1. Concurrency -> PM2 (cpu core utilization technique + Load balancing)
 2. Social media api sync (Public api + Scrapping [Alternatives])
