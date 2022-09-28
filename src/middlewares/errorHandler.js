@@ -14,11 +14,11 @@ const errorHandler = (err, req, res, next) => {
     }
     
     if (err.name === "JsonWebTokenError") {
-        res.send({ error: 'invalid token' })
+        res.status(StatusCodes.FORBIDDEN).send({ error: 'invalid token' })
     } else if (err.name === 'TokenExpiredError') {
-        res.send({ error: 'session timemout' })
+        res.status(StatusCodes.FORBIDDEN).send({ error: 'session timemout' })
     } else {
-        res.send({ error: 'bad request!' })
+        res.status(StatusCodes.BAD_REQUEST).send({ error: 'bad request!' })
     }
     //this next function will let us see the error in console without crashing our server
     next(err)
