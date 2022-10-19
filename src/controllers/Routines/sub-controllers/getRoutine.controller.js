@@ -3,6 +3,22 @@ const { StatusCodes } = require("http-status-codes");
 const { SCOPE } = require("../../../constants/index").COMMON_CONSTANT;
 
 const GetRoutine = async (req, res) => {
+  
+  // getting routine by ID
+  const {routineID} = req.params;
+  if(routineID !== undefined && req.scope !== SCOPE.STUDENT_SCOPE) {
+    try {
+      const result= await routineModel.findById(routineID);
+      return res.status(StatusCodes.OK).send({
+        data: result 
+      })
+    } catch (error) {
+      return res.status(StatusCodes.BAD_REQUEST).send({
+        message: 'Invalid routineID'
+      })
+    }
+  }
+  
   const field = req.query;
   let fieldLength = Object.keys(field).length;
 
