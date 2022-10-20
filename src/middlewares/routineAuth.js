@@ -48,9 +48,11 @@ const routineAuth = () => {
       //check if all attributes are recieved or not ?
 
       let checkPayload = true;
+      const missingPayload=[];
       const payload = Object.keys(req.body);
       ROUTINE_PAYLOAD.forEach((element) => {
         if (!payload.includes(element)) {
+          missingPayload.push(element)
           checkPayload = false;
         }
       });
@@ -58,7 +60,8 @@ const routineAuth = () => {
       if (!checkPayload) {
         return res.status(StatusCodes.PARTIAL_CONTENT).send({
           success: false,
-          message: "Some fields are missing. Please provide all the fields !!",
+          message: `Some fields are missing! `,
+          missingFields: `[${missingPayload}]`
         });
       }
       // making payload upper case

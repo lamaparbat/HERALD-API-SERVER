@@ -15,6 +15,9 @@ router.post('/admin/postRoutineData', auth.VerifyJWT(["admin"]),auth.routineAuth
 //get all routine data
 router.get('/routines', auth.VerifyJWT(["admin", "teacher","student"]), GetRoutine);
 
+//get single routine data
+router.get('/routines/:routineID', auth.VerifyJWT(["admin", "teacher","student"]), GetRoutine);
+
 //update routine data
 router.put('/admin/updateRoutineData',auth.VerifyJWT(["admin"]),auth.routineAuth(),UpdateRoutine )
 
