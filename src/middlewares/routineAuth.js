@@ -60,7 +60,8 @@ const routineAuth = () => {
       if (!checkPayload) {
         return res.status(StatusCodes.PARTIAL_CONTENT).send({
           success: false,
-          message: `Some fields are missing! Please include these fields: { ${missingPayload} }`,
+          message: `Some fields are missing! `,
+          missingFields: `[${missingPayload}]`
         });
       }
       // making payload upper case
