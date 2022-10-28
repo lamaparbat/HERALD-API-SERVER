@@ -1,6 +1,18 @@
 # HCK API SERVICES  🎉🎉
+
+## Usages
+ 1. Open terminal
+ 2. `git clone https://github.com/lamaparbat/HERALD-API-SERVER.git`  [ctrl & ctrl+v]
+ 3. `cd HERALD-API-SERVER` [ctrl & ctrl+v]
+ 4. `npm install` [ctrl & ctrl+v]
+ 5. `npm run dev`  [ctrl & ctrl+v]
  
-## Student endpoints
+ Kudos 🎉🎉. Good to go now 👏🏽👏🏽. Test api using postman.
+ 
+
+## API DESCRIPTION 
+
+### Student endpoints
 1. Login
 ```perl
 POST : /api/v4/student/Login
@@ -23,7 +35,7 @@ onFailure: {
 }
 
 ```
-## Regenerated access token endpoints
+### Regenerated access token endpoints
 
 ```perl
 PUT : /api/v4/RegenerateToken
@@ -43,7 +55,7 @@ onFailure: {
 }
 ```
 
-## Teacher endpoints
+### Teacher endpoints
 1. Login
 ```perl
 POST : /api/v4/teacher/Login
@@ -86,7 +98,7 @@ onFailure: {
    token:null
 }
 ```
-## Admin endpoints
+### Admin endpoints
 1. Login
 ```perl
 POST : /api/v4/admin/Login
@@ -130,7 +142,7 @@ onFailure: {
 }
 ```
 
-## Routines CRUD endpoints
+### Routines CRUD endpoints
 1. Create routine 
 ```perl
 POST: /api/v4/admin/postRoutineData
@@ -245,7 +257,7 @@ onFailure: {
    message: "Internal Server Error !!"
 }
 
-# User feedback CRUD (Recently updated !!)
+### User feedback CRUD (Recently updated !!)
 1. Post feeback 
 ```perl
 POST: /api/v4/feedback/postFeedback
@@ -290,7 +302,7 @@ token: String
 
 ```
 
-# Notifications regarding each update on routine,..
+### Notifications regarding each update on routine,..
 1. Get notificaitons
 ```perl
 GET: /api/v4/getNotifications
@@ -317,7 +329,7 @@ StatusCode: 400
 
 ```
 
-# Upload Data in Excellsheet form (Student List)
+### Upload Data in Excellsheet form (Student List)
 1. Upload student excell sheet (Please donot upload file other than xlsx format)
 ```perl
 POST: /api/v4/uploadStudentList
