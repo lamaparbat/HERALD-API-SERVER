@@ -8,7 +8,7 @@ const getOngoingRoutine = async (req, res, next) => {
     try {
         if (group) {
             const ongoingGroup = await routineModel.find({ group: { $in: grp }, status: { $eq: 'ONGOING' } })
-            if (ongoingGroup) {
+            if (ongoingGroup.length) {
                 return res.status(StatusCodes.OK).json({
                     success: true,
                     'ongoingClassGroup/s': ongoingGroup
