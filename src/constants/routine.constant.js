@@ -1,5 +1,5 @@
 const ROUTINE_STATUS = [
-    'RUNNING',
+    'ONGOING',
     'UPCOMING',
     'CANCELLED',
     'POSTPONED',
