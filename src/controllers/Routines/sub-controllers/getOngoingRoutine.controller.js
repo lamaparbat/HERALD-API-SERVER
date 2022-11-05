@@ -13,12 +13,11 @@ const getOngoingRoutine = async (req, res, next) => {
                     success: true,
                     'ongoingClassGroup/s': ongoingGroup
                 })
-            } else {
-                return res.status(StatusCodes.NOT_FOUND).json({
-                    success: false,
-                    message: 'this group has no ongoing classes'
-                })
             }
+            return res.status(StatusCodes.NOT_FOUND).json({
+                success: false,
+                message: 'this group has no ongoing classes'
+            })
         }
 
         const ongoingGroups = await routineModel.find({ status: { $eq: 'ONGOING' } })
