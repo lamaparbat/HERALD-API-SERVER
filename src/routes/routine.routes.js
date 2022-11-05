@@ -9,7 +9,7 @@ const {
 } = require("../controllers/index.controller").routineControllers;
 
 
-router.post('/routines/ongoing', auth.VerifyJWT(['admin', 'teacher', 'student']), OngoingRoutine)
+router.get('/routines/ongoing', auth.VerifyJWT(['admin', 'teacher', 'student']), OngoingRoutine)
 
 // ****** --> CRUD Routine Operation <-- *********
 //post routine data
