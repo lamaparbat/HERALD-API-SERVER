@@ -1,18 +1,43 @@
 const xlsx2json = require('xlsx2json');
+const xlsx = require('xlsx');
 const fs = require('fs');
 const { StatusCodes } = require("http-status-codes");
 const studentModel = require("../models/studentModel");
+const routineModel = require('../models/routineModel');
+
+const saveRoutine = async (data, group, createdOn) => {
+    const routine = new routineModel(data);
+    routine.createdOn = createdOn;
+    routine.group = group.split(',')
+    await routine.save();
+}
 
 const UPLOAD_SCHEDULE = async (req, res) => {
+    //if file with non '.xlsx' extention is received: req.files = empty object
     if (!Object.keys(req.files).length){
         return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
             success : false,
             message : 'invalid file format'
         })
     }
+    //isolation the excel file from schedule field
     const { schedule : [ file ] } = req.files;
-    const data = await xlsx2json(file.path);
-    return res.send('file upload sucessfull')
+    //reading the excel file
+    const xlxsFile = xlsx.readFile(file.path)
+    const excelSheetToRead = xlxsFile.Sheets[xlxsFile.SheetNames];
+    //parsing the excel file to json
+    const fileData = xlsx.utils.sheet_to_json(excelSheetToRead)
+
+    const createdOn = new Date().toLocaleDateString();
+    //uploading file data to database
+    fileData.forEach(async data => {
+        await saveRoutine(data, data.group, createdOn)
+    })
+    
+    return res.status(StatusCodes.OK).json({
+        success : true,
+        message : 'file upload was successful!'
+    })
 }
 
 const UPLOAD_STUDENT_LIST = async (req, res) => {
