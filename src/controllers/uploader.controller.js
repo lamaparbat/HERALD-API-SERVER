@@ -3,6 +3,17 @@ const fs = require('fs');
 const { StatusCodes } = require("http-status-codes");
 const studentModel = require("../models/studentModel");
 
+const UPLOAD_SCHEDULE = async (req, res) => {
+    if (!Object.keys(req.files).length){
+        return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
+            success : false,
+            message : 'invalid file format'
+        })
+    }
+    const { schedule : [ file ] } = req.files;
+    const data = await xlsx2json(file.path);
+    return res.send('file upload sucessfull')
+}
 
 const UPLOAD_STUDENT_LIST = async (req, res) => {
  let uploadFileName = req.body.uploadFileName;
@@ -56,5 +67,6 @@ const UPLOAD_ADMIN_LIST = (req, res) => {
 module.exports = {
  UPLOAD_STUDENT_LIST,
  UPLOAD_TEACHER_LIST,
- UPLOAD_ADMIN_LIST
+ UPLOAD_ADMIN_LIST,
+ UPLOAD_SCHEDULE
 }
