@@ -7,7 +7,7 @@ const studentModel = require("../models/studentModel");
 const UPLOAD_STUDENT_LIST = async (req, res) => {
  let uploadFileName = req.body.uploadFileName;
  try {
-  xlsx2json(`../../uploads/${uploadFileName}`).then(jsonArray => {
+  xlsx2json(`${__dirname}/../../uploads/${uploadFileName}`).then(jsonArray => {
    jsonArray.map(async (array) => {
     await array.map(async (data) => {
      if (data["A"] !== "S.N.") {
@@ -33,7 +33,7 @@ const UPLOAD_STUDENT_LIST = async (req, res) => {
    });
 
    //delete the file
-   fs.unlinkSync(`../../uploads/${uploadFileName}`);
+   fs.unlinkSync(`${__dirname}/../../uploads/${uploadFileName}`);
 
    res.status(StatusCodes.OK).send("Data extracted and import to DB successfully.")
   });
