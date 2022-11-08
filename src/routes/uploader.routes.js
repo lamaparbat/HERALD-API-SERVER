@@ -6,7 +6,7 @@ const { UPLOAD_STUDENT_LIST, UPLOAD_TEACHER_LIST, UPLOAD_ADMIN_LIST } = require(
 // upload college data
 const storage2 = multer.diskStorage({
  destination: (req, file, cb) => {
-  cb(null, `../../uploads`);
+  cb(null, `${__dirname}/../../uploads`);
  },
  filename: (req, file, cb) => {
   req.body.uploadFileName = Date.now() + "-" + file.originalname;
@@ -16,7 +16,7 @@ const storage2 = multer.diskStorage({
 const collegeUpload = multer({ storage: storage2 });
 
 
-router.post("/uploadStudentList", collegeUpload.single("excellfile"), auth.VerifyJWT(["admin"]), UPLOAD_STUDENT_LIST );
+router.post("/uploadStudentList", collegeUpload.single("excelfile"), auth.VerifyJWT(["admin"]), UPLOAD_STUDENT_LIST );
 
 
 router.post("/uploadTeacherList", auth.VerifyJWT(["admin"]), UPLOAD_TEACHER_LIST);
