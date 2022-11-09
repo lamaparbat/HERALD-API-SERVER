@@ -1,4 +1,5 @@
 const { StatusCodes } = require('http-status-codes')
+const multer = require('multer')
 
 /**
  * this error handling middleware will throw error accoring to the error name
@@ -17,8 +18,10 @@ const errorHandler = (err, req, res, next) => {
         res.status(StatusCodes.FORBIDDEN).send({ error: 'invalid token' })
     } else if (err.name === 'TokenExpiredError') {
         res.status(StatusCodes.FORBIDDEN).send({ error: 'session timemout' })
+    } else if (err instanceof multer.MulterError){
+        res.status(StatusCodes.BAD_GATEWAY).send({ error : err.field})
     } else {
-        res.status(StatusCodes.BAD_REQUEST).send({ error: 'bad request!' })
+       res.status(StatusCodes.BAD_REQUEST).send({ error: 'server error!' })
     }
     //this next function will let us see the error in console without crashing our server
     next(err)

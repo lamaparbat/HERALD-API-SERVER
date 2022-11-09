@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } = require("../configs/index.config");
 const feedbackAuth = require("./feedbackAuth");
-const routineAuth = require('./routineAuth')
+const routineAuth = require('./routineAuth').routineAuth;
 
 //verify jwt token
 const VerifyJWT = (scope) => {
