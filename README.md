@@ -209,6 +209,17 @@ onFailure: {
 }
 ```
 
+
+# Get the lists ongoing/running class routines details
+``` perl
+GET: routines/ongoing?group=:groupCode
+params: group
+
+response: [objects]
+
+```
+
+
 3. Update routine data
 ``` perl
 PUT: /api/v4/admin/updateRoutineData
