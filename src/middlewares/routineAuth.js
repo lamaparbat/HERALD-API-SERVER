@@ -12,8 +12,9 @@ const {
 const { CLASS_TYPE, COURSE_TYPE } =
     require('../constants/index').COMMON_CONSTANT;
 
-const routineAuth = () => {
+const routineAuth = (routineObject = {}) => {
     return async (req, res, next) => {
+        const body = req.body;
         const {
             courseType,
             moduleName,
@@ -26,12 +27,12 @@ const routineAuth = () => {
             startTime,
             endTime,
             status,
-        } = req.body;
+        } = body;
 
         // for update routine, validate routineID
         let routineID;
         if (req.method === 'PUT') {
-            routineID = req.body.routineID;
+            routineID = body.routineID;
             try {
                 await routineModel.findOne({ _id: routineID });
             } catch (error) {
@@ -44,7 +45,7 @@ const routineAuth = () => {
         //check if all attributes are recieved or not ?
 
         let checkPayload = true;
-        const payload = Object.keys(req.body);
+        const payload = Object.keys(body);
         ROUTINE_PAYLOAD.forEach((element) => {
             if (!payload.includes(element)) {
                 checkPayload = false;
@@ -147,22 +148,32 @@ const routineAuth = () => {
                     'Invalid time format! Please provide time in 24 hour format',
             });
         }
-        // converting given payload to proper format
-
-        let payLoadStartTime = startTime;
-        let payLoadEndTime = endTime;
-        payLoadEndTime = timeConvertor(payLoadEndTime);
-        payLoadStartTime = timeConvertor(payLoadStartTime);
 
         // check if group array has duplicate groups
-
-        const checkIfDuplicateExists = (arr) =>
-            new Set(arr).size !== arr.length;
-        if (checkIfDuplicateExists(modifiedGroup))
+        if (new Set(modifiedGroup).size !== modifiedGroup.length)
             return res.status(StatusCodes.BAD_REQUEST).send({
                 success: false,
                 message: 'Found duplicate group name!',
             });
+
+        req.body = {
+            courseType: modifiedCourseType,
+            moduleName: modifiedModuleName,
+            teacherName: modifiedTeacherName,
+            classType: modifiedClassType,
+            group: modifiedGroup,
+            roomName: modifiedRoomName,
+            blockName: modifiedBlockName,
+            day: modifiedDay,
+            startTime,
+            endTime,
+            status: modifiedStatus,
+        }
+
+        // converting given payload to proper format
+
+        let payLoadStartTime = timeConvertor(startTime);
+        let payLoadEndTime = timeConvertor(endTime);
 
         const checkIfAvailable = (array, type) => {
             let test = false;
