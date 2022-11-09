@@ -3,16 +3,25 @@ const xlsx = require('xlsx');
 const fs = require('fs');
 const { StatusCodes } = require("http-status-codes");
 const studentModel = require("../models/studentModel");
-const routineModel = require('../models/routineModel');
+const days = require('../constants/routine.constant').VALID_DAYS;
 
-const saveRoutine = async (data, group, createdOn) => {
-    const routine = new routineModel(data);
-    routine.createdOn = createdOn;
-    routine.group = group.split(',')
-    await routine.save();
+const timeParser = (time) => {
+    const [ startTime, endTime ] = time.split('-');
+    return { startTime, endTime };
+}
+
+const dayParser = (day) => {
+    const dayFound = days.find(d => d.toUpperCase().includes(day));
+    return dayFound;
+}
+
+const groupParser = (group) => {
+    const [ prefix, suffix ] = group.split('(')
+    return suffix.slice(0, -1).split('+').map(char => prefix + char)
 }
 
 const UPLOAD_SCHEDULE = async (req, res) => {
+    console.log(req.originalUrl);
     //if file with non '.xlsx' extention is received: req.files = empty object
     if (!Object.keys(req.files).length){
         return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
@@ -27,11 +36,22 @@ const UPLOAD_SCHEDULE = async (req, res) => {
     const excelSheetToRead = xlxsFile.Sheets[xlxsFile.SheetNames];
     //parsing the excel file to json
     const fileData = xlsx.utils.sheet_to_json(excelSheetToRead)
-
     const createdOn = new Date().toLocaleDateString();
-    //uploading file data to database
-    fileData.forEach(async data => {
-        await saveRoutine(data, data.group, createdOn)
+
+    fileData.forEach(async ({Day, Time, Group: group, Block: blockName, Lecturer: teacherName, Room: roomName,
+        'Module Code': modeulCode, 'Module Title': moduleName, 'Class Type': classType }) => {
+        classType === 'Lecture' ? group = groupParser(group) : ""
+        const obj = {
+            moduleName,
+            teacherName,
+            classType,
+            group,
+            roomName,
+            blockName,
+            day: dayParser(Day),
+            ...timeParser(Time),
+            createdOn,
+        }
     })
     
     return res.status(StatusCodes.OK).json({
