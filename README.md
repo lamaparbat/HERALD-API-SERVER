@@ -212,7 +212,7 @@ onFailure: {
 
 # Get the lists ongoing/running class routines details
 ``` perl
-GET: routines/ongoing?group=:groupCode
+GET: api/v4/routines/ongoing?group=:groupCode
 params: group
 
 response: [objects]
