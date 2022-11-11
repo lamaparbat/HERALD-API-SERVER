@@ -4,25 +4,10 @@ info:
     <img src="https://dev-herald-server.herokuapp.com/images/logo.png" alt="Herald College Kathmandu logo" width="400" height="100" />
 
     # API Documentation
-    Updated on 28th September, 2022
+    Updated on 10th November, 2022
 
     API Documentation of Herald College Application developed by **Herald Development Platform Community**.
     <img src="https://dev-herald-server.herokuapp.com/images/community.jpeg" alt="Development Platform Community logo" width="400" height="100" />
-    ---
-
-    ### ✨ Features 
-
-      1. Routine Management System Backend
-      2. Library Management System Backend
-      3. RTE Management System Backend
-      4. Student Service (Lost & Found)
-
-    ---
-
-    ### 🆕 Latest Updates 
-
-      
-
     ---
 
     ### 🔔 Upcoming Updates 
@@ -33,7 +18,7 @@ info:
       
     ---
 
-    ### ⚒️ Things To Change
+    ### ⚒️ Things To Optimize
 
       1. Aggregation Framework for data mapping
       2. Devops + AWS Service integration [Premium]
@@ -50,10 +35,10 @@ info:
       6. System Security [incl. Password Hashing(SHA256)(Secure Hash Algorithm), Data Encapsulation]
       7. Redis Implementation Completed [TEST]
       8. Social Media API Integration Test [e.g Fetch Instagram Posts]
-      9. Overall Optimization      
+      9. Overall Optimization [max time]  
     ---
 
-  version: "1.0.9"
+  version: "1.0.10"
   title: "Herald College Kathmandu App"
   contact:
     name: "Backend Team"
@@ -280,6 +265,43 @@ paths:
       tags:
         - "Routine"
       summary: "Gets routine data"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "group"
+          description: "The name of group"
+          in: "query"
+          required: false
+          type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Routine"
+        "204":
+          description: "NO_CONTENT"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "No result found for this group!"
+        "400":
+          description: "BAD_REQUEST"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "invalid group name!"
+  /api/v4/routines/ongoing:
+   get:
+      security:
+        - Bearer: []
+      tags:
+        - "Routine"
+      summary: "Gets ongoing routine data"
       description: ""
       consumes:
         - "application/json"
@@ -583,44 +605,6 @@ paths:
               message:
                 type: "string"
                 example: "500. SERVER ERROR!!"
-  /api/v4/uploadStudentList:
-    post:
-      security:
-        - Bearer: []
-      tags:
-        - "Upload"
-      summary: "Upload Student Excel Sheet"
-      description: ""
-      consumes:
-        - "application/json"
-      produces:
-        - "application/json"
-      parameters:
-        - in: "formData"
-          name: "body"
-          type: "file"
-      responses:
-        "200":
-          description: "OK"
-          schema:
-            properties:
-              message:
-                type: "string"
-                example: "Data extracted and import to DB successfully."
-        "406":
-          description: "NOT_ACCEPTABLE"
-          schema:
-            properties:
-              message:
-                type: "string"
-                example: "Failed to parse the given file. Please upload the xlsx formate file only !!"
-        "500":
-          description: "INTERNAL_SERVER_ERROR"
-          schema:
-            properties:
-              message:
-                type: "string"
-                example: "Failed to parse the given file. Please upload the xlsx formate file only !!!"
   /api/v4/RegenerateToken:
     put:
       security:
@@ -675,9 +659,10 @@ paths:
       produces:
         - "application/json"
       parameters:
-        - in: "formData"
-          name: "body"
-          type: "file"
+        - in: formData
+          name: file
+          type: file
+          description: The file to upload.
         - in: "formData"
           name: "reportType"
           type: "string"
@@ -912,6 +897,68 @@ paths:
               message:
                 type: "string"
                 example: "500. SERVER ERROR!!"
+  /api/v4/uploadStudentList:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Upload"
+      summary: "Upload Student Excel Sheet"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+         - in: formData
+           name: ExcelSheet
+           type: file
+           description: The file to upload.
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Data extracted and import to DB successfully."
+        "406":
+          description: "NOT_ACCEPTABLE"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Failed to parse the given file. Please upload the xlsx formate file only !!"
+        "500":
+          description: "INTERNAL_SERVER_ERROR"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "Failed to parse the given file. Please upload the xlsx formate file only !!!"
+  /api/v4/student/studentlist:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Student"
+      summary: "Get Student List"
+      parameters:
+        - name: "group"
+          description: "The name of group"
+          in: "query"
+          required: false
+          type: "string"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "OK"
+        "500":
+          description: "INTERNAL_SERVER_ERROR"
+          
 definitions:
   Routine:
     type: "object"
