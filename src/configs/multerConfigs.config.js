@@ -25,7 +25,7 @@ const scheduleUpload = multer({ storage : scheduleStorage, fileFilter : uploadFi
 // upload college data
 const storage2 = multer.diskStorage({
  destination: (req, file, cb) => {
-  cb(null, `../../uploads`);
+  cb(null, `${__dirname}/../../uploads`);
  },
  filename: (req, file, cb) => {
   req.body.uploadFileName = Date.now() + "-" + file.originalname;
