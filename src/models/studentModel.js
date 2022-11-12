@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const studentSchema = new mongoose.Schema({
  uid: String,
  group:String,
+ name: String,
  createdOn: String
 });
 

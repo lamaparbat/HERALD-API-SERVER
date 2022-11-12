@@ -95,6 +95,7 @@ const UPLOAD_STUDENT_LIST = async (req, res) => {
     await array.map(async (data) => {
      if (data["A"] !== "S.N.") {
       const email = data["B"] + "@HERALDCOLLEGE.EDU.NP";
+      const name = data["C"];
       const group = data["D"];
       //check if data already exists in db
       const searchResult = await studentModel.find({ uid: email });
@@ -102,6 +103,7 @@ const UPLOAD_STUDENT_LIST = async (req, res) => {
        //inserting into db
        const response = new studentModel({
         uid: data["B"] + "@HERALDCOLLEGE.EDU.NP",
+        name: name,
         group: group
        });
 
