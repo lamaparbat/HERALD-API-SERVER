@@ -368,6 +368,7 @@ message = SERVER ERROR
 1. Concurrency -> PM2 (cpu core utilization technique + Load balancing)
 2. Social media api sync (Public api + Scrapping [Alternatives])
 3. Auto scaling with Cloud Services 
+4. CRON [Scheduler]                          !PRIORITY 
 
 
 # Things need to optimize 🥷
