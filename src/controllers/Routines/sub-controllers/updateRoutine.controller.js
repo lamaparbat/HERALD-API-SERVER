@@ -3,48 +3,20 @@ const { StatusCodes } = require("http-status-codes");
 
 const UpdateRoutine = (req, res) => {
   //get the routine doc id
-  const {
-    courseType,
-    moduleName,
-    teacherName,
-    classType,
-    group,
-    roomName,
-    blockName,
-    day,
-    startTime,
-    endTime,
-    status,
-    routineID,
-  } = req.body;
+  const { routineID, ...updatedRoutine } = req.body;
 
   // checking if routineID is in req.body
-  if (routineID === undefined)
+  if (!routineID)
     return res.status(StatusCodes.NOT_ACCEPTABLE).send({
       message: "routine ID is empty",
     });
 
-  // changing group to array
-
-    let modifiedGroup = [];
-    if (Array.isArray(group)) modifiedGroup = group.map((element) => element.toUpperCase());
-    else modifiedGroup.push(group.toUpperCase());
 
   routineModel.findByIdAndUpdate(
     routineID,
     {
-      courseType: courseType.toUpperCase(),
-      moduleName: moduleName.toUpperCase(),
-      teacherName: teacherName.toUpperCase(),
-      classType: classType.toUpperCase(),
-      group: modifiedGroup,
-      roomName: roomName.toUpperCase(),
-      blockName: blockName.toUpperCase(),
-      day: day.toUpperCase(),
-      startTime: startTime,
-      endTime: endTime,
-      status: status.toUpperCase(),
-      createdOn: new Date().toLocaleDateString(),
+      ...updatedRoutine,
+      updatedOn: new Date().toLocaleDateString(),
     },
     (err, data) => {
       if (err) {
