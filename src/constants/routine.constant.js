@@ -44,6 +44,7 @@ const VALID_DAYS = [
     'WEDNESDAY',
     'THURSDAY',
     'FRIDAY',
+    'SATURDAY'
 ];
 
 module.exports = {
