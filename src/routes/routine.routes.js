@@ -22,7 +22,7 @@ router.get('/routines', auth.VerifyJWT(["admin", "teacher","student"]), GetRouti
 router.get('/routines/:routineID', auth.VerifyJWT(["admin", "teacher","student"]), GetRoutine);
 
 //update routine data
-router.put('/admin/updateRoutineData',auth.VerifyJWT(["admin"]),auth.routineAuth(),UpdateRoutine )
+router.put('/admin/updateRoutineData/:routineId',auth.VerifyJWT(["admin"]),auth.routineAuth(),UpdateRoutine )
 
 //delete routine data
 router.delete('/admin/deleteRoutineData', auth.VerifyJWT(["admin"]), DeleteRoutine)
