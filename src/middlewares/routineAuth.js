@@ -132,12 +132,13 @@ const routineAuth = () => {
         // for update routine, validate routineID
         let routineID;
         if (req.method === 'PUT') {
-            routineID = body.routineID;
+            routineID = req.params.routineId;
             try {
-                await routineModel.findOne({ _id: routineID });
+                const routineData = await routineModel.findById(routineID);
+                if (!routineData) throw new Error("Invalid routine id.")
             } catch (error) {
                 return res.status(StatusCodes.BAD_REQUEST).send({
-                    message: 'Incorrect routineID! ',
+                    message: "Invalid routine id.",
                 });
             }
         }
@@ -263,7 +264,7 @@ const routineAuth = () => {
                 block: modifiedBlockName, room: modifiedRoomName, day: modifiedDay, moduleName: modifiedModuleName,
                 teacher: modifiedTeacherName, group: modifiedGroup, startTime, endTime
             }, resultData)
-        
+
             //catch error and send corresponding error message
         } catch (error) {
             return res.status(StatusCodes.BAD_REQUEST).json({
@@ -284,6 +285,7 @@ const routineAuth = () => {
             startTime,
             endTime,
             status: modifiedStatus,
+            routineID,
         }
 
         next();
