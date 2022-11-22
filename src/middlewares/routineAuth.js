@@ -144,13 +144,14 @@ const routineAuth = () => {
         }
 
         //check if all attributes are recieved or not ?
-        const checkPayload = ROUTINE_PAYLOAD.some(field => !Object.keys(body).includes(field))
+        const missingFields = ROUTINE_PAYLOAD.filter(field => !Object.keys(body).includes(field))
 
-        if (checkPayload) {
+        if (missingFields.length) {
             return res.status(StatusCodes.PARTIAL_CONTENT).send({
                 success: false,
                 message:
                     'Some fields are missing. Please provide all the fields !!',
+                missingFields
             });
         }
 
