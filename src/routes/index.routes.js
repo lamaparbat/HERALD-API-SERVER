@@ -11,7 +11,7 @@ const UTILS_ROUTES = require("./common.routes.js");
 const DEFAULT_ROUTES = require("./default.routes");
 const LOSTFOUND_ROUTES = require("./lostfound.routes");
 
-const MAIL_ROUTES = router.post('mailevents', async (req, res) => {
+const MAIL_ROUTES = router.get('mailevents', async (req, res) => {
   consoe.log(req, res);
   res.send('success');
 });
