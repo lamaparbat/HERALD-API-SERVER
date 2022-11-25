@@ -10,8 +10,11 @@ const FEEDBACK_ROUTES = require("./feedback.routes.js");
 const UTILS_ROUTES = require("./common.routes.js");
 const DEFAULT_ROUTES = require("./default.routes");
 const LOSTFOUND_ROUTES = require("./lostfound.routes");
-const NOTIFICATION_ROUTES = require("./notifications.routes");
-const CONSTANT_ROUTES = require('./constant.routes')
+
+const MAIL_ROUTES = router.post('/admin/Login', async (req, res) => {
+  consoe.log(req, res);
+  res.send('success');
+});
 
 Router.use(ROUTINE_ROUTES);
 Router.use(ADMIN_ROUTES);
@@ -22,7 +25,6 @@ Router.use(FEEDBACK_ROUTES);
 Router.use(UTILS_ROUTES);
 Router.use(LOSTFOUND_ROUTES);
 Router.use(DEFAULT_ROUTES);
-Router.use(NOTIFICATION_ROUTES);
-Router.use(CONSTANT_ROUTES);
+Router.use(MAIL_ROUTES);
 
 module.exports = Router;
