@@ -11,11 +11,6 @@ const UTILS_ROUTES = require("./common.routes.js");
 const DEFAULT_ROUTES = require("./default.routes");
 const LOSTFOUND_ROUTES = require("./lostfound.routes");
 
-const MAIL_ROUTES = Router.get('/mailevents', async (req, res) => {
-  consoe.log(req, res);
-  res.send('success');
-});
-
 Router.use(ROUTINE_ROUTES);
 Router.use(ADMIN_ROUTES);
 Router.use(STUDENT_ROUTES);
@@ -25,6 +20,5 @@ Router.use(FEEDBACK_ROUTES);
 Router.use(UTILS_ROUTES);
 Router.use(LOSTFOUND_ROUTES);
 Router.use(DEFAULT_ROUTES);
-Router.use(MAIL_ROUTES);
 
 module.exports = Router;
