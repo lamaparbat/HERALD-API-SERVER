@@ -3,12 +3,20 @@ const mongoose = require("mongoose");
 
 //define schema
 const lostFoundSchema = new mongoose.Schema({
- items: Array,
- desc: String,
- lostDate: String,
- isVictimRecievedData:Boolean,
- createdAt: String,
- updatedAt: String
+    firstName: String,
+    lastName: String,
+    phoneNumber: String,
+    itemCategory: [{
+        type: String,
+        required: true
+    }],
+    description: String,
+    lostDate: String,
+    block: String,
+    additionalDescription: String,
+    isVictimRecievedData: Boolean,
+    createdAt: String,
+    updatedAt: String
 });
 
 
