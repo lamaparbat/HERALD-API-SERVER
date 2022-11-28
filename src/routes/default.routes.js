@@ -7,9 +7,9 @@ router.get('/', DEFAULT_ROUTES);
 
 router.post('/mailStatus', (req, res) => {
  const logs = JSON.parse(req.body.mandrill_events)[0];
- console.log('ipps ', logs)
+ console.log('ipps ', logs, !logs || !['delivered', 'hard_bounce', 'soft_bounce', 'reject'].includes(logs.event))
  if (!logs || !['delivered', 'hard_bounce', 'soft_bounce', 'reject'].includes(logs.event))
-  res.status(200);
+  return res.status(200);
 
  const { state, bounce_description } = logs.msg;
 
