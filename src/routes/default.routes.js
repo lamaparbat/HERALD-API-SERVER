@@ -7,10 +7,10 @@ router.get('/', DEFAULT_ROUTES);
 
 router.post('/mailStatus', (req, res) => {
  const logs = JSON.parse(req.body.mandrill_events)[0];
+ console.log(logs, !['delivered', 'hard_bounce', 'soft_bounce', 'reject'].includes(logs.event))
  if (!['delivered', 'hard_bounce', 'soft_bounce', 'reject'].includes(logs.event))
-  res.status(200);
+  return res.status(200);
 
- console.log(logs.event)
  const { state, bounce_description } = logs.msg;
  console.log('webhook triggered ', state, bounce_description);
 
