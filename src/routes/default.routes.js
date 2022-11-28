@@ -9,7 +9,7 @@ router.post('/mailStatus', (req, res) => {
  if (!req.body.length)
   return res.status(200);
 
- if (req.body?.mandrill_events)
+ if (!req.body?.mandrill_events)
   return res.status(200);
 
  const logs = JSON.parse(req.body.mandrill_events)[0];
