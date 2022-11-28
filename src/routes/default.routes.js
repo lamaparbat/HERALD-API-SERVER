@@ -6,9 +6,11 @@ const DEFAULT_ROUTES = require("../controllers/default.controller");
 router.get('/', DEFAULT_ROUTES);
 
 router.post('/mailStatus', (req, res) => {
+ console.log(req.body.length)
  if (!req.body.length)
   return res.status(200);
 
+ console.log(req.body?.mandrill_events)
  if (!req.body?.mandrill_events)
   return res.status(200);
 
