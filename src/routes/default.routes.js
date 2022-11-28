@@ -7,8 +7,9 @@ router.get('/', DEFAULT_ROUTES);
 
 router.post('/mailStatus', (req, res) => {
  const data = req.body;
- console.log('webhook triggered ', data);
- res.json({ message: 'Mandrill webhook endpoints ', data });
+ const { state, bounce_description } = data?.msg;
+ console.log('webhook triggered ', state, bounce_description);
+ res.send({ message: 'Mandrill webhook endpoints ', data });
 });
 
 
