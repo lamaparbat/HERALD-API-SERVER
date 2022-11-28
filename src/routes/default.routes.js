@@ -7,7 +7,7 @@ router.get('/', DEFAULT_ROUTES);
 
 router.post('/mailStatus', (req, res) => {
  const logs = JSON.parse(req.body.mandrill_events)[0];
- console.log(logs)
+ console.log(req.body.mandrill_events, logs)
  // return res.status(200);
  console.log(logs?.event)
 
