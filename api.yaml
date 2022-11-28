@@ -4,7 +4,7 @@ info:
     <img src="https://dev-herald-server.herokuapp.com/images/logo.png" alt="Herald College Kathmandu logo" width="400" height="100" />
 
     # API Documentation
-    Updated on 21st November, 2022
+    Updated on 27th November, 2022
 
     API Documentation of Herald College Application developed by **Herald Development Platform Community**.
     <img src="https://dev-herald-server.herokuapp.com/images/community.jpeg" alt="Development Platform Community logo" width="400" height="100" />
@@ -15,6 +15,7 @@ info:
       1. Concurrency -> PM2 (CPU Core Utilization Technique + Load Balancing)
       2. Social Media API Sync (Public API + Scrapping [Alternatives])
       3. Auto Scaling with Cloud Services
+      4. CRON [Scheduler] **(PRIORITY)**
       
     ---
 
@@ -23,6 +24,7 @@ info:
       1. Aggregation Framework for data mapping
       2. Devops + AWS Service integration [Premium]
       3. Log tracing & Management [Premium]
+
     ---
 
     ### ✅ Things Accomplished Until now
@@ -38,7 +40,7 @@ info:
       9. Overall Optimization [max time]  
     ---
 
-  version: "1.0.11"
+  version: "1.1.1"
   title: "Herald College Kathmandu App"
   contact:
     name: "Backend Team"
@@ -661,6 +663,12 @@ paths:
       produces:
         - "application/json"
       parameters:
+        - in: "formData"
+          name: "reportType"
+          type: "string"
+        - in: "formData"
+          name: "description"
+          type: "string"
         - in: formData
           name: file
           type: file
@@ -669,7 +677,7 @@ paths:
           name: "reportType"
           type: "string"
         - in: "formData"
-          name: "description"
+          name: "date"
           type: "string"
       responses:
         "200":
@@ -1252,15 +1260,29 @@ definitions:
   LostReport:
     type: "object"
     properties:
-      items:
+      firstName:
+        type: "string"
+      lastName:
+        type: "string"
+      phoneNumber:
+        type: "string"
+      itemCategory:
         type: "array"
         items:
           type: "string"
-      desc:
+      description:
         type: "string"
       lostDate:
         type: "string"
+      block:
+        type: "string"
+      additionalDescription:
+        type: "string"
       isVictimRecievedData:
+        type: "string"
+      createdAt:
+        type: "string"
+      updatedAt:
         type: "string"
   Notification:
     type: "object"
