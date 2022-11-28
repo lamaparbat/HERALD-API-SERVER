@@ -6,7 +6,7 @@ const DEFAULT_ROUTES = require("../controllers/default.controller");
 router.get('/', DEFAULT_ROUTES);
 
 router.post('/mailStatus', (req, res) => {
- console.log(req.body.length)
+ console.log(req.body)
  if (!req.body.length)
   return res.status(200);
 
