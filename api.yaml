@@ -4,7 +4,7 @@ info:
     <img src="https://dev-herald-server.herokuapp.com/images/logo.png" alt="Herald College Kathmandu logo" width="400" height="100" />
 
     # API Documentation
-    Updated on 27th November, 2022
+    Updated on 28th November, 2022
 
     API Documentation of Herald College Application developed by **Herald Development Platform Community**.
     <img src="https://dev-herald-server.herokuapp.com/images/community.jpeg" alt="Development Platform Community logo" width="400" height="100" />
@@ -40,7 +40,7 @@ info:
       9. Overall Optimization [max time]  
     ---
 
-  version: "1.1.1"
+  version: "1.1.2"
   title: "Herald College Kathmandu App"
   contact:
     name: "Backend Team"
@@ -674,9 +674,6 @@ paths:
           type: file
           description: The file to upload.
         - in: "formData"
-          name: "reportType"
-          type: "string"
-        - in: "formData"
           name: "date"
           type: "string"
       responses:
@@ -820,7 +817,27 @@ paths:
           name: "body"
           required: true
           schema:
-            $ref: "#/definitions/LostReport"
+            properties: 
+              firstName:
+                type: "string"
+              lastName:
+                type: "string"
+              phoneNumber:
+                type: "string"
+              itemCategory:
+                type: "array"
+                items:
+                  type: "string"
+              description:
+                type: "string"
+              lostDate:
+                type: "string"
+              block:
+                type: "string"
+              additionalDescription:
+                type: "string"
+              isVictimRecievedData:
+                type: "string"
       responses:
         "200":
           description: "OK"
@@ -891,7 +908,27 @@ paths:
           name: "body"
           required: true
           schema:
-            $ref: "#/definitions/LostReport"
+            properties: 
+              firstName:
+                type: "string"
+              lastName:
+                type: "string"
+              phoneNumber:
+                type: "string"
+              itemCategory:
+                type: "array"
+                items:
+                  type: "string"
+              description:
+                type: "string"
+              lostDate:
+                type: "string"
+              block:
+                type: "string"
+              additionalDescription:
+                type: "string"
+              isVictimRecievedData:
+                type: "string"
       responses:
         "200":
           description: "OK"
