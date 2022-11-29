@@ -12,7 +12,7 @@ const {
 const { CLASS_TYPE, COURSE_TYPE } =
     require('../constants/index').COMMON_CONSTANT;
 
-const routineValidation = ({ blockName, roomName, day, moduleName, teacherName, group, startTime, endTime }, resultData = []) => {
+const routineValidation = ({ blockName, roomName, day, moduleName, teacherName, groups, startTime, endTime }, resultData = []) => {
 
     // converting given payload to proper format
     let payLoadStartTime = timeConvertor(startTime);
@@ -82,7 +82,7 @@ const routineValidation = ({ blockName, roomName, day, moduleName, teacherName, 
     const classData = resultData.filter((element) => {
         return (
             element.day === day &&
-            element.group.some((data) => group.includes(data))
+            element.groups.some((data) => groups.includes(data))
         );
     });
 
@@ -96,8 +96,8 @@ const routineValidation = ({ blockName, roomName, day, moduleName, teacherName, 
     // case 4: One group cannot have multiple class of same module in a single day
     const dayData = resultData.filter((element) => {
         return (
-            element.group.some((data) =>
-                group.includes(data)
+            element.groups.some((data) =>
+                groups.includes(data)
             ) && element.moduleName === moduleName
         );
     });
@@ -120,7 +120,7 @@ const routineAuth = () => {
             moduleName,
             teacherName,
             classType,
-            group,
+            groups,
             roomName,
             blockName,
             day,
@@ -161,17 +161,14 @@ const routineAuth = () => {
         let modifiedDay = day.toUpperCase();
         let modifiedModuleName = moduleName.toUpperCase();
         let modifiedClassType = classType.toUpperCase();
-        let modifiedGroup = [];
-        if (Array.isArray(group))
-            modifiedGroup = group.map((element) => element.toUpperCase());
-        else modifiedGroup.push(group.toUpperCase());
+        let modifiedGroups = Array.isArray(groups) ? groups.map(group => group.toUpperCase()) : [groups.toUpperCase()]
         let modifiedTeacherName = teacherName.toUpperCase();
         let modifiedStatus = status.toUpperCase();
         let modifiedCourseType = courseType.toUpperCase();
 
         // validate groupName format
         const groupNameFormat = new RegExp(/L[4-9][CB]G\d+/);
-        const invalidGroup = modifiedGroup.some(
+        const invalidGroup = modifiedGroups.some(
             (group) => !groupNameFormat.test(group)
         );
         if (invalidGroup) {
@@ -242,7 +239,7 @@ const routineAuth = () => {
         }
 
         // check if group array has duplicate groups
-        if (new Set(modifiedGroup).size !== modifiedGroup.length)
+        if (new Set(modifiedGroups).size !== modifiedGroups.length)
             return res.status(StatusCodes.BAD_REQUEST).send({
                 success: false,
                 message: 'Found duplicate group name!',
@@ -263,7 +260,7 @@ const routineAuth = () => {
             //validate the routine if error we catch it and throw the error else continue with the next controller
             routineValidation({
                 block: modifiedBlockName, room: modifiedRoomName, day: modifiedDay, moduleName: modifiedModuleName,
-                teacher: modifiedTeacherName, group: modifiedGroup, startTime, endTime
+                teacher: modifiedTeacherName, groups: modifiedGroups, startTime, endTime
             }, resultData)
 
             //catch error and send corresponding error message
@@ -279,7 +276,7 @@ const routineAuth = () => {
             moduleName: modifiedModuleName,
             teacherName: modifiedTeacherName,
             classType: modifiedClassType,
-            group: modifiedGroup,
+            groups: modifiedGroups,
             roomName: modifiedRoomName,
             blockName: modifiedBlockName,
             day: modifiedDay,

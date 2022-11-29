@@ -10,7 +10,7 @@ const PostRoutine = async (req, res) => {
     moduleName,
     teacherName,
     classType,
-    group,
+    groups,
     roomName,
     blockName,
     day,
@@ -31,8 +31,8 @@ const PostRoutine = async (req, res) => {
       //upload message to notification db
 
       const notifData = new notifModel({
-        message: `Dear ${group} of ${courseType}, a new routine of ${moduleName} has recently published. Please see it once.`,
-        group,
+        message: `Dear ${groups} of ${courseType}, a new routine of ${moduleName} has recently published. Please see it once.`,
+        groups,
         createdOn: new Date().toLocaleDateString(),
       });
 
@@ -40,7 +40,7 @@ const PostRoutine = async (req, res) => {
         const result = await notifData.save();
         if (result.message) {
           pusher.trigger("my-channel", "notice", {
-            message: `Dear ${group} of ${courseType}, a new routine of ${moduleName} has recently published. Please see it once.`,
+            message: `Dear ${groups} of ${courseType}, a new routine of ${moduleName} has recently published. Please see it once.`,
           });
           return res.status(200).send({
             message: "Routine posted successfully !!",

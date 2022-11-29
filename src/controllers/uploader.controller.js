@@ -45,15 +45,15 @@ const UPLOAD_SCHEDULE = async (req, res) => {
     const routineData = await routineModel.find();
     
     //extracting the data and assigning valid names
-    fileData.forEach(async ({ Day, Time, Group: group, Block: blockName, Lecturer: teacherName, Room: roomName,
+    fileData.forEach(async ({ Day, Time, Group: groups, Block: blockName, Lecturer: teacherName, Room: roomName,
         'Module Code': modeulCode, 'Module Title': moduleName, 'Class Type': classType }) => {
-        classType === 'Lecture' ? group = groupParser(group) : group = [group]
+        classType === 'Lecture' ? groups = groupParser(groups) : groups = [groups]
         const obj = {
             courseType: 'BIT',
             moduleName: moduleName.toUpperCase(),
             teacherName: teacherName.toUpperCase(),
             classType: classType.toUpperCase(),
-            group,
+            groups,
             roomName: roomName.toUpperCase(),
             blockName: blockName.toUpperCase(),
             day: dayParser(Day),
