@@ -45,7 +45,7 @@ const GetRoutine = async (req, res) => {
 
   if (pattern.test(groupName)) {
     //fetch all routine from db and filter with groupName
-    const result = await routineModel.find({ group: groupName });
+    const result = await routineModel.find({ groups: groupName });
     // if there is no routine for provided groupName
     if (!result.length) {
       return res.status(StatusCodes.NO_CONTENT).send({

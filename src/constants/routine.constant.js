@@ -28,7 +28,7 @@ const ROUTINE_PAYLOAD = [
     'moduleName',
     'teacherName',
     'classType',
-    'group',
+    'groups',
     'roomName',
     'blockName',
     'day',
